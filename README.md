@@ -1,13 +1,13 @@
-# Ana
+# REST-Ana
 Super fast and minimalist web framework for building REST micro-services.
 
 ## Usage
 ```bash
-npm i ana --save
+npm i restana --save
 ```
 
 ```js
-const service = require('ana')({});
+const service = require('restana')({});
 
 const Pets = {
     // ... 

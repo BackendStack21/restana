@@ -1,5 +1,5 @@
 {
-  "name": "ana",
+  "name": "restana",
   "version": "0.1.0",
   "description": "Super fast and minimalist web framework for building REST micro-services.",
   "main": "index.js",
