@@ -1,0 +1,34 @@
+{
+  "name": "ana",
+  "version": "0.1.0",
+  "description": "Tiny web framework for building REST micro-services.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jkyberneees/ana.git"
+  },
+  "keywords": [
+    "rest",
+    "http",
+    "framework",
+    "web",
+    "service"
+  ],
+  "author": "Rolando Santamaria Maso <kyberneees@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jkyberneees/ana/issues"
+  },
+  "homepage": "https://github.com/jkyberneees/ana#readme",
+  "dependencies": {
+    "wayfarer": "6.x.x"
+  },
+  "devDependencies": {
+    "chai": "3.x.x",
+    "mocha": "3.x.x",
+    "supertest": "3.x.x"
+  }
+}
