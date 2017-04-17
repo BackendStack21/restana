@@ -32,7 +32,7 @@ service.patch('/pets/:id', (req, res) => {
     res.send(PetsModel.update(req.params.id, JSON.stringify(req.body)));
 });
 
-service.listen(3000).then((server) => {});
+service.start(3000).then((server) => {});
 
 // ... 
 service.close().then(()=> {});
