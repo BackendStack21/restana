@@ -1,7 +1,7 @@
 {
   "name": "ana",
   "version": "0.1.0",
-  "description": "Tiny web framework for building REST micro-services.",
+  "description": "Super fast and minimalist web framework for building REST micro-services.",
   "main": "index.js",
   "scripts": {
     "test": "mocha tests"

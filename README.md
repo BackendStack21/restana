@@ -1,5 +1,5 @@
 # Ana
-Super fast and minimalistic web framework for building REST micro-services.
+Super fast and minimalist web framework for building REST micro-services.
 
 ## Usage
 ```bash
