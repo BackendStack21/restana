@@ -72,3 +72,14 @@ service.get('/v1/welcome', (req, res) => {
 // start the server
 service.start();
 ```
+## Performance comparison
+Performance comparison for a basic *Hello World!* response in cluster mode with 4 processes:
+```bash
+ab -n 10000 -c 1000 http://localhost:3000/v1/welcome
+```
+Results: 
+* restana: ~1300ms
+* koa: ~1500ms
+* hapi: ~4200ms
+* express: ~1800ms
+* restify: ~2000ms
