@@ -1,5 +1,5 @@
-module.exports.send = (req, res) => (data, code = 200, headers = {}) => {
-    headers['Content-Type'] = 'text/plain';
+module.exports.send = (req, res) => (data = 200, code = 200, headers = {}) => {
+    res.setHeader('Content-Type', 'text/plain');
 
     return new Promise(async(resolve, reject) => {
         if (data instanceof Promise)
@@ -15,21 +15,22 @@ module.exports.send = (req, res) => (data, code = 200, headers = {}) => {
         }
         if ('number' == typeof data) {
             code = parseInt(data);
-            data = null;
-        } else if ('object' == typeof data) {
-            headers['Content-Type'] = 'application/json';
+            data = res.body;
+        }
+        if ('object' == typeof data) {
+            res.setHeader('Content-Type', 'application/json');
             data = JSON.stringify(data);
         }
-
-        res.writeHead(code, headers);
 
         // emit response event before send and terminate
         let params = {
             res,
+            req,
             data
         }
         res.emit('response', params);
 
+        res.writeHead(code);
         res.end(params.data, 'utf-8', (err) => {
             if (err) reject(err);
             resolve();
