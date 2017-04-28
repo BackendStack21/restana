@@ -22,7 +22,15 @@ module.exports.send = (req, res) => (data, code = 200, headers = {}) => {
         }
 
         res.writeHead(code, headers);
-        res.end(data, 'utf-8', (err) => {
+
+        // emit response event before send and terminate
+        let params = {
+            res,
+            data
+        }
+        res.emit('response', params);
+
+        res.end(params.data, 'utf-8', (err) => {
             if (err) reject(err);
             resolve();
         });

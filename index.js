@@ -14,8 +14,15 @@ module.exports = (options = {}) => {
     wayfarer.on('/404', () => 404);
 
     const routes = {};
+    const middlewares = [];
 
     let app = {
+        use: (middleware, context) => {
+            middlewares.push({
+                handler: middleware,
+                context
+            });
+        },
         route: (method, path, handler, ctx = {}) => {
             let key = `[${method.toUpperCase()}]${path}`;
             if (!routes[key]) {
@@ -53,15 +60,19 @@ module.exports = (options = {}) => {
             req.search = url.search;
 
             let route = `[${req.method.toUpperCase()}]${req.path}`;
-            let result = wayfarer(route, req, res);
-            switch (result) {
-                case 404:
-                    res.send(404);
-                    break;
 
-                default:
-                    break;
-            }
+            // calling middlewares
+            require('./libs/middleware-chain')(middlewares, req, res, () => {
+                let result = wayfarer(route, req, res);
+                switch (result) {
+                    case 404:
+                        res.send(404);
+                        break;
+
+                    default:
+                        break;
+                }
+            })();
         },
         start: (port = 3000, host) => {
             return new Promise((resolve, reject) => {

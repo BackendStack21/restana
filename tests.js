@@ -40,6 +40,18 @@ describe('Ana Web Framework', () => {
         expect(ana.routes().includes('[GET]/pets/:id')).to.equal(true)
     });
 
+    it('adding 500 middleware', async() => {
+        ana.use((req, res, next) => {
+            res.statusCode = 500;
+
+            return next();
+        });
+    });
+
+    it('call /pets/0 should fail after 500 middleware', async() => {
+        await request(server).get('/pets/0').expect(500);
+    });
+
     it('close', async() => {
         await ana.close();
     });
