@@ -29,8 +29,8 @@ service.post('/pets/:name/:age', (req, res) => {
 });
 
 service.patch('/pets/:id', (req, res) => {
-    res.send(PetsModel.update(req.params.id, JSON.stringify(req.body)));
-});
+    res.send(this.update(req.params.id, JSON.stringify(req.body)));
+}, PetsModel); // attaching this context
 
 service.start(3000).then((server) => {});
 
