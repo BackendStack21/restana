@@ -9,7 +9,7 @@ npm i restana --save
 ```js
 const service = require('restana')({});
 
-const Pets = {
+const PetsModel = {
     // ... 
 };
 service.get('/pets/:id', (req, res) => {
