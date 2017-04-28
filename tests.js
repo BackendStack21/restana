@@ -6,7 +6,8 @@ let server;
 describe('Ana Web Framework', () => {
     it('initialize', async() => {
         ana.get('/pets/:id', function (req, res) {
-            res.send(this[req.params.id]);
+            res.body = this[req.params.id];
+            res.send(200);
         }, [{
             name: 'Happy Cat'
         }]);
