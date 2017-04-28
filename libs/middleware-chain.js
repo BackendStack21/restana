@@ -2,7 +2,7 @@ const next = (middlewares, req, res, cb) => {
     let middleware = middlewares.shift();
 
     return () => {
-        if (res.statusCode == 200) {
+        if (res.statusCode == 200 && !res.finished) {
             if (!middleware) return cb();
             else {
                 try {
@@ -14,10 +14,8 @@ const next = (middlewares, req, res, cb) => {
                     res.send(err);
                 }
             }
-        } else {
-            if (!res.finished) {
-                res.end();
-            }
+        } else if (!res.finished) {
+            res.end();
         }
     }
 }
