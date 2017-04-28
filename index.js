@@ -62,7 +62,7 @@ module.exports = (options = {}) => {
             let route = `[${req.method.toUpperCase()}]${req.path}`;
 
             // calling middlewares
-            require('./libs/middleware-chain')(middlewares, req, res, () => {
+            require('./libs/middleware-chain')(middlewares.slice(0), req, res, () => {
                 let result = wayfarer(route, req, res);
                 switch (result) {
                     case 404:
