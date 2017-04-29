@@ -6,7 +6,7 @@ module.exports.send = (req, res) => (data = 200, code = 200, headers = {}) => {
             data = await data;
 
         if (data instanceof Error) {
-            code = data.code || 500;
+            code = data.status || data.code || 500;
             data = {
                 code,
                 message: data.message,
@@ -26,7 +26,8 @@ module.exports.send = (req, res) => (data = 200, code = 200, headers = {}) => {
         let params = {
             res,
             req,
-            data
+            data,
+            code
         }
         res.emit('response', params);
 

@@ -49,7 +49,7 @@ Supported methods:
 ```js
 const methods = ['get', 'delete', 'put', 'patch', 'post', 'put', 'head', 'options'];
 ```
-Middleware usage:
+### Middleware usage:
 ```js
 const service = require('restana')({});
 
@@ -72,6 +72,14 @@ service.get('/v1/welcome', (req, res) => {
 // start the server
 service.start();
 ```
+Third party middlewares support:
+> Almost all middlewares using the *function (req, res, next)* signature format should work. With the consideration that they don't use any custom framework feature.
+
+Examples :
+* **raw-body**: [https://www.npmjs.com/package/raw-body](https://www.npmjs.com/package/raw-body). See demo: [raw-body.js](demos/raw-body.js)
+* **express-jwt**: [https://www.npmjs.com/package/express-jwt](https://www.npmjs.com/package/express-jwt). See demo: [express-jwt.js](demos/express-jwt.js)
+* **body-parser**: [https://www.npmjs.com/package/body-parser](https://www.npmjs.com/package/body-parser). See demo: [body-parser.js](demos/body-parser.js)
+
 ## Performance comparison
 Performance comparison for a basic *Hello World!* response in cluster mode with 4 processes:
 ```bash

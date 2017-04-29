@@ -1,12 +1,13 @@
 const next = (middlewares, req, res, cb) => {
     let middleware = middlewares.shift();
 
-    return () => {
+    return (err) => {
+        if (err) return res.send(err);
         if (res.statusCode == 200 && !res.finished) {
             if (!middleware) return cb();
             else {
                 try {
-                    let result = middleware.handler.call(middleware.context || {}, req, res, next(middlewares, req, res, cb));
+                    let result = middleware.handler.call(middleware.context, req, res, next(middlewares, req, res, cb));
                     if (result instanceof Promise) { // async support
                         result.catch(res.send);
                     }
