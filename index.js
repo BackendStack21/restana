@@ -59,20 +59,18 @@ module.exports = (options = {}) => {
             req.query = url.query;
             req.search = url.search;
 
-            let route = `[${req.method.toUpperCase()}]${req.path}`;
-
             // calling middlewares
-            require('./libs/middleware-chain')(middlewares.slice(0), req, res, () => {
-                let result = wayfarer(route, req, res);
-                switch (result) {
-                    case 404:
-                        res.send(404);
-                        break;
+            require('./libs/middleware-chain')([...middlewares.slice(0), {
+                context: {},
+                handler: (req, res, next) => {
+                    let route = `[${req.method.toUpperCase()}]${req.path}`;
+                    res.on('response', () => {
+                        next();
+                    });
 
-                    default:
-                        break;
+                    if (wayfarer(route, req, res) == 404) res.send(404);
                 }
-            })();
+            }], req, res)();
         },
         start: (port = 3000, host) => {
             return new Promise((resolve, reject) => {
