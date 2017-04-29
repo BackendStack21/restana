@@ -5,9 +5,7 @@ const bodyParser = require('body-parser');
 service.use(bodyParser.json())
 
 service.post('/echo', (req, res) => {
-    res.setHeader('Content-Type', 'text/plain')
-    res.write('You posted:\n')
-    res.end(JSON.stringify(req.body, null, 2))
+    res.send(JSON.stringify(req.body, null, 2))
 });
 
 // start the server
