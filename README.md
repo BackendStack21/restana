@@ -56,10 +56,13 @@ service.get('/version', function (req, res) {
     }
     res.send(); // 200 is the defacult response code
 });
-
+```
+### Starting the service
+```js
 service.start(3000).then((server) => {});
-
-// ... 
+```
+### Stopping the service
+```js
 service.close().then(()=> {});
 ```
 Supported methods:
