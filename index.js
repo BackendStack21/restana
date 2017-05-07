@@ -7,7 +7,8 @@ const extensions = {
 const URL = require("url");
 
 module.exports = (options = {}) => {
-    const server = http.createServer((req, res) => {
+    const server = options.server || http.createServer();
+    server.on('request', (req, res) => {
         app.handler(req, res);
     });
     const wayfarer = require('wayfarer')('/404');

@@ -5,7 +5,26 @@ Super fast and minimalist web framework for building REST micro-services.
 ```bash
 npm i restana --save
 ```
+### Creating service instance
+Create unsecure HTTP server:
+```js
+const service = require('restana')();
+```
+Passing HTTP server instance:
+```js
+const https = require('https');
+const service = require('restana')({
+    server: https.createServer({
+        key: keys.serviceKey,
+        cert: keys.certificate
+    })
+});
+```
+> See examples:
+> * [HTTPS service demo](demos/https-service.js)
+> * [HTTP2 service demo](demos/http2-service.js)
 
+### Creating the micro-service interface
 ```js
 const service = require('restana')({});
 
