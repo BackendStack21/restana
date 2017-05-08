@@ -57,6 +57,11 @@ service.get('/version', function (req, res) {
     res.send(); // 200 is the defacult response code
 });
 ```
+Supported HTTP methods:
+```js
+const methods = ['get', 'delete', 'put', 'patch', 'post', 'put', 'head', 'options'];
+```
+
 ### Starting the service
 ```js
 service.start(3000).then((server) => {});
@@ -64,10 +69,6 @@ service.start(3000).then((server) => {});
 ### Stopping the service
 ```js
 service.close().then(()=> {});
-```
-Supported methods:
-```js
-const methods = ['get', 'delete', 'put', 'patch', 'post', 'put', 'head', 'options'];
 ```
 ### Middleware usage:
 ```js
