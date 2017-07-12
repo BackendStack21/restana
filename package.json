@@ -1,6 +1,6 @@
 {
   "name": "restana",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Super fast and minimalist web framework for building REST micro-services.",
   "main": "index.js",
   "scripts": {
@@ -38,6 +38,8 @@
   "devDependencies": {
     "chai": "3.x.x",
     "mocha": "3.x.x",
-    "supertest": "3.x.x"
+    "morgan": "1.x.x",
+    "supertest": "3.x.x",
+    "winston": "2.x.x"
   }
 }
