@@ -54,7 +54,7 @@ service.get('/version', function (req, res) {
     res.body = { // optionally you can send the response data in the body property
         version: '1.0.0'
     }
-    res.send(); // 200 is the defacult response code
+    res.send(); // 200 is the default response code
 });
 ```
 Supported HTTP methods:
