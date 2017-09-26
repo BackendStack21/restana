@@ -1,7 +1,8 @@
 {
   "name": "restana",
-  "version": "0.4.2",
-  "description": "Super fast and minimalist web framework for building REST micro-services.",
+  "version": "0.5.0",
+  "description":
+    "Super fast and minimalist web framework for building REST micro-services.",
   "main": "index.js",
   "scripts": {
     "test": "mocha tests"
@@ -10,13 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/jkyberneees/ana.git"
   },
-  "keywords": [
-    "rest",
-    "http",
-    "framework",
-    "web",
-    "service"
-  ],
+  "keywords": ["rest", "http", "framework", "web", "service"],
   "engines": {
     "node": ">=7.x"
   },
@@ -25,12 +20,7 @@
   "bugs": {
     "url": "https://github.com/jkyberneees/ana/issues"
   },
-  "files": [
-    "LICENSE.md",
-    "README.md",
-    "index.js",
-    "libs/"
-  ],
+  "files": ["LICENSE.md", "README.md", "index.js", "libs/"],
   "homepage": "https://github.com/jkyberneees/ana#readme",
   "dependencies": {
     "wayfarer": "6.x.x"
@@ -40,6 +30,13 @@
     "mocha": "3.x.x",
     "morgan": "1.x.x",
     "supertest": "3.x.x",
-    "winston": "2.x.x"
+    "winston": "2.x.x",
+    "eslint": "^4.7.0",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-node": "^5.1.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-react": "^7.3.0"
   }
 }
