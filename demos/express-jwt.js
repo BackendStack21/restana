@@ -1,18 +1,22 @@
+/* eslint import/no-unresolved: 0 */
+
 const service = require('./../index')({});
 const jwt = require('express-jwt');
 
-service.use(jwt({
+service.use(
+  jwt({
     secret: 'shhhhhhared-secret'
-}).unless({
+  }).unless({
     path: ['/login']
-}));
+  })
+);
 
 service.get('/login', (req, res) => {
-    res.send();
+  res.send();
 });
 
 service.get('/protected', (req, res) => {
-    res.send();
+  res.send();
 });
 
 // start the server
