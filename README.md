@@ -20,6 +20,13 @@ const service = require('restana')({
     })
 });
 ```
+Sending custom headers:
+```js
+res.send('Hello World', 200, {
+    'x-response-time': 100
+});
+```
+
 > See examples:
 > * [HTTPS service demo](demos/https-service.js)
 > * [HTTP2 service demo](demos/http2-service.js)
