@@ -18,7 +18,7 @@ module.exports = (options = {}) => {
   const routes = {};
   const middlewares = [];
 
-  let app = {
+  const app = {
     use: (middleware, context = {}) => {
       middlewares.push({
         handler: middleware,

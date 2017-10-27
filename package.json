@@ -1,8 +1,7 @@
 {
   "name": "restana",
-  "version": "0.5.0",
-  "description":
-    "Super fast and minimalist web framework for building REST micro-services.",
+  "version": "0.5.1",
+  "description": "Super fast and minimalist web framework for building REST micro-services.",
   "main": "index.js",
   "scripts": {
     "test": "mocha tests"
@@ -11,7 +10,13 @@
     "type": "git",
     "url": "git+https://github.com/jkyberneees/ana.git"
   },
-  "keywords": ["rest", "http", "framework", "web", "service"],
+  "keywords": [
+    "rest",
+    "http",
+    "framework",
+    "web",
+    "service"
+  ],
   "engines": {
     "node": ">=7.x"
   },
@@ -20,7 +25,12 @@
   "bugs": {
     "url": "https://github.com/jkyberneees/ana/issues"
   },
-  "files": ["LICENSE.md", "README.md", "index.js", "libs/"],
+  "files": [
+    "LICENSE.md",
+    "README.md",
+    "index.js",
+    "libs/"
+  ],
   "homepage": "https://github.com/jkyberneees/ana#readme",
   "dependencies": {
     "wayfarer": "6.x.x"

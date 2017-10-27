@@ -20,12 +20,6 @@ const service = require('restana')({
     })
 });
 ```
-Sending custom headers:
-```js
-res.send('Hello World', 200, {
-    'x-response-time': 100
-});
-```
 
 > See examples:
 > * [HTTPS service demo](demos/https-service.js)
@@ -100,6 +94,13 @@ service.get('/v1/welcome', (req, res) => {
 // start the server
 service.start();
 ```
+### Sending custom headers:
+```js
+res.send('Hello World', 200, {
+    'x-response-time': 100
+});
+```
+
 Third party middlewares support:
 > Almost all middlewares using the *function (req, res, next)* signature format should work. With the consideration that they don't use any custom framework feature.
 
