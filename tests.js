@@ -1,76 +1,75 @@
-/* eslint no-undef: 0, func-names: 0 */
+/* global describe, it */
+const ana = require('./index')({})
+const expect = require('chai').expect
+const request = require('supertest')
 
-const ana = require('./index')({});
-const expect = require('chai').expect;
-const request = require('supertest');
-
-let server;
+let server
 
 describe('Ana Web Framework', () => {
   it('initialize', async () => {
     ana.get(
       '/pets/:id',
       function (req, res) {
-        res.body = this[req.params.id];
-        res.send(200);
+        res.body = this[req.params.id]
+        res.send(200)
       },
       [
         {
           name: 'Happy Cat'
         }
       ]
-    );
+    )
 
     ana.get('/error', () => {
-      throw new Error('error');
-    });
+      throw new Error('error')
+    })
 
-    server = await ana.start();
-  });
+    server = await ana.start()
+  })
 
   it('request pet', async () => {
     await request(server)
       .get('/pets/0')
       .expect(200)
       .then((response) => {
-        expect(response.body.name).to.equal('Happy Cat');
-      });
-  });
+        expect(response.body.name).to.equal('Happy Cat')
+      })
+  })
 
   it('request error', async () => {
     await request(server)
       .get('/error')
       .expect(500)
       .then((response) => {
-        expect(response.body.message).to.equal('error');
-      });
-  });
+        expect(response.body.message).to.equal('error')
+      })
+  })
 
   it('request 404', async () => {
     await request(server)
       .get('/sdsdfsf')
-      .expect(404);
-  });
+      .expect(404)
+  })
 
   it('routes', async () => {
-    expect(ana.routes().includes('[GET]/pets/:id')).to.equal(true);
-  });
+    expect(ana.routes().includes('[GET]/pets/:id')).to.equal(true)
+  })
 
   it('adding 500 middleware', async () => {
     ana.use((req, res, next) => {
-      res.statusCode = 500;
+      res.statusCode = 500
 
-      return next();
-    });
-  });
+      return next()
+    })
+  })
 
   it('call /pets/0 should fail after 500 middleware', async () => {
     await request(server)
       .get('/pets/0')
-      .expect(500);
-  });
+      .expect(500)
+  })
 
   it('close', async () => {
-    await ana.close();
-  });
-});
+    await ana.close()
+  })
+})

@@ -1,6 +1,6 @@
-const service = require('./../index')({});
+const service = require('./../index')({})
 
 service.get('/hi', (req, res) => {
-  res.send('Hello World!');
-});
-service.start();
+  res.send('Hello World!')
+})
+service.start()
