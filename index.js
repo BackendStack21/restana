@@ -68,9 +68,6 @@ module.exports = (options = {}) => {
           context: {},
           handler: (req, res, next) => {
             const route = `[${req.method.toUpperCase()}]${req.path}`
-            res.on('response', () => {
-              next()
-            })
 
             if (wayfarer(route, req, res) === 404) res.send(404)
           }
