@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "chai": "3.x.x",
+    "express": "^4.16.3",
     "mocha": "3.x.x",
     "morgan": "^1.9.0",
     "standard": "^11.0.1",
