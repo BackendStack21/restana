@@ -1,14 +1,13 @@
-const http = require('http')
-
 const methods = ['get', 'delete', 'patch', 'post', 'put', 'head', 'options']
-const extensions = {
+const exts = {
   request: {},
   response: require('./libs/response-extensions')
 }
-const URL = require('url')
+const URL = require('fast-url-parser')
+const reqHandler = require('./libs/middleware-chain')
 
 module.exports = (options = {}) => {
-  const server = options.server || http.createServer()
+  const server = options.server || require('http').createServer()
   server.on('request', (req, res) => {
     app.handler(req, res)
   })
@@ -54,8 +53,8 @@ module.exports = (options = {}) => {
       return routes[key]
     },
     handler: (req, res) => {
-      for (const method of Object.keys(extensions.response)) {
-        res[method] = extensions.response[method](req, res)
+      for (const method of Object.keys(exts.response)) {
+        res[method] = exts.response[method](req, res)
       }
       const url = URL.parse(req.url)
       req.path = url.path
@@ -63,23 +62,22 @@ module.exports = (options = {}) => {
       req.search = url.search
 
       // calling middlewares
-      require('./libs/middleware-chain')(
-        [
-          ...middlewares.slice(0),
-          {
-            context: {},
-            handler: (req, res, next) => {
-              const route = `[${req.method.toUpperCase()}]${req.path}`
-              res.on('response', () => {
-                next()
-              })
+      reqHandler([
+        ...middlewares.slice(0),
+        {
+          context: {},
+          handler: (req, res, next) => {
+            const route = `[${req.method.toUpperCase()}]${req.path}`
+            res.on('response', () => {
+              next()
+            })
 
-              if (wayfarer(route, req, res) === 404) res.send(404)
-            }
+            if (wayfarer(route, req, res) === 404) res.send(404)
           }
-        ],
-        req,
-        res
+        }
+      ],
+      req,
+      res
       )()
     },
     start: (port = 3000, host) =>
@@ -98,6 +96,7 @@ module.exports = (options = {}) => {
       }),
     routes: () => Object.keys(routes)
   }
+
   methods.forEach((method) => {
     app[method] = (path, handler, ctx) => app.route(method, path, handler, ctx)
   })
