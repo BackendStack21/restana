@@ -3,7 +3,7 @@ const exts = {
   request: {},
   response: require('./libs/response-extensions')
 }
-const URL = require('fast-url-parser')
+const URL = require('url')
 const reqHandler = require('./libs/middleware-chain')
 
 module.exports = (options = {}) => {
