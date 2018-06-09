@@ -3,16 +3,22 @@ const exts = {
   request: {},
   response: require('./libs/response-extensions')
 }
-const URL = require('url')
 const reqHandler = require('./libs/middleware-chain')
 
 module.exports = (options = {}) => {
   const server = options.server || require('http').createServer()
   server.on('request', (req, res) => {
-    app.handler(req, res)
+    setImmediate(() => app.handler(req, res))
   })
-  const wayfarer = require('wayfarer')('/404')
-  wayfarer.on('/404', () => 404)
+
+  const router = require('find-my-way')({
+    ignoreTrailingSlash: options.ignoreTrailingSlash || false,
+    allowUnsafeRegex: options.allowUnsafeRegex || false,
+    maxParamLength: options.maxParamLength || 100,
+    defaultRoute: (req, res) => {
+      res.send(404)
+    }
+  })
 
   const routes = {}
   const middlewares = []
@@ -33,13 +39,19 @@ module.exports = (options = {}) => {
           handler,
           ctx
         }
-        wayfarer.on(key, (params, req, res) => {
+
+        router.on(method, path, (req, res, params) => {
           try {
             req.params = params
-            const result = routes[key].handler.call(ctx, req, res, ctx)
+            let {handler, ctx} = routes[key]
+            const result = handler.call(ctx, req, res, ctx)
             if (result instanceof Promise) {
               // async support
-              result.catch(res.send)
+              result.then(data => {
+                if (undefined !== data) {
+                  return res.send(data)
+                }
+              }).catch(res.send)
             }
           } catch (err) {
             res.send(err)
@@ -53,29 +65,24 @@ module.exports = (options = {}) => {
       return routes[key]
     },
     handler: (req, res) => {
-      for (const method of Object.keys(exts.response)) {
-        res[method] = exts.response[method](req, res)
-      }
-      const url = URL.parse(req.url)
-      req.path = url.path
-      req.query = url.query
-      req.search = url.search
-
+      res.send = exts.response.send(req, res)
       // calling middlewares
-      reqHandler([
-        ...middlewares.slice(0),
-        {
-          context: {},
-          handler: (req, res, next) => {
-            const route = `[${req.method.toUpperCase()}]${req.path}`
-
-            if (wayfarer(route, req, res) === 404) res.send(404)
+      if (middlewares.length) {
+        reqHandler([
+          ...middlewares.slice(0),
+          {
+            context: {},
+            handler: (req, res, next) => {
+              router.lookup(req, res)
+            }
           }
-        }
-      ],
-      req,
-      res
-      )()
+        ],
+        req,
+        res
+        )()
+      } else {
+        router.lookup(req, res)
+      }
     },
     start: (port = 3000, host) =>
       new Promise((resolve, reject) => {
@@ -95,7 +102,7 @@ module.exports = (options = {}) => {
   }
 
   methods.forEach((method) => {
-    app[method] = (path, handler, ctx) => app.route(method, path, handler, ctx)
+    app[method] = (path, handler, ctx) => app.route(method.toUpperCase(), path, handler, ctx)
   })
 
   return app
