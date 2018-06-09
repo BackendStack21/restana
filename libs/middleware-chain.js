@@ -21,7 +21,7 @@ const next = (middlewares, req, res) => {
         res.send(err)
       }
     } else if (!res.finished) {
-      res.end()
+      res.send(res.statusCode)
     }
   }
 }
