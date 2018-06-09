@@ -64,10 +64,9 @@ service.post('/pets/:name/:age', async (req, res) => {
     res.send(await PetsModel.create(req.params));
 });
 
-service.patch('/pets/:id', async function (req, res) {
-    const update = await this.update(req.params.id, req.body)
-    res.send(update);
-}, PetsModel); // attaching this context
+service.patch('/pets/:id', async (req, res) => {
+    res.send(await PetsModel.update(req.params.id, req.body))
+});
 
 service.get('/version', function (req, res) {
     res.body = { // optionally you can send the response data in the body property
