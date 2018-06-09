@@ -1,5 +1,6 @@
 # REST-Ana
-Super fast and minimalist web framework for building REST micro-services.
+Super fast and minimalist *connect-like* web framework for building REST micro-services.  
+> Uses 'find-my-way' blazing fast router: https://www.npmjs.com/package/find-my-way
 
 ## Usage
 ```bash
@@ -24,6 +25,19 @@ const service = require('restana')({
 > See examples:
 > * [HTTPS service demo](demos/https-service.js)
 > * [HTTP2 service demo](demos/http2-service.js)
+
+### Configuration
+- `server`: Allows to override the HTTP server instance to be used.
+- `ignoreTrailingSlash`: If `TRUE`, trailing slashes on routes are ignored. Default value: `FALSE`
+- `allowUnsafeRegex`: If `TRUE`, potentially catastrophic exponential-time regular expressions are disabled. Default value: `FALSE`
+- `maxParamLength`: Dfines the custom length for parameters in parametric (standard, regex and multi) routes. 
+
+#### Example usage:
+```js 
+const service = require('restana')({
+    ignoreTrailingSlash: true
+});
+```
 
 ### Creating the micro-service interface
 ```js
@@ -67,10 +81,22 @@ const methods = ['get', 'delete', 'put', 'patch', 'post', 'put', 'head', 'option
 ```js
 service.start(3000).then((server) => {});
 ```
+
 ### Stopping the service
 ```js
 service.close().then(()=> {});
 ```
+
+### Async / Await support
+```js
+// some fake "star" handler
+service.post('/star/:username', async (req, res) => {
+    const stars = await starService.star(req.params.username)
+    return stars
+});
+```
+> IMPORTANT: Returned value can't be `undefined`, for such cases use `res.send(...`
+
 ### Middleware usage:
 ```js
 const service = require('restana')({});
@@ -79,8 +105,8 @@ const service = require('restana')({});
 service.use((req, res, next) => {
     let now = new Date().getTime();
 
-    res.on('response', data => {
-        data.res.setHeader('X-Response-Time', new Date().getTime() - now);
+    res.on('response', e => {
+        e.res.setHeader('X-Response-Time', new Date().getTime() - now);
     });
 
     return next();
@@ -94,6 +120,24 @@ service.get('/v1/welcome', (req, res) => {
 // start the server
 service.start();
 ```
+
+#### Catching exceptions
+```js
+service.use((req, res, next) => {
+    res.on('response', e => {
+        if (e.code >= 400) {
+            if (e.data && e.data.errClass) {
+                console.log(e.data.errClass + ': ' + e.data.message)
+            } else {
+                console.log('invalid response, but not triggered by Error instance')
+            }
+        }
+    })
+
+    return next();
+});
+```
+
 ### Sending custom headers:
 ```js
 res.send('Hello World', 200, {
@@ -102,7 +146,7 @@ res.send('Hello World', 200, {
 ```
 
 Third party middlewares support:
-> Almost all middlewares using the *function (req, res, next)* signature format should work. With the consideration that they don't use any custom framework feature.
+> Almost all middlewares using the *function (req, res, next)* signature format should work, considering that no custom framework feature is used.
 
 Examples :
 * **raw-body**: [https://www.npmjs.com/package/raw-body](https://www.npmjs.com/package/raw-body). See demo: [raw-body.js](demos/raw-body.js)
@@ -110,13 +154,15 @@ Examples :
 * **body-parser**: [https://www.npmjs.com/package/body-parser](https://www.npmjs.com/package/body-parser). See demo: [body-parser.js](demos/body-parser.js)
 
 ## Performance comparison
-Performance comparison for a basic *Hello World!* response in cluster mode with 4 processes:
+Performance comparison for a basic *Hello World!* response (single thread process).  
+Node version: v10.4.0  
+Laptop: MacBook Pro 2016, 2,7 GHz Intel Core i7, 16 GB 2133 MHz LPDDR3
 ```bash
-ab -n 10000 -c 1000 http://localhost:3000/v1/welcome
+wrk -t8 -c8 -d30s http://localhost:3000/hi
 ```
 Results: 
-* restana: ~1300ms
-* koa: ~1500ms
-* hapi: ~4200ms
-* express: ~1800ms
-* restify: ~2000ms
+* fastify: Requests/sec:  36894.86
+* restana: Requests/sec 29899.10
+* koa: Requests/sec 23486.64
+* express: Requests/sec 16057.22
+* ... comparison N/A
