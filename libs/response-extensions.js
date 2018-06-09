@@ -35,7 +35,7 @@ module.exports.send = (req, res) => (data = 200, code = 200, headers = {}) => {
     }
 
     res.writeHead(params.code)
-    res.end(params.data, 'utf-8', (err) => {
+    res.end(params.data, (err) => {
       if (err) reject(err)
       resolve()
     })
