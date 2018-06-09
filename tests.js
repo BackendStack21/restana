@@ -20,6 +20,10 @@ describe('Ana Web Framework', () => {
       ]
     )
 
+    ana.get('/async/:name', async (req) => {
+      return req.params.name
+    })
+
     ana.get('/error', () => {
       throw new Error('error')
     })
@@ -33,6 +37,15 @@ describe('Ana Web Framework', () => {
       .expect(200)
       .then((response) => {
         expect(response.body.name).to.equal('Happy Cat')
+      })
+  })
+
+  it('request async', async () => {
+    await request(server)
+      .get('/async/Cool')
+      .expect(200)
+      .then((response) => {
+        expect(response.text).to.equal('Cool')
       })
   })
 
@@ -57,9 +70,17 @@ describe('Ana Web Framework', () => {
 
   it('adding 500 middleware', async () => {
     ana.use((req, res, next) => {
-      res.statusCode = 500
+      res.on('response', e => {
+        if (e.code >= 400) {
+          if (e.data && e.data.errClass) {
+            console.log(e.data.errClass + ': ' + e.data.message)
+          } else {
+            console.log('invalid response, but not triggered by Error instance')
+          }
+        }
+      })
 
-      return next()
+      return next(new Error('Simulated ERROR!'))
     })
   })
 
