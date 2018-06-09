@@ -129,7 +129,7 @@ service.use((req, res, next) => {
             if (e.data && e.data.errClass) {
                 console.log(e.data.errClass + ': ' + e.data.message)
             } else {
-                console.log('invalid response, but not triggered by Error instance')
+                console.log('error response, but not triggered by an Error instance')
             }
         }
     })
@@ -162,7 +162,7 @@ wrk -t8 -c8 -d30s http://localhost:3000/hi
 ```
 Results: 
 * fastify: Requests/sec:  36894.86
-* restana: Requests/sec 29899.10
+* **restana**: Requests/sec 29899.10
 * koa: Requests/sec 23486.64
 * express: Requests/sec 16057.22
 * ... comparison N/A
