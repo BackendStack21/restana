@@ -153,16 +153,23 @@ Examples :
 * **express-jwt**: [https://www.npmjs.com/package/express-jwt](https://www.npmjs.com/package/express-jwt). See demo: [express-jwt.js](demos/express-jwt.js)
 * **body-parser**: [https://www.npmjs.com/package/body-parser](https://www.npmjs.com/package/body-parser). See demo: [body-parser.js](demos/body-parser.js)
 
-## Performance comparison
-Performance comparison for a basic *Hello World!* response (single thread process).  
+## Performance comparison (framework overhead)
+[Performance comparison](performance/)Performance comparison for a basic *Hello World!* response (single thread process).  
 Node version: v10.4.0  
 Laptop: MacBook Pro 2016, 2,7 GHz Intel Core i7, 16 GB 2133 MHz LPDDR3
 ```bash
 wrk -t8 -c8 -d30s http://localhost:3000/hi
 ```
-Results: 
-* fastify: Requests/sec:  36894.86
-* **restana**: Requests/sec 29899.10
+### String response ('Hello World!')
+* polka: Requests/sec 37911.81
+* fastify: Requests/sec 36894.86
+* **restana**: Requests/sec 30066.89
 * koa: Requests/sec 23486.64
 * express: Requests/sec 16057.22
-* ... comparison N/A
+
+### JSON response ({msg: 'Hello World!'})
+* fastify: Requests/sec 33143.12
+* **restana**: Requests/sec 28083.14
+* koa: Requests/sec 22485.43
+* express: Requests/sec 14569.78
+* polka: N/A - JSON response auto-detection no supported!
