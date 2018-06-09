@@ -10,21 +10,17 @@ module.exports.send = (req, res) => (data = 200, code = 200, headers = {}) => {
     if (data instanceof Error) {
       code = data.status || data.code || 500
       data = {
+        errClass: data.constructor.name,
         code,
         message: data.message,
         data: data.data
       }
-    }
-    if (typeof data === 'number') {
+    } else if (typeof data === 'number') {
       code = parseInt(data, 10)
       data = res.body
     }
-    if (typeof data === 'object') {
-      res.setHeader('content-type', 'application/json')
-      data = JSON.stringify(data)
-    }
 
-    // emit response event before send and terminate
+    // emit response event
     const params = {
       res,
       req,
@@ -32,6 +28,11 @@ module.exports.send = (req, res) => (data = 200, code = 200, headers = {}) => {
       code
     }
     res.emit('response', params)
+
+    if (typeof data === 'object') {
+      res.setHeader('content-type', 'application/json')
+      params.data = JSON.stringify(params.data)
+    }
 
     res.writeHead(params.code)
     res.end(params.data, 'utf-8', (err) => {
