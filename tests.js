@@ -68,14 +68,13 @@ describe('Ana Web Framework', () => {
     expect(ana.routes().includes('[GET]/pets/:id')).to.equal(true)
   })
 
+  let errMsg
   it('adding 500 middleware', async () => {
     ana.use((req, res, next) => {
       res.on('response', e => {
         if (e.code >= 400) {
           if (e.data && e.data.errClass) {
-            console.log(e.data.errClass + ': ' + e.data.message)
-          } else {
-            console.log('invalid response, but not triggered by Error instance')
+            errMsg = e.data.errClass + ': ' + e.data.message
           }
         }
       })
@@ -88,6 +87,9 @@ describe('Ana Web Framework', () => {
     await request(server)
       .get('/pets/0')
       .expect(500)
+      .then((response) => {
+        expect(errMsg).to.equal('Error: Simulated ERROR!')
+      })
   })
 
   it('close', async () => {
