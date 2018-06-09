@@ -41,6 +41,9 @@ const service = require('restana')({
 
 ### Creating the micro-service interface
 ```js
+const bodyParser = require('body-parser')
+service.use(bodyParser.json())
+
 const PetsModel = {
     // ... 
 };
@@ -62,7 +65,7 @@ service.post('/pets/:name/:age', async (req, res) => {
 });
 
 service.patch('/pets/:id', async function (req, res) {
-    const update = await this.update(req.params.id, JSON.stringify(req.body))
+    const update = await this.update(req.params.id, req.body)
     res.send(update);
 }, PetsModel); // attaching this context
 
