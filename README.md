@@ -45,24 +45,25 @@ const PetsModel = {
     // ... 
 };
 
-service.get('/pets/:id', (req, res) => {
-    res.send(PetsModel.findOne(req.params.id));
+service.get('/pets/:id', async (req, res) => {
+    res.send(await PetsModel.findOne(req.params.id));
 });
 
-service.get('/pets', (req, res) => {
-    res.send(PetsModel.find());
+service.get('/pets', async (req, res) => {
+    res.send(await PetsModel.find());
 });
 
-service.delete('/pets/:id', (req, res) => {
-    res.send(PetsModel.destroy(req.params.id));
+service.delete('/pets/:id', async (req, res) => {
+    res.send(await PetsModel.destroy(req.params.id));
 });
 
-service.post('/pets/:name/:age', (req, res) => {
-    res.send(PetsModel.create(req.params));
+service.post('/pets/:name/:age', async (req, res) => {
+    res.send(await PetsModel.create(req.params));
 });
 
-service.patch('/pets/:id', function (req, res) {
-    res.send(this.update(req.params.id, JSON.stringify(req.body)));
+service.patch('/pets/:id', async function (req, res) {
+    const update = await this.update(req.params.id, JSON.stringify(req.body))
+    res.send(update);
 }, PetsModel); // attaching this context
 
 service.get('/version', function (req, res) {
@@ -91,11 +92,28 @@ service.close().then(()=> {});
 ```js
 // some fake "star" handler
 service.post('/star/:username', async (req, res) => {
-    const stars = await starService.star(req.params.username)
+    await starService.star(req.params.username)
+    const stars = await starService.count(req.params.username)
+
     return stars
 });
 ```
 > IMPORTANT: Returned value can't be `undefined`, for such cases use `res.send(...`
+
+### Sending custom headers:
+```js
+res.send('Hello World', 200, {
+    'x-response-time': 100
+});
+```
+### Acknowledge from low-level `end` operation
+```js
+res.send('Hello World', 200, {}, (err) => {
+    if (err) {
+        // upppsss
+    }
+});
+```
 
 ### Middleware usage:
 ```js
@@ -138,12 +156,7 @@ service.use((req, res, next) => {
 });
 ```
 
-### Sending custom headers:
-```js
-res.send('Hello World', 200, {
-    'x-response-time': 100
-});
-```
+
 
 Third party middlewares support:
 > Almost all middlewares using the *function (req, res, next)* signature format should work, considering that no custom framework feature is used.
@@ -161,15 +174,15 @@ Laptop: MacBook Pro 2016, 2,7 GHz Intel Core i7, 16 GB 2133 MHz LPDDR3
 wrk -t8 -c8 -d30s http://localhost:3000/hi
 ```
 ### String response ('Hello World!')
-* polka: Requests/sec 37911.81
 * fastify: Requests/sec 36894.86
-* **restana**: Requests/sec 30066.89
+* **restana**: Requests/sec 35652.75
 * koa: Requests/sec 23486.64
 * express: Requests/sec 16057.22
 
 ### JSON response ({msg: 'Hello World!'})
 * fastify: Requests/sec 33143.12
-* **restana**: Requests/sec 28083.14
+* **restana**: Requests/sec 32315.78
 * koa: Requests/sec 22485.43
 * express: Requests/sec 14569.78
-* polka: N/A - JSON response auto-detection no supported!
+
+> [Polka](https://github.com/lukeed/polka) micro-framework is not considered because it misses JSON response auto-detection. When content is String, `polka` performance is best.
