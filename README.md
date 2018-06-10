@@ -179,12 +179,16 @@ wrk -t8 -c8 -d30s http://localhost:3000/hi
 * fastify: Requests/sec 36894.86
 * **restana**: Requests/sec 35652.75
 * koa: Requests/sec 23486.64
+* restify: Requests/sec 21903.95
+* hapi: Requests/sec 16509.12
 * express: Requests/sec 16057.22
 
 ### JSON response ({msg: 'Hello World!'})
 * fastify: Requests/sec 33143.12
 * **restana**: Requests/sec 32315.78
+* restify: Requests/sec 24631.74
 * koa: Requests/sec 22485.43
+* hapi: Requests/sec 15921.77
 * express: Requests/sec 14569.78
 
 > [Polka](https://github.com/lukeed/polka) micro-framework is not considered because it misses JSON response auto-detection. When content is String, `polka` performance is best.
