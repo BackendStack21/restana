@@ -1,5 +1,4 @@
 module.exports.send = (req, res) => (data = 200, code = 200, headers = {}, cb = () => {}) => {
-  res.setHeader('content-type', 'text/plain')
   Object.keys(headers).forEach((key) => {
     res.setHeader(key.toLowerCase(), headers[key])
   })
@@ -24,13 +23,18 @@ module.exports.send = (req, res) => (data = 200, code = 200, headers = {}, cb = 
     data,
     code
   }
-  res.emit('response', params)
+
+  if (typeof res.emit === 'function') {
+    res.emit('response', params)
+  }
 
   if (typeof data === 'object') {
     res.setHeader('content-type', 'application/json')
     params.data = JSON.stringify(params.data)
+  } else {
+    res.setHeader('content-type', 'text/plain')
   }
 
-  res.writeHead(params.code)
+  res.statusCode = params.code
   res.end(params.data, cb)
 }
