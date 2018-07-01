@@ -176,19 +176,21 @@ Laptop: MacBook Pro 2016, 2,7 GHz Intel Core i7, 16 GB 2133 MHz LPDDR3
 wrk -t8 -c8 -d30s http://localhost:3000/hi
 ```
 ### String response ('Hello World!')
+* **restana-turbo-http**: Requests/sec 59305.91
+* **restana**: Requests/sec 42843.65
 * fastify: Requests/sec 36894.86
-* **restana**: Requests/sec 35652.75
 * koa: Requests/sec 23486.64
 * restify: Requests/sec 21903.95
 * hapi: Requests/sec 16509.12
 * express: Requests/sec 16057.22
 
 ### JSON response ({msg: 'Hello World!'})
+* **restana-turbo-http**: Requests/sec 55285.20
+* **restana**: Requests/sec 39051.37
 * fastify: Requests/sec 33143.12
-* **restana**: Requests/sec 32315.78
 * restify: Requests/sec 24631.74
 * koa: Requests/sec 22485.43
 * hapi: Requests/sec 15921.77
 * express: Requests/sec 14569.78
 
-> [Polka](https://github.com/lukeed/polka) micro-framework is not considered because it misses JSON response auto-detection. When content is String, `polka` performance is best.
+> [Polka](https://github.com/lukeed/polka) micro-framework is not considered because it misses JSON response auto-detection. 
