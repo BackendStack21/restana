@@ -176,8 +176,8 @@ Laptop: MacBook Pro 2016, 2,7 GHz Intel Core i7, 16 GB 2133 MHz LPDDR3
 wrk -t8 -c8 -d30s http://localhost:3000/hi
 ```
 ### String response ('Hello World!')
-* **restana-turbo-http**: Requests/sec 59305.91
-* **restana**: Requests/sec 42843.65
+* **restana-turbo-http**: Requests/sec 57519.38
+* **restana**: Requests/sec 43575.36
 * fastify: Requests/sec 36894.86
 * koa: Requests/sec 23486.64
 * restify: Requests/sec 21903.95
@@ -185,8 +185,8 @@ wrk -t8 -c8 -d30s http://localhost:3000/hi
 * express: Requests/sec 16057.22
 
 ### JSON response ({msg: 'Hello World!'})
-* **restana-turbo-http**: Requests/sec 55285.20
-* **restana**: Requests/sec 39051.37
+* **restana-turbo-http**: Requests/sec 52894.71
+* **restana**: Requests/sec 39681.39
 * fastify: Requests/sec 33143.12
 * restify: Requests/sec 24631.74
 * koa: Requests/sec 22485.43
