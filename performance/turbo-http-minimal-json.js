@@ -7,7 +7,6 @@ const service = require('./../index')({
   server
 })
 
-// the /v1/welcome route handler
 service.get('/hi', (req, res) => {
   res.send({
     msg: 'Hello World!'
