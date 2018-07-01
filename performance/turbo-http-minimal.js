@@ -1,6 +1,10 @@
 const turbo = require('turbo-http')
+const server = turbo.createServer()
+server.on('request', (req, res) => {
+  setImmediate(() => (req.headers = req.getAllHeaders()))
+})
 const service = require('./../index')({
-  server: turbo.createServer()
+  server
 })
 
 // the /v1/welcome route handler
