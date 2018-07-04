@@ -1,5 +1,5 @@
 /* global describe, it */
-const ana = require('./index')({})
+const service = require('./index')({ server: require('./libs/turbo-http') })
 const expect = require('chai').expect
 const request = require('supertest')
 
@@ -7,7 +7,7 @@ let server
 
 describe('Ana Web Framework', () => {
   it('initialize', async () => {
-    ana.get(
+    service.get(
       '/pets/:id',
       function (req, res) {
         res.body = this[req.params.id]
@@ -20,15 +20,15 @@ describe('Ana Web Framework', () => {
       ]
     )
 
-    ana.get('/async/:name', async (req) => {
+    service.get('/async/:name', async (req) => {
       return req.params.name
     })
 
-    ana.get('/error', () => {
+    service.get('/error', () => {
       throw new Error('error')
     })
 
-    server = await ana.start()
+    server = await service.start()
   })
 
   it('request pet', async () => {
@@ -65,12 +65,12 @@ describe('Ana Web Framework', () => {
   })
 
   it('routes', async () => {
-    expect(ana.routes().includes('[GET]/pets/:id')).to.equal(true)
+    expect(service.routes().includes('[GET]/pets/:id')).to.equal(true)
   })
 
   let errMsg
   it('adding 500 middleware', async () => {
-    ana.use((req, res, next) => {
+    service.use((req, res, next) => {
       res.on('response', e => {
         if (e.code >= 400) {
           if (e.data && e.data.errClass) {
@@ -93,6 +93,6 @@ describe('Ana Web Framework', () => {
   })
 
   it('close', async () => {
-    await ana.close()
+    await service.close()
   })
 })
