@@ -1,5 +1,5 @@
-# REST-Ana
-Super fast and minimalist *connect-like* web framework for building REST micro-services.  
+# restana
+Blazing fast and minimalist *connect-like* web framework for building REST micro-services.  
 > Uses 'find-my-way' blazing fast router: https://www.npmjs.com/package/find-my-way
 
 ## Usage
@@ -168,15 +168,38 @@ Examples :
 * **express-jwt**: [https://www.npmjs.com/package/express-jwt](https://www.npmjs.com/package/express-jwt). See demo: [express-jwt.js](demos/express-jwt.js)
 * **body-parser**: [https://www.npmjs.com/package/body-parser](https://www.npmjs.com/package/body-parser). See demo: [body-parser.js](demos/body-parser.js)
 
+## turbo-http integration
+What is turbo-http? Checkout: https://www.npmjs.com/package/turbo-http  
+Using `turbo-http` in restana:
+```bash
+npm i turbo-http
+```
+```js
+// ATTENTION: The performance of the service below can blow your mind ;)
+const server = require('restana/libs/turbo-http')
+const service = require('restana')({
+    server
+})
+
+service.get('/hi', (req, res) => {
+    res.send({
+        msg: 'Hello World!'
+    })
+})
+
+service.start()
+```
+> NOTE: When using `turbo-http`, the node.js `cluster` module can't be used!
+
 ## Performance comparison (framework overhead)
 [Performance comparison](performance/) for a basic *Hello World!* response (single thread process).  
-Node version: v10.4.0  
+Node version: v10.6.0  
 Laptop: MacBook Pro 2016, 2,7 GHz Intel Core i7, 16 GB 2133 MHz LPDDR3
 ```bash
 wrk -t8 -c8 -d30s http://localhost:3000/hi
 ```
 ### String response ('Hello World!')
-* **restana-turbo-http**: Requests/sec 57519.38
+* **restana-turbo-http**: Requests/sec 57622.13
 * **restana**: Requests/sec 43575.36
 * fastify: Requests/sec 36894.86
 * koa: Requests/sec 23486.64
@@ -185,7 +208,7 @@ wrk -t8 -c8 -d30s http://localhost:3000/hi
 * express: Requests/sec 16057.22
 
 ### JSON response ({msg: 'Hello World!'})
-* **restana-turbo-http**: Requests/sec 52894.71
+* **restana-turbo-http**: Requests/sec 53025.65
 * **restana**: Requests/sec 39681.39
 * fastify: Requests/sec 33143.12
 * restify: Requests/sec 24631.74

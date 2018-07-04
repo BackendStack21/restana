@@ -1,8 +1,4 @@
-const turbo = require('turbo-http')
-const server = turbo.createServer()
-server.on('request', (req, res) => {
-  setImmediate(() => (req.headers = req.getAllHeaders()))
-})
+const server = require('./../libs/turbo-http')
 const service = require('./../index')({
   server
 })
