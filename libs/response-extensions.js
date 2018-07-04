@@ -24,9 +24,7 @@ module.exports.send = (req, res) => (data = 200, code = 200, headers = {}, cb = 
     code
   }
 
-  if (typeof res.emit === 'function') {
-    res.emit('response', params)
-  }
+  res.emit('response', params)
 
   if (typeof data === 'object') {
     res.setHeader('content-type', 'application/json')
