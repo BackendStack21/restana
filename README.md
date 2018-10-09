@@ -193,7 +193,7 @@ service.start()
 
 ## Performance comparison (framework overhead)
 [Performance comparison](performance/) for a basic *Hello World!* response (single thread process).  
-Node version: v10.6.0  
+Node version: v10.11.0  
 Laptop: MacBook Pro 2016, 2,7 GHz Intel Core i7, 16 GB 2133 MHz LPDDR3
 ```bash
 wrk -t8 -c8 -d30s http://localhost:3000/hi
@@ -201,6 +201,7 @@ wrk -t8 -c8 -d30s http://localhost:3000/hi
 ### String response ('Hello World!')
 * **restana-turbo-http**: Requests/sec 57622.13
 * **restana**: Requests/sec 43575.36
+* **restana-cluster**: Requests/sec 71626.33
 * fastify: Requests/sec 36894.86
 * koa: Requests/sec 23486.64
 * restify: Requests/sec 21903.95
