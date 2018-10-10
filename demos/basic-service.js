@@ -5,7 +5,7 @@ service.use((req, res, next) => {
   const now = new Date().getTime()
 
   res.on('response', (e) => {
-    e.res.setHeader('X-Response-Time', new Date().getTime() - now)
+    e.res.setHeader('x-response-time', new Date().getTime() - now)
   })
 
   return next()
