@@ -4,8 +4,8 @@ const service = require('./../index')({})
 service.use((req, res, next) => {
   const now = new Date().getTime()
 
-  res.on('response', (data) => {
-    data.res.setHeader('X-Response-Time', new Date().getTime() - now)
+  res.on('response', (e) => {
+    e.res.setHeader('X-Response-Time', new Date().getTime() - now)
   })
 
   return next()
