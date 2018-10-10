@@ -47,6 +47,7 @@
     "morgan": "^1.9.1",
     "pem": "^1.13.1",
     "polka": "^0.4.0",
+    "response-time": "^2.3.2",
     "restify": "^7.2.1",
     "standard": "^11.0.1",
     "supertest": "^3.3.0",
