@@ -8,7 +8,7 @@ pem.createCertificate({
   if (err) console.error(err)
 
   const service = require('./../index')({
-    server: http2.createServer({
+    server: http2.createSecureServer({
       key: keys.serviceKey,
       cert: keys.certificate
     })
