@@ -1,4 +1,6 @@
 # restana
+[![Build Status](https://travis-ci.org/jkyberneees/ana.svg?branch=master)](https://travis-ci.org/jkyberneees/ana)
+[![NPM version](https://img.shields.io/npm/v/restana.svg?style=flat)](https://www.npmjs.com/package/restana) [![Greenkeeper badge](https://badges.greenkeeper.io/jkyberneees/ana.svg)](https://greenkeeper.io/)
 Blazing fast and minimalist *connect-like* web framework for building REST micro-services.  
 > Uses 'find-my-way' blazing fast router: https://www.npmjs.com/package/find-my-way
 
