@@ -95,4 +95,8 @@ describe('Ana Web Framework', () => {
   it('close', async () => {
     await service.close()
   })
+
+  it('callback integrator', async () => {
+    expect(service.callback instanceof Function).to.equal(true)
+  })
 })

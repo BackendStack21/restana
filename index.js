@@ -105,5 +105,7 @@ module.exports = (options = {}) => {
     app[method] = (path, handler, ctx) => app.route(method.toUpperCase(), path, handler, ctx)
   })
 
+  app.callback = () => app.handler
+
   return app
 }
