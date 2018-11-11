@@ -1,7 +1,7 @@
 # restana
 [![Build Status](https://travis-ci.org/jkyberneees/ana.svg?branch=master)](https://travis-ci.org/jkyberneees/ana)
 [![NPM version](https://img.shields.io/npm/v/restana.svg?style=flat)](https://www.npmjs.com/package/restana) [![Greenkeeper badge](https://badges.greenkeeper.io/jkyberneees/ana.svg)](https://greenkeeper.io/)
-Blazing fast and minimalist *connect-like* web framework for building REST micro-services.  
+Blazing fast, tiny and minimalist *connect-like* web framework for building REST micro-services.  
 > Uses 'find-my-way' blazing fast router: https://www.npmjs.com/package/find-my-way
 
 ## Usage
@@ -43,8 +43,8 @@ const service = require('restana')({
 
 ### Creating the micro-service interface
 ```js
-const bodyParser = require('body-parser')
-service.use(bodyParser.json())
+const bodyParser = require('body-parser');
+service.use(bodyParser.json());
 
 const PetsModel = {
     // ... 
@@ -73,7 +73,7 @@ service.patch('/pets/:id', async (req, res) => {
 service.get('/version', function (req, res) {
     res.body = { // optionally you can send the response data in the body property
         version: '1.0.0'
-    }
+    };
     res.send(); // 200 is the default response code
 });
 ```
@@ -96,10 +96,10 @@ service.close().then(()=> {});
 ```js
 // some fake "star" handler
 service.post('/star/:username', async (req, res) => {
-    await starService.star(req.params.username)
-    const stars = await starService.count(req.params.username)
+    await starService.star(req.params.username);
+    const stars = await starService.count(req.params.username);
 
-    return stars
+    return stars;
 });
 ```
 > IMPORTANT: Returned value can't be `undefined`, for such cases use `res.send(...`
@@ -149,18 +149,16 @@ service.use((req, res, next) => {
     res.on('response', e => {
         if (e.code >= 400) {
             if (e.data && e.data.errClass) {
-                console.log(e.data.errClass + ': ' + e.data.message)
+                console.log(e.data.errClass + ': ' + e.data.message);
             } else {
-                console.log('error response, but not triggered by an Error instance')
+                console.log('error response, but not triggered by an Error instance');
             }
         }
-    })
+    });
 
     return next();
 });
 ```
-
-
 
 Third party middlewares support:
 > Almost all middlewares using the *function (req, res, next)* signature format should work, considering that no custom framework feature is used.
@@ -170,6 +168,39 @@ Examples :
 * **express-jwt**: [https://www.npmjs.com/package/express-jwt](https://www.npmjs.com/package/express-jwt). See demo: [express-jwt.js](demos/express-jwt.js)
 * **body-parser**: [https://www.npmjs.com/package/body-parser](https://www.npmjs.com/package/body-parser). See demo: [body-parser.js](demos/body-parser.js)
 
+## AWS Serverless Integration
+`restana` is compatible with the [serverless-http](https://github.com/dougmoscrop/serverless-http) library, so restana based services can also run as AWS lambdas 🚀
+```js 
+// required dependencies
+const serverless = require('serverless-http');
+const restana = require('restana');
+
+// creating service
+const service = restana();
+service.get('/hello', (req, res) => {
+    res.send('Hello World!');
+});
+
+// lambda integration
+const handler = serverless(app);
+module.exports.handler = async (event, context) => {
+    return await handler(event, context);
+};
+``` 
+
+## Third party integrations
+```js
+// ...
+const service = restana()
+service.get('/hello', (req, res) => {
+    res.send('Hello World!');
+});
+
+// using "the callback integrator" middleware
+const server = http.createServer(service.callback());
+//...
+```
+
 ## turbo-http integration
 What is turbo-http? Checkout: https://www.npmjs.com/package/turbo-http  
 Using `turbo-http` in restana:
@@ -178,18 +209,18 @@ npm i turbo-http
 ```
 ```js
 // ATTENTION: The performance of the service below can blow your mind ;)
-const server = require('restana/libs/turbo-http')
+const server = require('restana/libs/turbo-http');
 const service = require('restana')({
     server
-})
+});
 
 service.get('/hi', (req, res) => {
     res.send({
         msg: 'Hello World!'
-    })
-})
+    });
+});
 
-service.start()
+service.start();
 ```
 > NOTE: When using `turbo-http`, the node.js `cluster` module can't be used!
 
