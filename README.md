@@ -79,7 +79,7 @@ service.get('/version', function (req, res) {
 ```
 Supported HTTP methods:
 ```js
-const methods = ['get', 'delete', 'put', 'patch', 'post', 'put', 'head', 'options'];
+const methods = ['get', 'delete', 'put', 'patch', 'post', 'head', 'options'];
 ```
 
 ### Starting the service
