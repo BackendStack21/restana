@@ -15,5 +15,18 @@ util.inherits(Response, EventEmitter)
 const server = module.exports = turbo.createServer()
 // populating req.headers for backward compatibility
 server.on('request', (req, res) => {
-  setImmediate(() => (req.headers = req.getAllHeaders()))
+  setImmediate(() => {
+    if (!req.headers) {
+      var headers = req.getAllHeaders();
+      if (headers instanceof Map) {
+        req.headers = {};
+        headers.forEach(function (v, k) {
+          req.headers[k] = v;
+        })
+      }
+      else {
+        req.headers = headers;
+      }
+    }
+  })
 })
