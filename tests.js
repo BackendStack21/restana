@@ -28,6 +28,19 @@ describe('Ana Web Framework', () => {
       throw new Error('error')
     })
 
+    service.get('/turbo-http-headers', (req, res) => {
+      if (
+        !req.headers || 
+        !req.headers['test'] || 
+        req.headers['test'] != '123'
+      ) {
+        res.send(500)
+      }
+      else {
+        res.send(200)
+      }
+    })
+
     server = await service.start()
   })
 
@@ -62,6 +75,13 @@ describe('Ana Web Framework', () => {
     await request(server)
       .get('/sdsdfsf')
       .expect(404)
+  })
+
+  it('has req.headers as plain object when work with turbo-http', async () => {
+    await request(server)
+      .get('/turbo-http-headers')
+      .set('test', '123')
+      .expect(200)
   })
 
   it('routes', async () => {
