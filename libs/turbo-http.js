@@ -17,15 +17,14 @@ const server = module.exports = turbo.createServer()
 server.on('request', (req, res) => {
   setImmediate(() => {
     if (!req.headers) {
-      var headers = req.getAllHeaders();
+      var headers = req.getAllHeaders()
       if (headers instanceof Map) {
-        req.headers = {};
+        req.headers = {}
         headers.forEach(function (v, k) {
-          req.headers[k] = v;
+          req.headers[k] = v
         })
-      }
-      else {
-        req.headers = headers;
+      } else {
+        req.headers = headers
       }
     }
   })
