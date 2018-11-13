@@ -30,13 +30,12 @@ describe('Ana Web Framework', () => {
 
     service.get('/turbo-http-headers', (req, res) => {
       if (
-        !req.headers || 
-        !req.headers['test'] || 
-        req.headers['test'] != '123'
+        !req.headers ||
+        !req.headers['test'] ||
+        req.headers['test'] !== '123'
       ) {
         res.send(500)
-      }
-      else {
+      } else {
         res.send(200)
       }
     })
