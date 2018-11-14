@@ -4,6 +4,8 @@
 Blazing fast, tiny and minimalist *connect-like* web framework for building REST micro-services.  
 > Uses 'find-my-way' blazing fast router: https://www.npmjs.com/package/find-my-way
 
+What else?  *[Building ultra-fast REST APIs with Node.js (restana vs express vs fastify)](https://medium.com/@kyberneees/building-ultra-fast-rest-apis-with-node-js-and-restana-1d65b0d524b7)*
+
 ## Usage
 ```bash
 npm i restana --save
