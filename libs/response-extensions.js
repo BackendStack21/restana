@@ -1,9 +1,14 @@
-module.exports.send = (req, res) => (data = 200, code = 200, headers = {}, cb = () => {}) => {
-  Object.keys(headers).forEach((key) => {
-    res.setHeader(key.toLowerCase(), headers[key])
-  })
+module.exports.send = (req, res) => (data = 200, code = 200, headers = null, cb = () => {}) => {
+  if (headers !== null) {
+    Object.keys(headers).forEach((key) => {
+      res.setHeader(key.toLowerCase(), headers[key])
+    })
+  }
 
-  if (data instanceof Error) {
+  if (typeof data === 'number') {
+    code = parseInt(data, 10)
+    data = res.body
+  } else if (data instanceof Error) {
     code = data.status || data.code || 500
     data = {
       errClass: data.constructor.name,
@@ -11,9 +16,6 @@ module.exports.send = (req, res) => (data = 200, code = 200, headers = {}, cb = 
       message: data.message,
       data: data.data
     }
-  } else if (typeof data === 'number') {
-    code = parseInt(data, 10)
-    data = res.body
   }
 
   // emit response event
@@ -23,16 +25,14 @@ module.exports.send = (req, res) => (data = 200, code = 200, headers = {}, cb = 
     data,
     code
   }
-
   res.emit('response', params)
 
   if (typeof data === 'object') {
     res.setHeader('content-type', 'application/json')
     params.data = JSON.stringify(params.data)
-  } else {
-    res.setHeader('content-type', 'text/plain')
   }
-
   res.statusCode = params.code
+
+  // end request
   res.end(params.data, cb)
 }
