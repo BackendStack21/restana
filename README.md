@@ -253,3 +253,6 @@ wrk -t8 -c8 -d30s http://localhost:3000/hi
 * express: Requests/sec 14569.78
 
 > [Polka](https://github.com/lukeed/polka) micro-framework is not considered because it misses JSON response auto-detection. 
+
+### Which is the fastest?
+You can also checkout `restana` performance index on the ***"Which is the fastest"*** project: https://github.com/the-benchmarker/web-frameworks#full-table-1
