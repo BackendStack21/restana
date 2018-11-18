@@ -15,9 +15,7 @@ module.exports = (options = {}) => {
     ignoreTrailingSlash: options.ignoreTrailingSlash || false,
     allowUnsafeRegex: options.allowUnsafeRegex || false,
     maxParamLength: options.maxParamLength || 100,
-    defaultRoute: (req, res) => {
-      res.send(404)
-    }
+    defaultRoute: options.defaultRoute || ((req, res) => res.send(404))
   })
 
   const routes = {}
