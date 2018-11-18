@@ -1,6 +1,6 @@
 {
   "name": "restana",
-  "version": "2.3.2",
+  "version": "3.0.0",
   "description": "Super fast and minimalist web framework for building REST micro-services.",
   "main": "index.js",
   "scripts": {
@@ -47,7 +47,7 @@
     "pem": "^1.13.2",
     "polka": "^0.4.0",
     "response-time": "^2.3.2",
-    "restify": "^7.2.2",
+    "restify": "^7.2.3",
     "standard": "^11.0.1",
     "supertest": "^3.3.0",
     "turbo-http": "^0.3.0",

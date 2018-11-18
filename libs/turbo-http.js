@@ -3,26 +3,32 @@
  *
  * @see https://github.com/mafintosh/turbo-http
  */
-
 const util = require('util')
 const EventEmitter = require('events')
 const turbo = require('turbo-http')
 
-// extending turbo-http Response class
+/**
+ * extending turbo-http Response class from EventEmitter
+ */
 const Response = require('turbo-http/lib/response')
 util.inherits(Response, EventEmitter)
 
+/**
+ * creating turbo-http server instance
+ */
 const server = module.exports = turbo.createServer()
-// populating req.headers for backward compatibility
+
+/**
+ * ensure restana 'req' object compatibility
+ */
 server.on('request', (req, res) => {
   setImmediate(() => {
     if (!req.headers) {
-      var headers = req.getAllHeaders()
+      // populating req.headers if missing
+      const headers = req.getAllHeaders()
       if (headers instanceof Map) {
         req.headers = {}
-        headers.forEach(function (v, k) {
-          req.headers[k] = v
-        })
+        headers.forEach((v, k) => (req.headers[k] = v))
       } else {
         req.headers = headers
       }
