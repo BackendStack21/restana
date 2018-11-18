@@ -1,6 +1,6 @@
 # restana
 [![Build Status](https://travis-ci.org/jkyberneees/ana.svg?branch=master)](https://travis-ci.org/jkyberneees/ana)
-[![NPM version](https://img.shields.io/npm/v/restana.svg?style=flat)](https://www.npmjs.com/package/restana) [![Greenkeeper badge](https://badges.greenkeeper.io/jkyberneees/ana.svg)](https://greenkeeper.io/)
+[![NPM version](https://img.shields.io/npm/v/restana.svg?style=flat)](https://www.npmjs.com/package/restana)  
 Blazing fast, tiny and minimalist *connect-like* web framework for building REST micro-services.  
 > Uses 'find-my-way' blazing fast router: https://www.npmjs.com/package/find-my-way
 
@@ -35,6 +35,7 @@ const service = require('restana')({
 - `ignoreTrailingSlash`: If `TRUE`, trailing slashes on routes are ignored. Default value: `FALSE`
 - `allowUnsafeRegex`: If `TRUE`, potentially catastrophic exponential-time regular expressions are disabled. Default value: `FALSE`
 - `maxParamLength`: Dfines the custom length for parameters in parametric (standard, regex and multi) routes. 
+- `defaultRoute`: Default route handler when no route match occurs. Default value: `((req, res) => res.send(404))`
 
 #### Example usage:
 ```js 
@@ -227,6 +228,8 @@ service.start();
 > NOTE: When using `turbo-http`, the node.js `cluster` module can't be used!
 
 ## Performance comparison (framework overhead)
+> measurements below refers to version 2.3.0 (current version is faster)
+
 [Performance comparison](performance/) for a basic *Hello World!* response (single thread process).  
 Node version: v10.11.0  
 Laptop: MacBook Pro 2016, 2,7 GHz Intel Core i7, 16 GB 2133 MHz LPDDR3
