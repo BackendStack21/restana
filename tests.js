@@ -5,7 +5,7 @@ const request = require('supertest')
 
 let server
 
-describe('Ana Web Framework', () => {
+describe('Restana Web Framework', () => {
   it('initialize', async () => {
     service.get(
       '/pets/:id',
@@ -23,6 +23,22 @@ describe('Ana Web Framework', () => {
     service.get('/async/:name', async (req) => {
       return req.params.name
     })
+
+    service.get('/middlewares/:name', async (req) => {
+      return req.params.name
+    }, {}, [(req, res, next) => {
+      req.params.name = req.params.name.toUpperCase()
+      next()
+    }, (req, res, next) => {
+      if (req.params.name === 'ERROR') {
+        throw new Error('Upps')
+      } else {
+        next()
+      }
+    }, (req, res, next) => {
+      req.params.name += '0'
+      next()
+    }])
 
     service.get('/error', () => {
       throw new Error('error')
@@ -58,6 +74,24 @@ describe('Ana Web Framework', () => {
       .expect(200)
       .then((response) => {
         expect(response.text).to.equal('Cool')
+      })
+  })
+
+  it('middlewares at route level', async () => {
+    await request(server)
+      .get('/middlewares/rolando')
+      .expect(200)
+      .then((response) => {
+        expect(response.text).to.equal('ROLANDO0')
+      })
+  })
+
+  it('middlewares at route level - should fail', async () => {
+    await request(server)
+      .get('/middlewares/error')
+      .expect(500)
+      .then((response) => {
+        expect(response.body.message).to.equal('Upps')
       })
   })
 
