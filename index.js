@@ -75,6 +75,13 @@ module.exports = (options = {}) => {
      * @returns {Object} Route object
      */
     route: (method, path, handler, ctx = {}, middlewares = []) => {
+      // mapping middlewares to required format { handler: Function, context: Object }
+      middlewares = middlewares.map(
+        middleware => (typeof middleware === 'function')
+          ? { handler: middleware, context: {} }
+          : middleware
+      )
+
       // creating routing key
       const key = `[${method.toUpperCase()}]${path}`
       if (!routes[key]) {
@@ -106,7 +113,7 @@ module.exports = (options = {}) => {
           } else {
             // directly call the route handler only
             // NOTE: we do this to increase performance
-            routeHandlerCaller(handler, ctx)(req, res, ctx)
+            routeHandlerCaller(handler, ctx)(req, res)
           }
         }, routes[key])
       } else {
