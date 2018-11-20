@@ -34,7 +34,7 @@ const service = require('restana')({
 - `server`: Allows to override the HTTP server instance to be used.
 - `ignoreTrailingSlash`: If `TRUE`, trailing slashes on routes are ignored. Default value: `FALSE`
 - `allowUnsafeRegex`: If `TRUE`, potentially catastrophic exponential-time regular expressions are disabled. Default value: `FALSE`
-- `maxParamLength`: Dfines the custom length for parameters in parametric (standard, regex and multi) routes. Default value: `100`
+- `maxParamLength`: Defines the custom length for parameters in parametric (standard, regex and multi) routes. Default value: `100`
 - `defaultRoute`: Default route handler when no route match occurs. Default value: `((req, res) => res.send(404))`
 
 #### Example usage:
