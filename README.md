@@ -1,6 +1,6 @@
 # restana
 [![Build Status](https://travis-ci.org/jkyberneees/ana.svg?branch=master)](https://travis-ci.org/jkyberneees/ana)
-[![NPM version](https://img.shields.io/npm/v/restana.svg?style=flat)](https://www.npmjs.com/package/restana) [![Greenkeeper badge](https://badges.greenkeeper.io/jkyberneees/ana.svg)](https://greenkeeper.io/)
+[![NPM version](https://img.shields.io/npm/v/restana.svg?style=flat)](https://www.npmjs.com/package/restana)
 Blazing fast, tiny and minimalist *connect-like* web framework for building REST micro-services.  
 > Uses 'find-my-way' blazing fast router: https://www.npmjs.com/package/find-my-way
 
@@ -106,6 +106,18 @@ service.post('/star/:username', async (req, res) => {
 });
 ```
 > IMPORTANT: Returned value can't be `undefined`, for such cases use `res.send(...`
+
+### Request Level Middlewares
+Connecting middlewares to specific routes is also supported:
+```js
+// route with middlewares
+service.get('/hi/:name', async (req, res) => {
+  return 'Hello ' + req.params.name // -> "name" will be uppercase here
+}, {}, [(req, res, next) => {
+  req.params.name = req.params.name.toUpperCase()
+  next()
+}]) // route middlewares can be passed in an Array after the handler context param
+```
 
 ### Sending custom headers:
 ```js
@@ -252,8 +264,6 @@ wrk -t8 -c8 -d30s http://localhost:3000/hi
 * koa: Requests/sec 22485.43
 * hapi: Requests/sec 15921.77
 * express: Requests/sec 14569.78
-
-> [Polka](https://github.com/lukeed/polka) micro-framework is not considered because it misses JSON response auto-detection. 
 
 ### Which is the fastest?
 You can also checkout `restana` performance index on the ***"Which is the fastest"*** project: https://github.com/the-benchmarker/web-frameworks#full-table-1
