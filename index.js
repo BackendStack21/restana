@@ -22,11 +22,11 @@ const exts = {
 /**
  * importing middlewares chain caller
  */
-const chain = require('./libs/middleware-chain')
+const next = require('./libs/middleware-chain')
 /**
  * importing route handler caller
  */
-const routeHandlerCaller = require('./libs/route-handler-caller')
+const handlerCall = require('./libs/route-handler-caller')
 
 /**
  * Application instance contructor like function
@@ -103,17 +103,17 @@ module.exports = (options = {}) => {
 
           if (middlewares.length > 0) {
             // call route middlewares and route handler
-            chain([
+            next([
               ...middlewares.slice(0),
               {
                 context: {},
-                handler: routeHandlerCaller(handler, ctx)
+                handler: handlerCall(handler, ctx) // -> Function
               }
             ], req, res)()
           } else {
             // directly call the route handler only
             // NOTE: we do this to increase performance
-            routeHandlerCaller(handler, ctx)(req, res)
+            handlerCall(handler, ctx)(req, res)
           }
         }, routes[key])
       } else {
@@ -136,7 +136,7 @@ module.exports = (options = {}) => {
       res.send = exts.response.send(req, res)
       if (middlewares.length > 0) {
         // call route middlewares and route handler
-        chain([
+        next([
           ...middlewares.slice(0),
           {
             context: {},
