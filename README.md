@@ -241,29 +241,29 @@ service.start();
 
 ## Performance comparison (framework overhead)
 [Performance comparison](performance/) for a basic *Hello World!* response (single thread process).  
-Node version: v10.11.0  
+Node version: v10.14.1  
 Laptop: MacBook Pro 2016, 2,7 GHz Intel Core i7, 16 GB 2133 MHz LPDDR3
 ```bash
 wrk -t8 -c8 -d30s http://localhost:3000/hi
 ```
 ### String response ('Hello World!')
-* **restana-turbo-http**: Requests/sec 57622.13
-* **restana**: Requests/sec 43575.36
-* **restana-cluster**: Requests/sec 71626.33
-* fastify: Requests/sec 36894.86
-* koa: Requests/sec 23486.64
-* restify: Requests/sec 21903.95
-* hapi: Requests/sec 16509.12
-* express: Requests/sec 16057.22
+* **restana-turbo-http**: Requests/sec 57708.05
+* **restana**: Requests/sec 46314.39
+* **restana-cluster**: Requests/sec 70979.80
+* fastify: Requests/sec 36873.05
+* restify: Requests/sec 26388.94
+* koa: Requests/sec 25686.12
+* hapi: Requests/sec 20279.23
+* express: Requests/sec 16812.15
 
 ### JSON response ({msg: 'Hello World!'})
-* **restana-turbo-http**: Requests/sec 53025.65
-* **restana**: Requests/sec 39681.39
-* fastify: Requests/sec 33143.12
-* restify: Requests/sec 24631.74
-* koa: Requests/sec 22485.43
-* hapi: Requests/sec 15921.77
-* express: Requests/sec 14569.78
+* **restana-turbo-http**: Requests/sec 53544.21
+* **restana**: Requests/sec 39363.91
+* fastify: Requests/sec 33600.85
+* restify: Requests/sec 29490.79
+* koa: Requests/sec 23787.82
+* hapi: Requests/sec 19404.48
+* express: Requests/sec 15365.56
 
 ### Which is the fastest?
 You can also checkout `restana` performance index on the ***"Which is the fastest"*** project: https://github.com/the-benchmarker/web-frameworks#full-table-1
