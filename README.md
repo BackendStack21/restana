@@ -1,8 +1,9 @@
 # restana
 [![Build Status](https://travis-ci.org/jkyberneees/ana.svg?branch=master)](https://travis-ci.org/jkyberneees/ana)
-[![NPM version](https://img.shields.io/npm/v/restana.svg?style=flat)](https://www.npmjs.com/package/restana)
+[![NPM version](https://img.shields.io/npm/v/restana.svg?style=flat)](https://www.npmjs.com/package/restana)  
+
 Blazing fast, tiny and minimalist *connect-like* web framework for building REST micro-services.  
-> Uses 'find-my-way' blazing fast router: https://www.npmjs.com/package/find-my-way
+> Uses 'find-my-way' router: https://www.npmjs.com/package/find-my-way
 
 What else?  *[Building ultra-fast REST APIs with Node.js (restana vs express vs fastify)](https://medium.com/@kyberneees/building-ultra-fast-rest-apis-with-node-js-and-restana-1d65b0d524b7)*
 
