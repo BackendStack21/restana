@@ -70,7 +70,7 @@ module.exports = (options = {}) => {
      * @param {String} method HTTP method / verb
      * @param {String} path Request path
      * @param {Function} handler  Request handler function like (req, res, ctx) => {}
-     * @param {Object} ctx  Optional request handler invokation context object
+     * @param {Object} ctx  Optional request handler invokation context object. Default: {}
      * @param {Array} middlewares Optional request middlewares
      * @returns {Object} Route object
      */
