@@ -107,10 +107,9 @@ service.post('/star/:username', async (req, res) => {
 ```
 > IMPORTANT: Returned value can't be `undefined`, for such cases use `res.send(...`
 
-### Request Level Middlewares
+### Route Level Middlewares
 Connecting middlewares to specific routes is also supported:
 ```js
-// route with middlewares
 service.get('/hi/:name', async (req, res) => {
   return 'Hello ' + req.params.name // -> "name" will be uppercase here
 }, {}, [(req, res, next) => {
