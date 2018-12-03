@@ -1,3 +1,10 @@
+/**
+ * Middlewares chain invoker function
+ *
+ * @param {Array} middlewares
+ * @param {Object} req
+ * @param {Object} res
+ */
 const next = (middlewares, req, res) => {
   const middleware = middlewares.shift()
 
@@ -7,12 +14,7 @@ const next = (middlewares, req, res) => {
       if (!middleware) return
 
       try {
-        const result = middleware.handler.call(
-          middleware.context,
-          req,
-          res,
-          next(middlewares, req, res)
-        )
+        const result = middleware.handler.call(middleware.context, req, res, next(middlewares, req, res))
         if (result instanceof Promise) {
           // async support
           result.catch(res.send)
