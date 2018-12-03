@@ -1,8 +1,8 @@
 # restana
 [![Build Status](https://travis-ci.org/jkyberneees/ana.svg?branch=master)](https://travis-ci.org/jkyberneees/ana)
-[![NPM version](https://img.shields.io/npm/v/restana.svg?style=flat)](https://www.npmjs.com/package/restana) [![Greenkeeper badge](https://badges.greenkeeper.io/jkyberneees/ana.svg)](https://greenkeeper.io/)
+[![NPM version](https://img.shields.io/npm/v/restana.svg?style=flat)](https://www.npmjs.com/package/restana)  
 Blazing fast, tiny and minimalist *connect-like* web framework for building REST micro-services.  
-> Uses 'find-my-way' blazing fast router: https://www.npmjs.com/package/find-my-way
+> Uses 'find-my-way' router: https://www.npmjs.com/package/find-my-way
 
 What else?  *[Building ultra-fast REST APIs with Node.js (restana vs express vs fastify)](https://medium.com/@kyberneees/building-ultra-fast-rest-apis-with-node-js-and-restana-1d65b0d524b7)*
 
@@ -34,7 +34,8 @@ const service = require('restana')({
 - `server`: Allows to override the HTTP server instance to be used.
 - `ignoreTrailingSlash`: If `TRUE`, trailing slashes on routes are ignored. Default value: `FALSE`
 - `allowUnsafeRegex`: If `TRUE`, potentially catastrophic exponential-time regular expressions are disabled. Default value: `FALSE`
-- `maxParamLength`: Dfines the custom length for parameters in parametric (standard, regex and multi) routes. 
+- `maxParamLength`: Defines the custom length for parameters in parametric (standard, regex and multi) routes. Default value: `100`
+- `defaultRoute`: Default route handler when no route match occurs. Default value: `((req, res) => res.send(404))`
 
 #### Example usage:
 ```js 
@@ -81,7 +82,7 @@ service.get('/version', function (req, res) {
 ```
 Supported HTTP methods:
 ```js
-const methods = ['get', 'delete', 'put', 'patch', 'post', 'head', 'options'];
+const methods = ['get', 'delete', 'put', 'patch', 'post', 'head', 'options', 'trace'];
 ```
 
 ### Starting the service
@@ -105,6 +106,17 @@ service.post('/star/:username', async (req, res) => {
 });
 ```
 > IMPORTANT: Returned value can't be `undefined`, for such cases use `res.send(...`
+
+### Route Level Middlewares
+Connecting middlewares to specific routes is also supported:
+```js
+service.get('/hi/:name', async (req, res) => {
+  return 'Hello ' + req.params.name // -> "name" will be uppercase here
+}, {}, [(req, res, next) => {
+  req.params.name = req.params.name.toUpperCase()
+  next()
+}]) // route middlewares can be passed in an Array after the handler context param
+```
 
 ### Sending custom headers:
 ```js
@@ -227,32 +239,32 @@ service.start();
 > NOTE: When using `turbo-http`, the node.js `cluster` module can't be used!
 
 ## Performance comparison (framework overhead)
+> measurements below refers to version 2.3.0 (current version is faster)
+
 [Performance comparison](performance/) for a basic *Hello World!* response (single thread process).  
-Node version: v10.11.0  
+Node version: v10.14.1  
 Laptop: MacBook Pro 2016, 2,7 GHz Intel Core i7, 16 GB 2133 MHz LPDDR3
 ```bash
 wrk -t8 -c8 -d30s http://localhost:3000/hi
 ```
 ### String response ('Hello World!')
-* **restana-turbo-http**: Requests/sec 57622.13
-* **restana**: Requests/sec 43575.36
-* **restana-cluster**: Requests/sec 71626.33
-* fastify: Requests/sec 36894.86
-* koa: Requests/sec 23486.64
-* restify: Requests/sec 21903.95
-* hapi: Requests/sec 16509.12
-* express: Requests/sec 16057.22
+* **restana-turbo-http**: Requests/sec 57708.05
+* **restana**: Requests/sec 46314.39
+* **restana-cluster**: Requests/sec 70979.80
+* fastify: Requests/sec 36873.05
+* restify: Requests/sec 26388.94
+* koa: Requests/sec 25686.12
+* hapi: Requests/sec 20279.23
+* express: Requests/sec 16812.15
 
 ### JSON response ({msg: 'Hello World!'})
-* **restana-turbo-http**: Requests/sec 53025.65
-* **restana**: Requests/sec 39681.39
-* fastify: Requests/sec 33143.12
-* restify: Requests/sec 24631.74
-* koa: Requests/sec 22485.43
-* hapi: Requests/sec 15921.77
-* express: Requests/sec 14569.78
-
-> [Polka](https://github.com/lukeed/polka) micro-framework is not considered because it misses JSON response auto-detection. 
+* **restana-turbo-http**: Requests/sec 53544.21
+* **restana**: Requests/sec 39363.91
+* fastify: Requests/sec 33600.85
+* restify: Requests/sec 29490.79
+* koa: Requests/sec 23787.82
+* hapi: Requests/sec 19404.48
+* express: Requests/sec 15365.56
 
 ### Which is the fastest?
 You can also checkout `restana` performance index on the ***"Which is the fastest"*** project: https://github.com/the-benchmarker/web-frameworks#full-table-1
