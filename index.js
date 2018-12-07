@@ -36,11 +36,18 @@ const handlerCall = require('./libs/route-handler-caller')
 module.exports = (options = {}) => {
   // create HTTP server instance
   const server = options.server || require('http').createServer()
-  // register on 'request' callback
-  server.on('request', (req, res) => {
-    // IMPORTANT: using setImmediate here provides major performance gain
-    setImmediate(() => app.handle(req, res))
-  })
+  // should we prio requests processing?
+  const prp = undefined === options.prioRequestsProcessing ? true : options.prioRequestsProcessing
+  // registering 'request' handler
+  if (prp) {
+    server.on('request', (req, res) => {
+      setImmediate(() => app.handle(req, res))
+    })
+  } else {
+    server.on('request', (req, res) => {
+      app.handle(req, res)
+    })
+  }
 
   // creating request router instance
   const router = requestRouter(options)

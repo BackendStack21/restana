@@ -1,11 +1,11 @@
 /* global describe, it */
-const service = require('./index')({ server: require('./libs/turbo-http') })
 const expect = require('chai').expect
 const request = require('supertest')
 
-let server
+describe('Restana Web Framework - Smoke', () => {
+  let server
+  const service = require('./index')({ server: require('./libs/turbo-http') })
 
-describe('Restana Web Framework', () => {
   it('should successfully register service routes', async () => {
     service.get(
       '/pets/:id',
@@ -52,7 +52,7 @@ describe('Restana Web Framework', () => {
       }
     })
 
-    server = await service.start()
+    server = await service.start(~~process.env.PORT)
   })
 
   it('should GET JSON response /pets/:id', async () => {

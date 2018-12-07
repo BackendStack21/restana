@@ -32,6 +32,7 @@ const service = require('restana')({
 
 ### Configuration
 - `server`: Allows to override the HTTP server instance to be used.
+- `prioRequestsProcessing`: If `TRUE`, HTTP requests processing/handling is prioritized using `setImmediate`. Default value: `TRUE`
 - `ignoreTrailingSlash`: If `TRUE`, trailing slashes on routes are ignored. Default value: `FALSE`
 - `allowUnsafeRegex`: If `TRUE`, potentially catastrophic exponential-time regular expressions are disabled. Default value: `FALSE`
 - `maxParamLength`: Defines the custom length for parameters in parametric (standard, regex and multi) routes. Default value: `100`
@@ -239,7 +240,7 @@ service.start();
 > NOTE: When using `turbo-http`, the node.js `cluster` module can't be used!
 
 ## Performance comparison (framework overhead)
-> measurements below refers to version 2.3.0 (current version is faster)
+> measurements below refers to version 2.4
 
 [Performance comparison](performance/) for a basic *Hello World!* response (single thread process).  
 Node version: v10.14.1  
