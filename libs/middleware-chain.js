@@ -6,6 +6,7 @@
  * @param {Object} res
  */
 const next = (middlewares, req, res) => {
+  // retrieve next middleware from chain
   const middleware = middlewares.shift()
 
   return (err) => {
@@ -14,6 +15,7 @@ const next = (middlewares, req, res) => {
       if (!middleware) return
 
       try {
+        // invoke each middleware
         const result = middleware.handler.call(middleware.context, req, res, next(middlewares, req, res))
         if (result instanceof Promise) {
           // async support

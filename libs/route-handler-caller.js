@@ -8,7 +8,7 @@ module.exports = (handler, ctx) => (req, res) => {
   try {
     const result = handler.call(ctx, req, res, ctx)
     if (result instanceof Promise) {
-    // async support
+      // async support
       result.then(data => {
         if (undefined !== data) {
           return res.send(data)
