@@ -52,6 +52,9 @@ describe('Restana Web Framework - Smoke', () => {
       }
     })
 
+    service.get('/handler-override', (req, res) => res.send('1'))
+    service.get('/handler-override', (req, res) => res.send('2'))
+
     server = await service.start(~~process.env.PORT)
   })
 
@@ -115,6 +118,15 @@ describe('Restana Web Framework - Smoke', () => {
 
   it('should receive service routing keys array - i.e: ["[GET]/pets/:id"]', async () => {
     expect(service.routes().includes('[GET]/pets/:id')).to.equal(true)
+  })
+
+  it('should override route handler', async () => {
+    await request(server)
+      .get('/handler-override')
+      .expect(200)
+      .then((response) => {
+        expect(response.text).to.equal('2')
+      })
   })
 
   let errMsg
