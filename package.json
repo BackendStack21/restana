@@ -1,10 +1,11 @@
 {
   "name": "restana",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "description": "Super fast and minimalist web framework for building REST micro-services.",
   "main": "index.js",
   "scripts": {
-    "test": "PORT=3000 NODE_ENV=testing node ./node_modules/mocha/bin/mocha tests.js specs/*.test.js"
+    "test": "PORT=3000 NODE_ENV=testing node ./node_modules/mocha/bin/mocha tests.js specs/*.test.js",
+    "postinstall": "node ./libs/tasks/postinstall.js"
   },
   "repository": {
     "type": "git",
@@ -33,12 +34,12 @@
   ],
   "homepage": "https://github.com/jkyberneees/ana#readme",
   "dependencies": {
-    "find-my-way": "^1.15.4"
+    "find-my-way": "^1.17.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
     "express": "^4.16.4",
-    "fastify": "^1.13.1",
+    "fastify": "^1.13.3",
     "hapi": "^17.8.1",
     "koa": "^2.6.2",
     "koa-router": "^7.4.0",
@@ -47,7 +48,7 @@
     "pem": "^1.13.2",
     "polka": "^0.4.0",
     "response-time": "^2.3.2",
-    "restify": "^7.2.3",
+    "restify": "^7.3.0",
     "standard": "^11.0.1",
     "supertest": "^3.3.0",
     "turbo-http": "^0.3.0",
