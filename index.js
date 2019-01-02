@@ -102,11 +102,11 @@ module.exports = (options = {}) => {
         }
 
         // registering request handler
-        router.on(method, path, (req, res, params, route) => {
+        router.on(method, path, (req, res, params) => {
           // populate req.params
           req.params = params
           // destructing arguments
-          const { handler, ctx, middlewares } = route
+          const { handler, ctx, middlewares } = routes[key]
 
           if (middlewares.length > 0) {
             // call route middlewares and route handler
@@ -122,7 +122,7 @@ module.exports = (options = {}) => {
             // NOTE: we do this to increase performance
             handlerCall(handler, ctx)(req, res)
           }
-        }, routes[key])
+        })
       } else {
         // update route parameters if route exist
         routes[key].ctx = ctx
