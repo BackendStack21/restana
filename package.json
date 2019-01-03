@@ -1,6 +1,6 @@
 {
   "name": "restana",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "description": "Super fast and minimalist web framework for building REST micro-services.",
   "main": "index.js",
   "scripts": {
@@ -37,6 +37,7 @@
     "find-my-way": "^1.17.0"
   },
   "devDependencies": {
+    "anumargak": "^2.0.2",
     "chai": "^4.2.0",
     "express": "^4.16.4",
     "fastify": "^1.13.3",

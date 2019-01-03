@@ -32,6 +32,7 @@ const service = require('restana')({
 
 ### Configuration
 - `server`: Allows to override the HTTP server instance to be used.
+- `routerFactory`: Router factory function to allow default `find-my-way` router override. 
 - `prioRequestsProcessing`: If `TRUE`, HTTP requests processing/handling is prioritized using `setImmediate`. Default value: `TRUE`
 - `ignoreTrailingSlash`: If `TRUE`, trailing slashes on routes are ignored. Default value: `FALSE`
 - `allowUnsafeRegex`: If `TRUE`, potentially catastrophic exponential-time regular expressions are disabled. Default value: `FALSE`
@@ -45,7 +46,19 @@ const service = require('restana')({
 });
 ```
 
-### Creating the micro-service interface
+#### Providing a router factory method:
+> In this example we use `anumargak` router instead of `find-my-way`.
+```js 
+const anumargak = require('anumargak')
+const service = require('restana')({
+  routerFactory: (options) => {
+    return anumargak(options)
+  }
+})
+...
+```
+
+### Creating a micro-service
 ```js
 const bodyParser = require('body-parser');
 service.use(bodyParser.json());
@@ -86,12 +99,12 @@ Supported HTTP methods:
 const methods = ['get', 'delete', 'put', 'patch', 'post', 'head', 'options', 'trace'];
 ```
 
-### Starting the service
+#### Starting the service
 ```js
 service.start(3000).then((server) => {});
 ```
 
-### Stopping the service
+#### Stopping the service
 ```js
 service.close().then(()=> {});
 ```
