@@ -49,8 +49,8 @@ module.exports = (options = {}) => {
     })
   }
 
-  // creating request router instance
-  const router = requestRouter(options)
+  // creating request router instance, considers custom router override
+  const router = options.routerFactory ? options.routerFactory(options) : requestRouter(options)
   // routes holder
   const routes = {}
   // global middlewares holder
