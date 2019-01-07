@@ -37,7 +37,7 @@
     "find-my-way": "^1.17.0"
   },
   "devDependencies": {
-    "anumargak": "^2.0.2",
+    "anumargak": "^2.1.0",
     "chai": "^4.2.0",
     "express": "^4.16.4",
     "fastify": "^1.13.3",
@@ -50,7 +50,7 @@
     "pem": "^1.13.2",
     "polka": "^0.4.0",
     "response-time": "^2.3.2",
-    "restify": "^7.3.0",
+    "restify": "^7.4.0",
     "standard": "^11.0.1",
     "supertest": "^3.3.0",
     "turbo-http": "^0.3.0",
