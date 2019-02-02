@@ -46,7 +46,7 @@ const service = require('restana')({
 });
 ```
 
-#### Providing a router factory method:
+#### Optionally roviding a router factory method:
 > In this example we use `anumargak` router instead of `find-my-way`.
 ```js 
 const anumargak = require('anumargak')
@@ -57,6 +57,7 @@ const service = require('restana')({
 })
 ...
 ```
+> Please consider that when using `anumargak` router, request params are accessible via: `req._path.params`
 
 ### Creating a micro-service
 ```js
