@@ -1,5 +1,6 @@
 /* global describe, it */
 const request = require('supertest')
+const expect = require('chai').expect
 
 describe('Router Factory - overriding find-my-way router with "anumargak"', () => {
   let server
@@ -11,8 +12,8 @@ describe('Router Factory - overriding find-my-way router with "anumargak"', () =
       return anumargak(options)
     }
   })
-  service.get('/hello', (req, res) => {
-    res.send(200)
+  service.get('/hello/:name', (req, res) => {
+    res.send(req._path.params.name)
   })
 
   it('should start the service with "anumargak" router', async () => {
@@ -21,8 +22,11 @@ describe('Router Factory - overriding find-my-way router with "anumargak"', () =
 
   it('should GET 200 on /hello', async () => {
     await request(server)
-      .get('/hello')
+      .get('/hello/restana')
       .expect(200)
+      .then((response) => {
+        expect(response.text).to.equal('restana')
+      })
   })
 
   it('should successfully terminate the service', async () => {
