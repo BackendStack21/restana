@@ -77,10 +77,10 @@ class HttpServer extends EventEmitter {
     this.uws = server
 
     server.any('*', (res, req) => {
-      this.emit('request', new HttpRequest(req), new HttpResponse(res))
-
       // uWebSockets requirement for async processing
       res.onAborted(() => {})
+
+      this.emit('request', new HttpRequest(req), new HttpResponse(res))
     })
   }
 
