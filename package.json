@@ -37,6 +37,7 @@
     "find-my-way": "^1.17.0"
   },
   "devDependencies": {
+    "uWebSockets.js": "github:uNetworking/uWebSockets.js#binaries",
     "anumargak": "^2.1.0",
     "chai": "^4.2.0",
     "express": "^4.16.4",
