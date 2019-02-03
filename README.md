@@ -132,6 +132,10 @@ service.get('/hi/:name', async (req, res) => {
   next()
 }]) // route middlewares can be passed in an Array after the handler context param
 ```
+Express.js like signature also supported:
+```js
+service.get('/hi/:name', m1, m2, handler [, ctx])
+```
 
 ### Sending custom headers:
 ```js
