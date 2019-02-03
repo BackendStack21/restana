@@ -1,6 +1,6 @@
 {
   "name": "restana",
-  "version": "2.7.0",
+  "version": "2.8.0",
   "description": "Super fast and minimalist web framework for building REST micro-services.",
   "main": "index.js",
   "scripts": {
@@ -34,26 +34,26 @@
   ],
   "homepage": "https://github.com/jkyberneees/ana#readme",
   "dependencies": {
-    "find-my-way": "^1.17.0"
+    "find-my-way": "^1.18.0"
   },
   "devDependencies": {
     "anumargak": "^2.1.0",
     "chai": "^4.2.0",
     "express": "^4.16.4",
-    "fastify": "^1.13.3",
-    "hapi": "^17.8.1",
-    "koa": "^2.6.2",
+    "fastify": "^1.13.4",
+    "hapi": "^17.8.3",
+    "koa": "^2.7.0",
     "koa-router": "^7.4.0",
     "mocha": "^5.2.0",
     "morgan": "^1.9.1",
     "muneem": "^2.4.4",
     "nyc": "^13.1.0",
-    "pem": "^1.13.2",
+    "pem": "^1.14.1",
     "polka": "^0.4.0",
     "response-time": "^2.3.2",
-    "restify": "^7.4.0",
+    "restify": "^7.7.0",
     "standard": "^11.0.1",
-    "supertest": "^3.3.0",
+    "supertest": "^3.4.2",
     "turbo-http": "^0.3.0",
     "winston": "^2.4.4"
   }
