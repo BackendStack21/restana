@@ -196,30 +196,30 @@ module.exports = (options = {}) => {
   // exposing HTTP verbs as request routing methods
   // express.js like routes middlewares signature is supported: app.get('/', m1, m2, handler)
   methods.forEach((method) => {
-    app[method] = (path, ...handlers) => {
+    app[method] = (path, ...args) => {
       let ctx = {}
       let middlewares = []
 
       // try handler as last element of the array
-      let handler = handlers.pop()
+      let handler = args.pop()
 
       if (Array.isArray(handler) && handler.length && typeof handler[0] === 'function') {
         // route middlewares are remaining elements
         middlewares.push(...handler)
         // handler is fist element
-        handler = handlers.shift()
+        handler = args.shift()
         // ctx is second element
-        ctx = handlers.shift()
+        ctx = args.shift()
       } else if (typeof handler !== 'function') {
         // last element is not a function, should be handler ctx
         ctx = handler
         // route handler is remaining element
-        handler = handlers.pop()
+        handler = args.pop()
       }
 
       if (!middlewares.length) {
         // route middlewares are remaining elements
-        middlewares.push(...handlers)
+        middlewares.push(...args)
       }
 
       // register route
