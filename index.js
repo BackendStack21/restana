@@ -27,6 +27,10 @@ const next = require('./libs/middleware-chain')
  * importing route handler caller
  */
 const handlerCall = require('./libs/route-handler-caller')
+/**
+ * importing route registration handler
+ */
+const routeRegister = require('./libs/route-register')
 
 /**
  * Application instance contructor like function
@@ -55,7 +59,10 @@ module.exports = (options = {}) => {
   const routes = {}
   // global middlewares holder
   const middlewares = []
+  // routes registration shortcut factory
+  const addRoute = (method) => (path, ...args) => routeRegister(app, method, path, args)
 
+  // the "restana" service interface
   const app = {
     /**
      * Register global middleware
@@ -196,35 +203,7 @@ module.exports = (options = {}) => {
   // exposing HTTP verbs as request routing methods
   // express.js like routes middlewares signature is supported: app.get('/', m1, m2, handler)
   methods.forEach((method) => {
-    app[method] = (path, ...args) => {
-      let ctx = {}
-      let middlewares = []
-
-      // try handler as last element of the array
-      let handler = args.pop()
-
-      if (Array.isArray(handler) && handler.length && typeof handler[0] === 'function') {
-        // route middlewares are remaining elements
-        middlewares.push(...handler)
-        // handler is fist element
-        handler = args.shift()
-        // ctx is second element
-        ctx = args.shift()
-      } else if (typeof handler !== 'function') {
-        // last element is not a function, should be handler ctx
-        ctx = handler
-        // route handler is remaining element
-        handler = args.pop()
-      }
-
-      if (!middlewares.length) {
-        // route middlewares are remaining elements
-        middlewares.push(...args)
-      }
-
-      // register route
-      app.route(method.toUpperCase(), path, handler, ctx, middlewares)
-    }
+    app[method] = addRoute(method)
   })
 
   // integrator callback
