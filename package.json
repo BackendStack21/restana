@@ -34,21 +34,21 @@
   ],
   "homepage": "https://github.com/jkyberneees/ana#readme",
   "dependencies": {
-    "find-my-way": "^1.18.0"
+    "find-my-way": "^1.18.1"
   },
   "devDependencies": {
-    "anumargak": "^2.1.0",
+    "anumargak": "^2.2.0",
     "chai": "^4.2.0",
     "express": "^4.16.4",
-    "fastify": "^1.13.4",
-    "hapi": "^17.8.3",
+    "fastify": "^1.14.1",
+    "hapi": "^17.8.4",
     "koa": "^2.7.0",
     "koa-router": "^7.4.0",
     "mocha": "^5.2.0",
     "morgan": "^1.9.1",
-    "muneem": "^2.4.4",
-    "nyc": "^13.1.0",
-    "pem": "^1.14.1",
+    "muneem": "^2.4.5",
+    "nyc": "^13.3.0",
+    "pem": "^1.14.2",
     "polka": "^0.4.0",
     "response-time": "^2.3.2",
     "restify": "^7.7.0",
