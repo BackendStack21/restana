@@ -97,7 +97,7 @@ module.exports = (options = {}) => {
       )
 
       // creating routing key
-      const key = `[${method.toUpperCase()}]${path}`
+      const key = `[${method.toString().toUpperCase()}]${path}`
       if (!routes[key]) {
         // caching route arguments
         routes[key] = {
@@ -205,6 +205,9 @@ module.exports = (options = {}) => {
   methods.forEach((method) => {
     app[method] = addRoute(method)
   })
+
+  // exposing "all" HTTP verbs as request routing registration
+  app.all = addRoute(methods)
 
   // integrator callback
   app.callback = () => app.handle

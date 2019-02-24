@@ -55,6 +55,8 @@ describe('Restana Web Framework - Smoke', () => {
     service.get('/handler-override', (req, res) => res.send('1'))
     service.get('/handler-override', (req, res) => res.send('2'))
 
+    service.all('/sheet.css', (req, res) => res.send(200))
+
     server = await service.start(~~process.env.PORT)
   })
 
@@ -127,6 +129,18 @@ describe('Restana Web Framework - Smoke', () => {
       .then((response) => {
         expect(response.text).to.equal('2')
       })
+  })
+
+  it('should receive 200 on /sheet.css using .all registration', async () => {
+    await request(server)
+      .get('/sheet.css')
+      .expect(200)
+    await request(server)
+      .post('/sheet.css')
+      .expect(200)
+    await request(server)
+      .put('/sheet.css')
+      .expect(200)
   })
 
   let errMsg
