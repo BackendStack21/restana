@@ -59,7 +59,7 @@ const service = require('restana')({
 ```
 > Please consider that when using `anumargak` router, request params are accessible via: `req._path.params`
 
-### Creating a micro-service
+### Creating a micro-service & routes registration
 ```js
 const bodyParser = require('body-parser');
 service.use(bodyParser.json());
@@ -98,6 +98,14 @@ service.get('/version', function (req, res) {
 Supported HTTP methods:
 ```js
 const methods = ['get', 'delete', 'put', 'patch', 'post', 'head', 'options', 'trace'];
+```
+
+#### Using .all routes registration
+You can also register a route handler for `all` supported HTTP methods:
+```js
+service.all('/allmethodsroute', function (req, res) {
+    res.send(200)
+});
 ```
 
 #### Starting the service
