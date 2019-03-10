@@ -65,6 +65,11 @@ module.exports = (options = {}) => {
   // the "restana" service interface
   const app = {
     /**
+     * Application configuration options reference
+     */
+    options,
+
+    /**
      * Register global middleware
      *
      * @param {Object} middleware  The middleware function
@@ -147,7 +152,7 @@ module.exports = (options = {}) => {
      * @param {Object} res Response object
      */
     handle: (req, res) => {
-      res.send = exts.response.send(req, res)
+      res.send = exts.response.send(options, req, res)
       if (middlewares.length > 0) {
         // call route middlewares and route handler
         next([

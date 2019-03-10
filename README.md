@@ -38,6 +38,7 @@ const service = require('restana')({
 - `allowUnsafeRegex`: If `TRUE`, potentially catastrophic exponential-time regular expressions are disabled. Default value: `FALSE`
 - `maxParamLength`: Defines the custom length for parameters in parametric (standard, regex and multi) routes. Default value: `100`
 - `defaultRoute`: Default route handler when no route match occurs. Default value: `((req, res) => res.send(404))`
+- `disableResponseEvent`: If `TRUE`, there won't be `response` events triggered on the `res` object. Default value: `FALSE`
 
 #### Example usage:
 ```js 
