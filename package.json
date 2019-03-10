@@ -1,6 +1,6 @@
 {
   "name": "restana",
-  "version": "2.9.0",
+  "version": "2.10.0",
   "description": "Super fast and minimalist web framework for building REST micro-services.",
   "main": "index.js",
   "scripts": {

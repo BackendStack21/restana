@@ -1,9 +1,12 @@
 /**
  * The friendly 'res.send' method
- *
  * No comments needed ;)
+ *
+ * @param {Object} options Application configuration options
+ * @param {Object} req Request object
+ * @param {Object} res Response object
  */
-module.exports.send = (req, res) => (data = 200, code = 200, headers = null, cb = () => {}) => {
+module.exports.send = (options, req, res) => (data = 200, code = 200, headers = null, cb = () => {}) => {
   if (headers !== null) {
     // attach custom headers on the response
     Object.keys(headers).forEach((key) => {
@@ -35,7 +38,7 @@ module.exports.send = (req, res) => (data = 200, code = 200, headers = null, cb 
     data,
     code
   }
-  res.emit('response', params)
+  if (options.disableResponseEvent !== true) { res.emit('response', params) }
 
   if (typeof data === 'object') {
     // transparently setting the 'content-type' header if JSON
