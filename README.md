@@ -197,7 +197,7 @@ service.use((req, res, next) => {
     })
 
     return next()
-});
+})
 ```
 
 Third party middlewares support:
