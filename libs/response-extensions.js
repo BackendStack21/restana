@@ -40,7 +40,7 @@ module.exports.send = (options, req, res) => (data = 200, code = 200, headers = 
   }
   if (options.disableResponseEvent !== true) { res.emit('response', params) }
 
-  if (typeof data === 'object') {
+  if (typeof data === 'object' && data instanceof Buffer === false) {
     // transparently setting the 'content-type' header if JSON
     res.setHeader('content-type', 'application/json')
     params.data = JSON.stringify(params.data)
