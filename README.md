@@ -13,17 +13,17 @@ npm i restana --save
 ### Creating the service instance
 Create unsecure HTTP server:
 ```js
-const service = require('restana')();
+const service = require('restana')()
 ```
 Passing HTTP server instance:
 ```js
-const https = require('https');
+const https = require('https')
 const service = require('restana')({
     server: https.createServer({
         key: keys.serviceKey,
         cert: keys.certificate
     })
-});
+})
 ```
 
 > See examples:
@@ -62,12 +62,12 @@ const service = require('restana')({
 
 ### Creating a micro-service & routes registration
 ```js
-const bodyParser = require('body-parser');
-service.use(bodyParser.json());
+const bodyParser = require('body-parser')
+service.use(bodyParser.json())
 
 const PetsModel = {
     // ... 
-};
+}
 
 // registering routes using method chaining
 service
@@ -96,7 +96,7 @@ service.get('/version', function (req, res) {
 ```
 Supported HTTP methods:
 ```js
-const methods = ['get', 'delete', 'put', 'patch', 'post', 'head', 'options', 'trace'];
+const methods = ['get', 'delete', 'put', 'patch', 'post', 'head', 'options', 'trace']
 ```
 
 #### Using .all routes registration
@@ -104,28 +104,28 @@ You can also register a route handler for `all` supported HTTP methods:
 ```js
 service.all('/allmethodsroute', function (req, res) {
     res.send(200)
-});
+})
 ```
 
 #### Starting the service
 ```js
-service.start(3000).then((server) => {});
+service.start(3000).then((server) => {})
 ```
 
 #### Stopping the service
 ```js
-service.close().then(()=> {});
+service.close().then(()=> {})
 ```
 
 ### Async / Await support
 ```js
 // some fake "star" handler
 service.post('/star/:username', async (req, res) => {
-    await starService.star(req.params.username);
-    const stars = await starService.count(req.params.username);
+    await starService.star(req.params.username)
+    const stars = await starService.count(req.params.username)
 
-    return stars;
-});
+    return stars
+})
 ```
 > IMPORTANT: Returned value can't be `undefined`, for such cases use `res.send(...`
 
@@ -148,7 +148,7 @@ service.get('/hi/:name', m1, m2, handler [, ctx])
 ```js
 res.send('Hello World', 200, {
     'x-response-time': 100
-});
+})
 ```
 ### Acknowledge from low-level `end` operation
 ```js
@@ -156,31 +156,31 @@ res.send('Hello World', 200, {}, (err) => {
     if (err) {
         // upppsss
     }
-});
+})
 ```
 
 ### Middleware usage:
 ```js
-const service = require('restana')({});
+const service = require('restana')({})
 
 // custom middleware to attach the X-Response-Time header to the response
 service.use((req, res, next) => {
-    let now = new Date().getTime();
+    let now = new Date().getTime()
 
     res.on('response', e => {
-        e.res.setHeader('X-Response-Time', new Date().getTime() - now);
-    });
+        e.res.setHeader('X-Response-Time', new Date().getTime() - now)
+    })
 
-    return next();
+    return next()
 });
 
 // the /v1/welcome route handler
 service.get('/v1/welcome', (req, res) => {
-    res.send('Hello World!');
-});
+    res.send('Hello World!')
+})
 
 // start the server
-service.start();
+service.start()
 ```
 
 #### Error handling
@@ -189,14 +189,14 @@ service.use((req, res, next) => {
     res.on('response', e => {
         if (e.code >= 400) {
             if (e.data && e.data.errClass) {
-                console.log(e.data.errClass + ': ' + e.data.message);
+                console.log(e.data.errClass + ': ' + e.data.message)
             } else {
-                console.log('error response, but not triggered by an Error instance');
+                console.log('error response, but not triggered by an Error instance')
             }
         }
-    });
+    })
 
-    return next();
+    return next()
 });
 ```
 
@@ -212,20 +212,20 @@ Examples :
 `restana` is compatible with the [serverless-http](https://github.com/dougmoscrop/serverless-http) library, so restana based services can also run as AWS lambdas 🚀
 ```js 
 // required dependencies
-const serverless = require('serverless-http');
-const restana = require('restana');
+const serverless = require('serverless-http')
+const restana = require('restana')
 
 // creating service
-const service = restana();
+const service = restana()
 service.get('/hello', (req, res) => {
-    res.send('Hello World!');
-});
+    res.send('Hello World!')
+})
 
 // lambda integration
 const handler = serverless(app);
 module.exports.handler = async (event, context) => {
-    return await handler(event, context);
-};
+    return await handler(event, context)
+}
 ``` 
 
 ## Third party integrations
@@ -233,11 +233,11 @@ module.exports.handler = async (event, context) => {
 // ...
 const service = restana()
 service.get('/hello', (req, res) => {
-    res.send('Hello World!');
-});
+    res.send('Hello World!')
+})
 
 // using "the callback integrator" middleware
-const server = http.createServer(service.callback());
+const server = http.createServer(service.callback())
 //...
 ```
 
@@ -249,18 +249,18 @@ npm i turbo-http
 ```
 ```js
 // ATTENTION: The performance of the service below can blow your mind ;)
-const server = require('restana/libs/turbo-http');
+const server = require('restana/libs/turbo-http')
 const service = require('restana')({
     server
-});
+})
 
 service.get('/hi', (req, res) => {
     res.send({
         msg: 'Hello World!'
-    });
-});
+    })
+})
 
-service.start();
+service.start()
 ```
 > NOTE: When using `turbo-http`, the node.js `cluster` module can't be used!
 
