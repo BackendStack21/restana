@@ -69,32 +69,30 @@ const PetsModel = {
     // ... 
 };
 
-service.get('/pets/:id', async (req, res) => {
-    res.send(await PetsModel.findOne(req.params.id));
-});
-
-service.get('/pets', async (req, res) => {
-    res.send(await PetsModel.find());
-});
-
-service.delete('/pets/:id', async (req, res) => {
-    res.send(await PetsModel.destroy(req.params.id));
-});
-
-service.post('/pets/:name/:age', async (req, res) => {
-    res.send(await PetsModel.create(req.params));
-});
-
-service.patch('/pets/:id', async (req, res) => {
-    res.send(await PetsModel.update(req.params.id, req.body))
-});
+// registering routes using method chaining
+service
+    .get('/pets/:id', async (req, res) => {
+        res.send(await PetsModel.findOne(req.params.id))
+    })
+    .get('/pets', async (req, res) => {
+        res.send(await PetsModel.find())
+    })
+    .delete('/pets/:id', async (req, res) => {
+        res.send(await PetsModel.destroy(req.params.id))
+    })
+    .post('/pets/:name/:age', async (req, res) => {
+        res.send(await PetsModel.create(req.params))
+    })
+    .patch('/pets/:id', async (req, res) => {
+        res.send(await PetsModel.update(req.params.id, req.body))
+    })
 
 service.get('/version', function (req, res) {
     res.body = { // optionally you can send the response data in the body property
         version: '1.0.0'
     };
-    res.send(); // 200 is the default response code
-});
+    res.send() // 200 is the default response code
+})
 ```
 Supported HTTP methods:
 ```js
@@ -185,7 +183,7 @@ service.get('/v1/welcome', (req, res) => {
 service.start();
 ```
 
-#### Catching exceptions
+#### Error handling
 ```js
 service.use((req, res, next) => {
     res.on('response', e => {

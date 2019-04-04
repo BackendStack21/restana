@@ -60,7 +60,12 @@ module.exports = (options = {}) => {
   // global middlewares holder
   const middlewares = []
   // routes registration shortcut factory
-  const addRoute = (method) => (path, ...args) => routeRegister(app, method, path, args)
+  const addRoute = (method) => (path, ...args) => {
+    routeRegister(app, method, path, args)
+
+    // supporting method chaining for routes registration
+    return app
+  }
 
   // the "restana" service interface
   const app = {
