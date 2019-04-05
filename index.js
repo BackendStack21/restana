@@ -72,7 +72,9 @@ module.exports = (options = {}) => {
     /**
      * Application configuration options reference
      */
-    options,
+    getConfigOptions () {
+      return options
+    },
 
     /**
      * Register global middleware

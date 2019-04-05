@@ -40,6 +40,11 @@ const service = require('restana')({
 - `defaultRoute`: Default route handler when no route match occurs. Default value: `((req, res) => res.send(404))`
 - `disableResponseEvent`: If `TRUE`, there won't be `response` events triggered on the `res` object. Default value: `FALSE`
 
+```js
+// accessing service configuration
+service.getConfigOptions()
+```
+
 #### Example usage:
 ```js 
 const service = require('restana')({
