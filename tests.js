@@ -6,6 +6,11 @@ describe('Restana Web Framework - Smoke', () => {
   let server
   const service = require('./index')({ server: require('./libs/turbo-http') })
 
+  it('service options are exposed through getServiceOptions', (done) => {
+    expect(typeof service.getConfigOptions().server).to.equal('object')
+    done()
+  })
+
   it('should successfully register service routes', async () => {
     service.get(
       '/pets/:id',
