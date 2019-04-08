@@ -47,7 +47,18 @@ declare namespace restana {
     ? HttpsServer
     : HttpServer
 
-  interface Options<P extends Protocol> {}
+  interface Router {}
+
+  interface Options<P extends Protocol> {
+    server?: Server<P>
+    routerFactory?(options: Options<P>): Router
+    prioRequestsProcessing?: boolean
+    ignoreTrailingSlash?: boolean
+    allowUnsafeRegex?: boolean
+    maxParamLength?: number
+    defaultRoute?(req: Request<P>, res: Response<P>): void
+    disableResponseEvent?: boolean
+  }
 
   interface Service<P extends Protocol> {}
 }
