@@ -28,9 +28,18 @@ declare namespace restana {
     ? Http2ServerRequest
     : IncomingMessage
 
+  interface ResponseExtensions {
+    send(
+      data?: unknown,
+      code?: number,
+      headers?: Record<string, number | string | string[]>,
+      cb?: () => void
+    ): void
+  }
+
   type Response<P extends Protocol> = P extends Protocol.HTTP2
-    ? Http2ServerResponse
-    : ServerResponse
+    ? Http2ServerResponse & ResponseExtensions
+    : ServerResponse & ResponseExtensions
 
   type Server<P extends Protocol> = P extends Protocol.HTTP2
     ? Http2SecureServer
