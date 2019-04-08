@@ -46,4 +46,14 @@ declare namespace restana {
     : P extends Protocol.HTTPS
     ? HttpsServer
     : HttpServer
+
+  interface Options<P extends Protocol> {}
+
+  interface Service<P extends Protocol> {}
 }
+
+declare function restana<P extends restana.Protocol = restana.Protocol.HTTP>(
+  options?: restana.Options<P>
+): restana.Service<P>
+
+export = restana
