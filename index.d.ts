@@ -47,7 +47,11 @@ declare namespace restana {
     ? HttpsServer
     : HttpServer
 
-  type RequestHandler<P extends Protocol> = Function
+  type RequestHandler<P extends Protocol> = (
+    req: Request<P>,
+    res: Response<P>,
+    next: (error?: unknown) => void
+  ) => void | Promise<unknown>
 
   type RegisterRoute<P extends Protocol> = Function
 
