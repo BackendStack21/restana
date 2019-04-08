@@ -68,7 +68,7 @@ declare namespace restana {
     ignoreTrailingSlash?: boolean
     allowUnsafeRegex?: boolean
     maxParamLength?: number
-    defaultRoute?(req: Request<P>, res: Response<P>): void
+    defaultRoute?: RequestHandler<P>
     disableResponseEvent?: boolean
   }
 
