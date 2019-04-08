@@ -1,3 +1,11 @@
+import { Server as HttpServer, IncomingMessage, ServerResponse } from 'http'
+import { Server as HttpsServer } from 'https'
+import {
+  Http2SecureServer,
+  Http2ServerRequest,
+  Http2ServerResponse
+} from 'http2'
+
 declare namespace restana {
   enum Protocol {
     HTTP = 'http',
@@ -15,4 +23,18 @@ declare namespace restana {
     OPTIONS = 'options',
     TRACE = 'trace'
   }
+
+  type Request<P extends Protocol> = P extends Protocol.HTTP2
+    ? Http2ServerRequest
+    : IncomingMessage
+
+  type Response<P extends Protocol> = P extends Protocol.HTTP2
+    ? Http2ServerResponse
+    : ServerResponse
+
+  type Server<P extends Protocol> = P extends Protocol.HTTP2
+    ? Http2SecureServer
+    : P extends Protocol.HTTPS
+    ? HttpsServer
+    : HttpServer
 }
