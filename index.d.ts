@@ -47,6 +47,18 @@ declare namespace restana {
     ? HttpsServer
     : HttpServer
 
+  type RequestHandler<P extends Protocol> = Function
+
+  type RegisterRoute<P extends Protocol> = Function
+
+  interface Route<P extends Protocol> {
+    method: Method
+    path: string
+    handler: RequestHandler<P>
+    ctx: {}
+    middlewares: RequestHandler<P>[]
+  }
+
   interface Router {}
 
   interface Options<P extends Protocol> {
@@ -60,7 +72,31 @@ declare namespace restana {
     disableResponseEvent?: boolean
   }
 
-  interface Service<P extends Protocol> {}
+  interface Service<P extends Protocol> {
+    getConfigOptions(): Options<P>
+    use(middleware: RequestHandler<P>, context?: {}): void
+    route(
+      method: Method,
+      path: string,
+      handler: RequestHandler<P>,
+      ctx?: {},
+      middlewares?: RequestHandler<P>[]
+    ): Route<P>
+    handle(req: Request<P>, res: Response<P>): void
+    start(port?: number, host?: string): Promise<Server<P>>
+    close(): Promise<void>
+    routes(): string[]
+
+    get: RegisterRoute<P>
+    delete: RegisterRoute<P>
+    patch: RegisterRoute<P>
+    post: RegisterRoute<P>
+    put: RegisterRoute<P>
+    head: RegisterRoute<P>
+    options: RegisterRoute<P>
+    trace: RegisterRoute<P>
+    all: RegisterRoute<P>
+  }
 }
 
 declare function restana<P extends restana.Protocol = restana.Protocol.HTTP>(
