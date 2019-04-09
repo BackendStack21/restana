@@ -3,6 +3,7 @@
   "version": "2.12.1",
   "description": "Super fast and minimalist web framework for building REST micro-services.",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "PORT=3000 NODE_ENV=testing npx nyc --check-coverage --lines 95 node ./node_modules/mocha/bin/mocha tests.js specs/*.test.js",
     "postinstall": "node ./libs/tasks/postinstall.js"
