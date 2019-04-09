@@ -19,10 +19,10 @@ Passing HTTP server instance:
 ```js
 const https = require('https')
 const service = require('restana')({
-    server: https.createServer({
-        key: keys.serviceKey,
-        cert: keys.certificate
-    })
+  server: https.createServer({
+    key: keys.serviceKey,
+    cert: keys.certificate
+  })
 })
 ```
 
