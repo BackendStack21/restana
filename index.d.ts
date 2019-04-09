@@ -24,9 +24,13 @@ declare namespace restana {
     TRACE = 'trace'
   }
 
+  interface RequestExtensions {
+    params: Record<string, string>
+  }
+
   type Request<P extends Protocol> = P extends Protocol.HTTP2
-    ? Http2ServerRequest
-    : IncomingMessage
+    ? Http2ServerRequest & RequestExtensions
+    : IncomingMessage & RequestExtensions
 
   interface ResponseExtensions {
     send(
