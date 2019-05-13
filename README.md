@@ -68,6 +68,8 @@ const service = require('restana')({
 ### Creating a micro-service & routes registration
 ```js
 const bodyParser = require('body-parser')
+
+const service = require('restana')()
 service.use(bodyParser.json())
 
 const PetsModel = {
