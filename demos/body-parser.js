@@ -5,7 +5,7 @@ const bodyParser = require('body-parser')
 service.use(bodyParser.json())
 
 service.post('/echo', (req, res) => {
-  res.send(JSON.stringify(req.body, null, 2))
+  res.send(req.body)
 })
 
 // start the server
