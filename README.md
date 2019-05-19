@@ -39,6 +39,7 @@ const service = require('restana')({
 - `maxParamLength`: Defines the custom length for parameters in parametric (standard, regex and multi) routes. Default value: `100`
 - `defaultRoute`: Default route handler when no route match occurs. Default value: `((req, res) => res.send(404))`
 - `disableResponseEvent`: If `TRUE`, there won't be `response` events triggered on the `res` object. Default value: `FALSE`
+- `errorHandler`: Optional global error handler function. Default value: `(err, req, res) => res.send(err)`
 
 ```js
 // accessing service configuration
@@ -191,22 +192,19 @@ service.start()
 
 #### Error handling
 ```js
-service.use((req, res, next) => {
-  res.on('response', e => {
-    if (e.code >= 400) {
-      if (e.data && e.data.errClass) {
-        console.log(e.data.errClass + ': ' + e.data.message)
-      } else {
-        console.log('error response, but not triggered by an Error instance')
-      }
-    }
-  })
+const service = require('restana')({
+  errorHandler (err, req, res) {
+    console.log(`Something was wrong: ${err.message || err}`)
+    res.send(err)
+  }
+})
 
-  return next()
+service.get('/throw', (req, res) => {
+  throw new Error('Upps!')
 })
 ```
 
-Third party middlewares support:
+#### Third party middlewares support:
 > Almost all middlewares using the *function (req, res, next)* signature format should work, considering that no custom framework feature is used.
 
 Examples :
