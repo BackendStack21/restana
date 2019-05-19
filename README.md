@@ -247,33 +247,8 @@ const server = http.createServer(service.callback())
 ```
 
 ## Performance comparison (framework overhead)
-> measurements below refers to version 2.4
-
-[Performance comparison](performance/) for a basic *Hello World!* response (single thread process).  
-Node version: v10.14.1  
-Laptop: MacBook Pro 2016, 2,7 GHz Intel Core i7, 16 GB 2133 MHz LPDDR3
-```bash
-wrk -t8 -c8 -d30s http://localhost:3000/hi
-```
-### String response ('Hello World!')
-* **restana**: Requests/sec 46314.39
-* **restana-cluster**: Requests/sec 70979.80
-* fastify: Requests/sec 36873.05
-* restify: Requests/sec 26388.94
-* koa: Requests/sec 25686.12
-* hapi: Requests/sec 20279.23
-* express: Requests/sec 16812.15
-
-### JSON response ({msg: 'Hello World!'})
-* **restana**: Requests/sec 39363.91
-* fastify: Requests/sec 33600.85
-* restify: Requests/sec 29490.79
-* koa: Requests/sec 23787.82
-* hapi: Requests/sec 19404.48
-* express: Requests/sec 15365.56
-
 ### Which is the fastest?
-You can also checkout `restana` performance index on the ***"Which is the fastest"*** project: https://github.com/the-benchmarker/web-frameworks#full-table-1
+You can checkout `restana` performance index on the ***"Which is the fastest"*** project: https://github.com/the-benchmarker/web-frameworks#full-table-1
 
 ## Using this project? Let us know 🚀
 https://goo.gl/forms/qlBwrf5raqfQwteH3
