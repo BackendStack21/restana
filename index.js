@@ -60,8 +60,8 @@ module.exports = (options = {}) => {
   // global middlewares holder
   const middlewares = []
   // routes registration shortcut factory
-  const addRoute = (method) => (path, ...args) => {
-    routeRegister(app, method, path, args)
+  const addRoute = (methods) => (path, ...args) => {
+    routeRegister(app, methods, path, args)
 
     // supporting method chaining for routes registration
     return app
