@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/jkyberneees/ana.svg?branch=master)](https://travis-ci.org/jkyberneees/ana)
 [![NPM version](https://img.shields.io/npm/v/restana.svg?style=flat)](https://www.npmjs.com/package/restana)  
 Blazing fast, tiny and minimalist *connect-like* web framework for building REST micro-services.  
+[> Check how much faster!](https://github.com/the-benchmarker/web-frameworks#full-table-1)
 > Uses 'find-my-way' router: https://www.npmjs.com/package/find-my-way
 
 What else?  *[Building ultra-fast REST APIs with Node.js (restana vs express vs fastify)](https://medium.com/@kyberneees/building-ultra-fast-rest-apis-with-node-js-and-restana-1d65b0d524b7)*
@@ -245,29 +246,6 @@ const server = http.createServer(service.callback())
 //...
 ```
 
-## turbo-http integration
-What is turbo-http? Checkout: https://www.npmjs.com/package/turbo-http  
-Using `turbo-http` in restana:
-```bash
-npm i turbo-http
-```
-```js
-// ATTENTION: The performance of the service below can blow your mind ;)
-const server = require('restana/libs/turbo-http')
-const service = require('restana')({
-  server
-})
-
-service.get('/hi', (req, res) => {
-  res.send({
-    msg: 'Hello World!'
-  })
-})
-
-service.start()
-```
-> NOTE: When using `turbo-http`, the node.js `cluster` module can't be used!
-
 ## Performance comparison (framework overhead)
 > measurements below refers to version 2.4
 
@@ -278,7 +256,6 @@ Laptop: MacBook Pro 2016, 2,7 GHz Intel Core i7, 16 GB 2133 MHz LPDDR3
 wrk -t8 -c8 -d30s http://localhost:3000/hi
 ```
 ### String response ('Hello World!')
-* **restana-turbo-http**: Requests/sec 57708.05
 * **restana**: Requests/sec 46314.39
 * **restana-cluster**: Requests/sec 70979.80
 * fastify: Requests/sec 36873.05
@@ -288,7 +265,6 @@ wrk -t8 -c8 -d30s http://localhost:3000/hi
 * express: Requests/sec 16812.15
 
 ### JSON response ({msg: 'Hello World!'})
-* **restana-turbo-http**: Requests/sec 53544.21
 * **restana**: Requests/sec 39363.91
 * fastify: Requests/sec 33600.85
 * restify: Requests/sec 29490.79
@@ -301,3 +277,7 @@ You can also checkout `restana` performance index on the ***"Which is the fastes
 
 ## Using this project? Let us know 🚀
 https://goo.gl/forms/qlBwrf5raqfQwteH3
+
+## Breacking changes
+### 3.x: 
+- Support for `turbo-http` library was dropped.

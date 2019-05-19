@@ -1,3 +1,5 @@
+const CONTENT_TYPE_HEADER = 'content-type'
+
 /**
  * The friendly 'res.send' method
  * No comments needed ;)
@@ -38,11 +40,15 @@ module.exports.send = (options, req, res) => (data = 200, code = 200, headers = 
     data,
     code
   }
-  if (options.disableResponseEvent !== true) { res.emit('response', params) }
+  if (options.disableResponseEvent !== true) {
+    res.emit('response', params)
+  }
 
   if (typeof data === 'object' && data instanceof Buffer === false) {
-    // transparently setting the 'content-type' header if JSON
-    res.setHeader('content-type', 'application/json')
+    if (!res.hasHeader(CONTENT_TYPE_HEADER)) {
+      // transparently setting the 'content-type' header if JSON
+      res.setHeader(CONTENT_TYPE_HEADER, 'application/json')
+    }
     params.data = JSON.stringify(params.data)
   }
 
