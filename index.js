@@ -67,6 +67,9 @@ module.exports = (options = {}) => {
     return app
   }
 
+  // error handler
+  const errorHandler = options.errorHandler || ((err, req, res) => res.send(err))
+
   // the "restana" service interface
   const app = {
     /**
@@ -133,13 +136,13 @@ module.exports = (options = {}) => {
               ...middlewares.slice(0),
               {
                 context: {},
-                handler: handlerCall(handler, ctx) // -> Function
+                handler: handlerCall(handler, ctx, errorHandler) // -> Function
               }
-            ], req, res)()
+            ], req, res, errorHandler)()
           } else {
             // directly call the route handler only
             // NOTE: we do this to increase performance
-            handlerCall(handler, ctx)(req, res)
+            handlerCall(handler, ctx, errorHandler)(req, res)
           }
         })
       } else {
@@ -170,7 +173,7 @@ module.exports = (options = {}) => {
               router.lookup(req, res)
             }
           }
-        ], req, res)()
+        ], req, res, errorHandler)()
       } else {
         // directly call the request router
         // NOTE: we do this to increase performance

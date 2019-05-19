@@ -3,19 +3,19 @@
  *
  * @param {Function} handler The request handler function
  * @param {Object} ctx The request handler invokation context instance
+ * @param {Function} errHandler The error handler function
  */
-module.exports = (handler, ctx) => (req, res) => {
+module.exports = (handler, ctx, errHandler) => async (req, res) => {
   try {
     const result = handler.call(ctx, req, res, ctx)
+    // async support
     if (result instanceof Promise) {
-      // async support
-      result.then(data => {
-        if (undefined !== data) {
-          return res.send(data)
-        }
-      }).catch(res.send)
+      const data = await result
+      if (undefined !== data) {
+        return res.send(data)
+      }
     }
   } catch (err) {
-    res.send(err)
+    errHandler(err, req, res)
   }
 }

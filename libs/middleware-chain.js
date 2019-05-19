@@ -4,8 +4,9 @@
  * @param {Array} middlewares
  * @param {Object} req
  * @param {Object} res
+ * @param {Function} errorHandler
  */
-const next = (middlewares, req, res) => {
+const next = (middlewares, req, res, errorHandler) => {
   // retrieve next middleware from chain
   const middleware = middlewares.shift()
 
@@ -16,13 +17,13 @@ const next = (middlewares, req, res) => {
 
       try {
         // invoke each middleware
-        const result = middleware.handler.call(middleware.context, req, res, next(middlewares, req, res))
+        const result = middleware.handler.call(middleware.context, req, res, next(middlewares, req, res, errorHandler))
         if (result instanceof Promise) {
           // async support
-          result.catch(res.send)
+          result.catch(err => errorHandler(err, req, res))
         }
       } catch (err) {
-        res.send(err)
+        errorHandler(err, req, res)
       }
     } else if (!res.finished) {
       res.send(res.statusCode)

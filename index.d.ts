@@ -57,6 +57,12 @@ declare namespace restana {
     next: (error?: unknown) => void
   ) => void | Promise<unknown>
 
+  type ErrorHandler<P extends Protocol> = (
+    err: Error,
+    req: Request<P>,
+    res: Response<P>,
+  ) => void | Promise<unknown>
+
   interface RegisterRoute<P extends Protocol> {
     (
       path: string,
@@ -104,7 +110,7 @@ declare namespace restana {
     middlewares: RequestHandler<P>[]
   }
 
-  interface Router {}
+  interface Router { }
 
   interface Options<P extends Protocol> {
     server?: Server<P>
@@ -115,6 +121,7 @@ declare namespace restana {
     maxParamLength?: number
     defaultRoute?: RequestHandler<P>
     disableResponseEvent?: boolean
+    errorHandler: ErrorHandler<P>
   }
 
   interface Service<P extends Protocol> {
