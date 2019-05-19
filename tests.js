@@ -1,10 +1,13 @@
 /* global describe, it */
 const expect = require('chai').expect
 const request = require('supertest')
+const http = require('http')
 
 describe('Restana Web Framework - Smoke', () => {
   let server
-  const service = require('./index')({ server: require('./libs/turbo-http') })
+  const service = require('./index')({
+    server: http.createServer()
+  })
 
   it('service options are exposed through getServiceOptions', (done) => {
     expect(typeof service.getConfigOptions().server).to.equal('object')
@@ -47,14 +50,6 @@ describe('Restana Web Framework - Smoke', () => {
 
     service.get('/error', () => {
       throw new Error('error')
-    })
-
-    service.get('/turbo-http-headers', (req, res) => {
-      if (!req.headers || !req.headers['test'] || req.headers['test'] !== '123') {
-        res.send(500)
-      } else {
-        res.send(200)
-      }
     })
 
     service.get('/handler-override', (req, res) => res.send('1'))
@@ -114,13 +109,6 @@ describe('Restana Web Framework - Smoke', () => {
     await request(server)
       .get('/sdsdfsf')
       .expect(404)
-  })
-
-  it('should have req.headers as plain object when work with turbo-http', async () => {
-    await request(server)
-      .get('/turbo-http-headers')
-      .set('test', '123')
-      .expect(200)
   })
 
   it('should receive service routing keys array - i.e: ["[GET]/pets/:id"]', async () => {
