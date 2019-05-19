@@ -1,5 +1,5 @@
 /**
- * restana Web Framework implemenation
+ * restana Web Framework implementation
  *
  * @license MIT
  */
