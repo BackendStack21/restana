@@ -23,7 +23,8 @@ module.exports.send = (options, req, res) => (data = 200, code = 200, headers = 
     data = res.body
   } else if (data instanceof Error) {
     // transparently supporting Error instances
-    code = data.status || data.code || 500
+    const errorCode = data.status || data.code || data.statusCode
+    code = typeof errorCode === 'number' ? parseInt(errorCode) : 500
     data = {
       errClass: data.constructor.name,
       code,
