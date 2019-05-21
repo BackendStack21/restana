@@ -121,7 +121,7 @@ declare namespace restana {
     maxParamLength?: number
     defaultRoute?: RequestHandler<P>
     disableResponseEvent?: boolean
-    errorHandler: ErrorHandler<P>
+    errorHandler?: ErrorHandler<P>
   }
 
   interface Service<P extends Protocol> {
