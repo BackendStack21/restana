@@ -42,7 +42,7 @@
     "anumargak": "^2.2.0",
     "chai": "^4.2.0",
     "connect-query": "^1.0.0",
-    "express": "^4.17.0",
+    "express": "^4.17.1",
     "fastify": "^1.14.6",
     "hapi": "^17.8.4",
     "koa": "^2.7.0",
