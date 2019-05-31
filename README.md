@@ -168,6 +168,20 @@ res.send('Hello World', 200, {}, (err) => {
 })
 ```
 
+### Global error handling
+```js
+const service = require('restana')({
+  errorHandler (err, req, res) {
+    console.log(`Something was wrong: ${err.message || err}`)
+    res.send(err)
+  }
+})
+
+service.get('/throw', (req, res) => {
+  throw new Error('Upps!')
+})
+```
+
 ### Middleware usage:
 ```js
 const service = require('restana')({})
@@ -189,20 +203,6 @@ service.get('/v1/welcome', (req, res) => {
 
 // start the server
 service.start()
-```
-
-#### Error handling
-```js
-const service = require('restana')({
-  errorHandler (err, req, res) {
-    console.log(`Something was wrong: ${err.message || err}`)
-    res.send(err)
-  }
-})
-
-service.get('/throw', (req, res) => {
-  throw new Error('Upps!')
-})
 ```
 
 #### Third party middlewares support:
