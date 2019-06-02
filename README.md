@@ -45,6 +45,8 @@ const service = require('restana')({
 ```js
 // accessing service configuration
 service.getConfigOptions()
+// accessing restana HTTP server instance
+service.getServer()
 ```
 
 #### Example usage:

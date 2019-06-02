@@ -11,6 +11,7 @@ describe('Restana Web Framework - Smoke', () => {
 
   it('service options are exposed through getServiceOptions', (done) => {
     expect(typeof service.getConfigOptions().server).to.equal('object')
+    expect(service.getConfigOptions().server).to.equal(service.getServer())
     done()
   })
 

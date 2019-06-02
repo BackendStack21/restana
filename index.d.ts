@@ -125,6 +125,7 @@ declare namespace restana {
   }
 
   interface Service<P extends Protocol> {
+    getServer(): Server<P>,
     getConfigOptions(): Options<P>
     use(middleware: RequestHandler<P>, context?: {}): void
     route(

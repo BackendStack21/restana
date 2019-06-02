@@ -73,6 +73,12 @@ module.exports = (options = {}) => {
   // the "restana" service interface
   const app = {
     /**
+     * HTTP server instance
+     */
+    getServer () {
+      return server
+    },
+    /**
      * Application configuration options reference
      */
     getConfigOptions () {
