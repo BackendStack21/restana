@@ -56,7 +56,7 @@ const service = require('restana')({
 });
 ```
 
-#### Optionally roviding a router factory method:
+#### Optionally overwrite router factory method:
 > In this example we use `anumargak` router instead of `find-my-way`.
 ```js 
 const anumargak = require('anumargak')
