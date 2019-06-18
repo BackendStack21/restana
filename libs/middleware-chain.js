@@ -11,7 +11,7 @@ const next = (middlewares, req, res, errorHandler) => {
   const middleware = middlewares.shift()
 
   return (err) => {
-    if (err) return res.send(err)
+    if (err) return errorHandler(err, req, res)
     if (res.statusCode === 200 && !res.finished) {
       if (!middleware) return
 
