@@ -45,10 +45,12 @@ module.exports = (options = {}) => {
   // registering 'request' handler
   if (prp) {
     server.on('request', (req, res) => {
+      req.originalUrl = req.url
       setImmediate(() => app.handle(req, res))
     })
   } else {
     server.on('request', (req, res) => {
+      req.originalUrl = req.url
       app.handle(req, res)
     })
   }

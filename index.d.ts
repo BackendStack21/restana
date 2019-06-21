@@ -26,6 +26,7 @@ declare namespace restana {
 
   interface RequestExtensions {
     params: Record<string, string>
+    originalUrl: string
   }
 
   type Request<P extends Protocol> = P extends Protocol.HTTP2
