@@ -45,12 +45,10 @@ module.exports = (options = {}) => {
   // registering 'request' handler
   if (prp) {
     server.on('request', (req, res) => {
-      req.originalUrl = req.url
       setImmediate(() => app.handle(req, res))
     })
   } else {
     server.on('request', (req, res) => {
-      req.originalUrl = req.url
       app.handle(req, res)
     })
   }
@@ -170,7 +168,10 @@ module.exports = (options = {}) => {
      * @param {Object} res Response object
      */
     handle: (req, res) => {
+      // request object population
+      req.originalUrl = req.url
       res.send = exts.response.send(options, req, res)
+
       if (middlewares.length > 0) {
         // call route middlewares and route handler
         next([
