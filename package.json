@@ -1,6 +1,6 @@
 {
   "name": "restana",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "description": "Super fast and minimalist web framework for building REST micro-services.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -36,7 +36,7 @@
   ],
   "homepage": "https://github.com/jkyberneees/ana#readme",
   "dependencies": {
-    "find-my-way": "^1.18.1"
+    "find-my-way": "^2.1.0"
   },
   "devDependencies": {
     "anumargak": "^2.2.0",
