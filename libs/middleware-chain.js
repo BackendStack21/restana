@@ -22,6 +22,8 @@ const next = (middlewares, req, res, errorHandler) => {
           // async support
           result.catch(err => errorHandler(err, req, res))
         }
+        
+        return result;
       } catch (err) {
         errorHandler(err, req, res)
       }
