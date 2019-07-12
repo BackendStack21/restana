@@ -236,6 +236,10 @@ module.exports.handler = async (event, context) => {
 }
 ``` 
 
+## Serving static files
+You can read more about serving static files with restana in this link:
+https://thejs.blog/2019/07/12/restana-static-serving-the-frontend-with-node-js-beyond-nginx/
+
 ## Third party integrations
 ```js
 // ...
