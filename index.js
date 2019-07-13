@@ -32,7 +32,6 @@ const handlerCall = require('./libs/route-handler-caller')
  */
 const routeRegister = require('./libs/route-register')
 
-
 /**
  * Application instance contructor like function
  *
@@ -67,13 +66,13 @@ module.exports = (options = {}) => {
   }
 
   const lookup = (req, res, next) => {
-    return router.lookup(req, res);
+    return router.lookup(req, res)
   }
   // global middlewares holder
   const globalMiddlewares = [{
     handler: lookup,
     context: {}
-  }];
+  }]
 
   // error handler
   const errorHandler = options.errorHandler || ((err, req, res) => res.send(err))
@@ -101,10 +100,10 @@ module.exports = (options = {}) => {
      */
     use: (middleware, context = {}) => {
       globalMiddlewares.splice(
-        globalMiddlewares.length - 1, 
-        0, 
+        globalMiddlewares.length - 1,
+        0,
         { handler: middleware, context }
-      );
+      )
     },
 
     /**
@@ -143,10 +142,10 @@ module.exports = (options = {}) => {
           context: {},
           handler: handlerCall(handler, ctx, errorHandler) // -> Function
         }
-      ] : [];
-      
+      ] : []
+
       // Allow override of routes, by first removing the old route
-      router.off(method, path);
+      router.off(method, path)
 
       // registering request handler
       router.on(method, path, (req, res, params) => {
@@ -163,7 +162,7 @@ module.exports = (options = {}) => {
         }
       })
 
-      return routes[key];
+      return routes[key]
     },
 
     /**
@@ -194,7 +193,7 @@ module.exports = (options = {}) => {
      * @param {String} host Optional HTTP server binding network interface
      * @returns {Promise}
      */
-    start: (port = 3000, host) => new Promise((resolve, reject) => {      
+    start: (port = 3000, host) => new Promise((resolve, reject) => {
       server.listen(port, host, (err) => {
         if (err) reject(err)
         resolve(server)
