@@ -19,9 +19,9 @@ fastify.route({
           name: { type: 'boolean' },
           age: { type: 'number' },
           numbers: {
-            'type': 'array',
-            'items': {
-              'type': 'number'
+            type: 'array',
+            items: {
+              type: 'number'
             }
           }
         }
@@ -29,7 +29,7 @@ fastify.route({
     }
   },
   handler: async (request) => {
-    const {name, age} = request.params
+    const { name, age } = request.params
     return {
       msg: `Dear ${name}, you still can learn at your ${age}s ` +
         `that fastify is awesome ;)`,
