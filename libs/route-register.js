@@ -8,7 +8,7 @@
  */
 module.exports = (app, methods, path, args) => {
   let ctx = {}
-  let middlewares = []
+  const middlewares = []
 
   // sanitazing HTTP methods
   if (Array.isArray(methods)) {
