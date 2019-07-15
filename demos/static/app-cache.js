@@ -1,6 +1,5 @@
 const files = require('serve-static')
 const path = require('path')
-const finish = require('finalhandler')
 
 const app = require('../../index')({
   disableResponseEvent: true
@@ -14,9 +13,6 @@ const serve = files(path.join(__dirname, 'src'), {
   }
 })
 
-app.use((req, res) => {
-  const done = finish(req, res)
-  serve(req, res, done)
-})
+app.use(serve)
 
 app.start(3000)
