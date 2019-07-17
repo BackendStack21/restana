@@ -57,8 +57,6 @@ module.exports = (options = {}) => {
   const router = options.routerFactory ? options.routerFactory(options) : requestRouter(options)
   // routes holder
   const routes = {}
-  // global middlewares holder
-  const middlewares = []
   // routes registration shortcut factory
   const addRoute = (methods) => (path, ...args) => {
     routeRegister(app, methods, path, args)
@@ -66,6 +64,15 @@ module.exports = (options = {}) => {
     // supporting method chaining for routes registration
     return app
   }
+
+  const lookup = (req, res, next) => {
+    return router.lookup(req, res)
+  }
+  // global middlewares holder
+  const globalMiddlewares = [{
+    handler: lookup,
+    context: {}
+  }]
 
   // error handler
   const errorHandler = options.errorHandler || ((err, req, res) => res.send(err))
@@ -92,10 +99,11 @@ module.exports = (options = {}) => {
      * @param {Object} context The middleware invokation context object
      */
     use: (middleware, context = {}) => {
-      middlewares.push({
-        handler: middleware,
-        context
-      })
+      globalMiddlewares.splice(
+        globalMiddlewares.length - 1,
+        0,
+        { handler: middleware, context }
+      )
     },
 
     /**
@@ -119,44 +127,40 @@ module.exports = (options = {}) => {
 
       // creating routing key
       const key = `[${method.toString().toUpperCase()}]${path}`
-      if (!routes[key]) {
-        // caching route arguments
-        routes[key] = {
-          method,
-          path,
-          handler,
-          ctx,
-          middlewares
-        }
-
-        // registering request handler
-        router.on(method, path, (req, res, params) => {
-          // populate req.params
-          req.params = params
-          // destructing arguments
-          const { handler, ctx, middlewares } = routes[key]
-
-          if (middlewares.length > 0) {
-            // call route middlewares and route handler
-            next([
-              ...middlewares.slice(0),
-              {
-                context: {},
-                handler: handlerCall(handler, ctx, errorHandler) // -> Function
-              }
-            ], req, res, errorHandler)()
-          } else {
-            // directly call the route handler only
-            // NOTE: we do this to increase performance
-            handlerCall(handler, ctx, errorHandler)(req, res)
-          }
-        })
-      } else {
-        // update route parameters if route exist
-        routes[key].ctx = ctx
-        routes[key].handler = handler
-        routes[key].middlewares = middlewares
+      // caching route arguments
+      routes[key] = {
+        method,
+        path,
+        handler,
+        ctx,
+        middlewares
       }
+
+      const wares = middlewares.length > 0 ? [
+        ...middlewares.slice(0),
+        {
+          context: {},
+          handler: handlerCall(handler, ctx, errorHandler) // -> Function
+        }
+      ] : []
+
+      // Allow override of routes, by first removing the old route
+      router.off(method, path)
+
+      // registering request handler
+      router.on(method, path, (req, res, params) => {
+        // populate req.params
+        req.params = params
+
+        if (middlewares.length > 0) {
+          // call route middlewares and route handler
+          return next(wares, req, res, errorHandler)
+        } else {
+          // directly call the route handler only
+          // NOTE: we do this to increase performance
+          return handlerCall(handler, ctx, errorHandler)(req, res)
+        }
+      })
 
       return routes[key]
     },
@@ -172,17 +176,9 @@ module.exports = (options = {}) => {
       req.originalUrl = req.url
       res.send = exts.response.send(options, req, res)
 
-      if (middlewares.length > 0) {
+      if (globalMiddlewares.length > 1) {
         // call route middlewares and route handler
-        next([
-          ...middlewares.slice(0),
-          {
-            context: {},
-            handler: (req, res, next) => {
-              router.lookup(req, res)
-            }
-          }
-        ], req, res, errorHandler)()
+        next(globalMiddlewares, req, res, errorHandler)
       } else {
         // directly call the request router
         // NOTE: we do this to increase performance

@@ -6,28 +6,25 @@
  * @param {Object} res
  * @param {Function} errorHandler
  */
-const next = (middlewares, req, res, errorHandler) => {
+function next (middlewares, req, res, errorHandler, middlewareIndex = 0) {
   // retrieve next middleware from chain
-  const middleware = middlewares.shift()
+  const middleware = middlewares[middlewareIndex]
 
-  return (err) => {
+  function step (err) {
     if (err) return errorHandler(err, req, res)
     if (res.statusCode === 200 && !res.finished) {
       if (!middleware) return
 
-      try {
-        // invoke each middleware
-        const result = middleware.handler.call(middleware.context, req, res, next(middlewares, req, res, errorHandler))
-        if (result instanceof Promise) {
-          // async support
-          result.catch(err => errorHandler(err, req, res))
-        }
-      } catch (err) {
-        errorHandler(err, req, res)
-      }
+      return next(middlewares, req, res, errorHandler, ++middlewareIndex)
     } else if (!res.finished) {
       res.send(res.statusCode)
     }
+  }
+
+  try {
+    return middleware.handler.call(middleware.context, req, res, step)
+  } catch (e) {
+    errorHandler(e, req, res)
   }
 }
 
