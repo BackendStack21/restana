@@ -140,20 +140,7 @@ service.post('/star/:username', async (req, res) => {
 ```
 > IMPORTANT: Returned value can't be `undefined`, for such cases use `res.send(...`
 
-### Route Level Middlewares
-Connecting middlewares to specific routes is also supported:
-```js
-service.get('/hi/:name', async (req, res) => {
-  return 'Hello ' + req.params.name // -> "name" will be uppercase here
-}, {}, [(req, res, next) => {
-  req.params.name = req.params.name.toUpperCase()
-  next()
-}]) // route middlewares can be passed in an Array after the handler context param
-```
-Express.js like signature also supported:
-```js
-service.get('/hi/:name', m1, m2, handler [, ctx])
-```
+
 
 ### Sending custom headers:
 ```js
@@ -184,7 +171,7 @@ service.get('/throw', (req, res) => {
 })
 ```
 
-### Middleware usage:
+### Middlewares support:
 ```js
 const service = require('restana')({})
 
@@ -207,6 +194,21 @@ service.get('/v1/welcome', (req, res) => {
 service.start()
 ```
 
+### Route level middlewares
+Connecting middlewares to specific routes is also supported:
+```js
+service.get('/hi/:name', async (req, res) => {
+  return 'Hello ' + req.params.name // -> "name" will be uppercase here
+}, {}, [(req, res, next) => {
+  req.params.name = req.params.name.toUpperCase()
+  next()
+}]) // route middlewares can be passed in an Array after the handler context param
+```
+Express.js like signature also supported:
+```js
+service.get('/hi/:name', m1, m2, handler [, ctx])
+```
+
 #### Third party middlewares support:
 > Almost all middlewares using the *function (req, res, next)* signature format should work, considering that no custom framework feature is used.
 
@@ -215,6 +217,32 @@ Examples :
 * **express-jwt**: [https://www.npmjs.com/package/express-jwt](https://www.npmjs.com/package/express-jwt). See demo: [express-jwt.js](demos/express-jwt.js)
 * **body-parser**: [https://www.npmjs.com/package/body-parser](https://www.npmjs.com/package/body-parser). See demo: [body-parser.js](demos/body-parser.js)
 * **swagger-tools**: [https://www.npmjs.com/package/swagger-tools](https://www.npmjs.com/package/swagger-tools). See demo: [swagger](demos/swagger/index.js)
+
+#### Async middlewares support
+Starting from `v1.4.x`, you can now also use async middlewares as described below:
+```js
+service.use(async (req, res, next) => {
+  await next()
+  console.log('Global middlewares execution completed!')
+}))
+service.use(logging())
+service.use(jwt())
+```
+
+In the same way you can also capture uncaught exceptions inside your async middlewares:
+```js
+service.use(async (req, res, next) => {
+  try {
+    await next()
+  } catch (err) {
+    console.log('upps, something just happened')
+    res.send(err)
+  }
+})
+service.use(logging())
+service.use(jwt())
+```
+> NOTE: Global and Route level middlewares execution run separately!
 
 ## AWS Serverless Integration
 `restana` is compatible with the [serverless-http](https://github.com/dougmoscrop/serverless-http) library, so restana based services can also run as AWS lambdas 🚀
