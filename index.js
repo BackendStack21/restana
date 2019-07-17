@@ -65,12 +65,9 @@ module.exports = (options = {}) => {
     return app
   }
 
-  const lookup = (req, res, next) => {
-    return router.lookup(req, res)
-  }
   // global middlewares holder
-  const globalMiddlewares = [{
-    handler: lookup,
+  const middlewares = [{
+    handler: (req, res, next) => router.lookup(req, res),
     context: {}
   }]
 
@@ -99,8 +96,8 @@ module.exports = (options = {}) => {
      * @param {Object} context The middleware invokation context object
      */
     use: (middleware, context = {}) => {
-      globalMiddlewares.splice(
-        globalMiddlewares.length - 1,
+      middlewares.splice(
+        middlewares.length - 1,
         0,
         { handler: middleware, context }
       )
@@ -136,14 +133,6 @@ module.exports = (options = {}) => {
         middlewares
       }
 
-      const wares = middlewares.length > 0 ? [
-        ...middlewares.slice(0),
-        {
-          context: {},
-          handler: handlerCall(handler, ctx, errorHandler) // -> Function
-        }
-      ] : []
-
       // Allow override of routes, by first removing the old route
       router.off(method, path)
 
@@ -154,7 +143,13 @@ module.exports = (options = {}) => {
 
         if (middlewares.length > 0) {
           // call route middlewares and route handler
-          return next(wares, req, res, errorHandler)
+          return next([
+            ...middlewares.slice(0),
+            {
+              context: {},
+              handler: handlerCall(handler, ctx, errorHandler) // -> Function
+            }
+          ], req, res, errorHandler)
         } else {
           // directly call the route handler only
           // NOTE: we do this to increase performance
@@ -176,9 +171,9 @@ module.exports = (options = {}) => {
       req.originalUrl = req.url
       res.send = exts.response.send(options, req, res)
 
-      if (globalMiddlewares.length > 1) {
+      if (middlewares.length > 1) {
         // call route middlewares and route handler
-        next(globalMiddlewares, req, res, errorHandler)
+        next(middlewares, req, res, errorHandler)
       } else {
         // directly call the request router
         // NOTE: we do this to increase performance
