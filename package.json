@@ -1,6 +1,6 @@
 {
   "name": "restana",
-  "version": "3.2.3",
+  "version": "3.3.0",
   "description": "Super fast and minimalist web framework for building REST micro-services.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -47,7 +47,7 @@
     "express": "^4.17.1",
     "fastify": "^1.14.6",
     "hapi": "^17.8.4",
-    "http-cache-middleware": "^1.2.1",
+    "http-cache-middleware": "^1.2.3",
     "koa": "^2.7.0",
     "koa-router": "^7.4.0",
     "mocha": "^6.1.4",
