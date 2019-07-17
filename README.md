@@ -219,7 +219,7 @@ Examples :
 * **swagger-tools**: [https://www.npmjs.com/package/swagger-tools](https://www.npmjs.com/package/swagger-tools). See demo: [swagger](demos/swagger/index.js)
 
 #### Async middlewares support
-Starting from `v1.4.x`, you can now also use async middlewares as described below:
+Starting from `v3.3.x`, you can now also use async middlewares as described below:
 ```js
 service.use(async (req, res, next) => {
   await next()
