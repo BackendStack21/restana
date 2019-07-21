@@ -41,6 +41,7 @@
     "find-my-way": "^2.1.0"
   },
   "devDependencies": {
+    "0http": "^1.0.0",
     "anumargak": "^2.2.0",
     "chai": "^4.2.0",
     "connect-query": "^1.0.0",
