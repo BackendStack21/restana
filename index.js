@@ -124,14 +124,15 @@ module.exports = (options = {}) => {
 
       // creating routing key
       const key = `[${method.toString().toUpperCase()}]${path}`
-      // caching route arguments
-      routes[key] = {
+      // caching route
+      const route = {
         method,
         path,
         handler,
         ctx,
         middlewares
       }
+      routes[key] = true
 
       // Allow override of routes, by first removing the old route
       router.off(method, path)
@@ -157,7 +158,7 @@ module.exports = (options = {}) => {
         }
       })
 
-      return routes[key]
+      return route
     },
 
     /**
