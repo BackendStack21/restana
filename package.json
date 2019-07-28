@@ -41,7 +41,7 @@
     "find-my-way": "^2.1.0"
   },
   "devDependencies": {
-    "0http": "^1.2.0",
+    "0http": "^1.2.2",
     "anumargak": "^2.2.0",
     "chai": "^4.2.0",
     "connect-query": "^1.0.0",
@@ -63,7 +63,7 @@
     "standard": "^13.1.0",
     "supertest": "^3.4.2",
     "swagger-tools": "^0.10.4",
-    "winston": "^2.4.4",
-    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v15.11.0"
+    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v15.11.0",
+    "winston": "^2.4.4"
   }
 }
