@@ -49,7 +49,7 @@
     "fastify": "^2.7.1",
     "hapi": "^17.8.4",
     "http-cache-middleware": "^1.2.3",
-    "koa": "^2.7.0",
+    "koa": "^2.8.1",
     "koa-router": "^7.4.0",
     "mocha": "^6.2.0",
     "morgan": "^1.9.1",
