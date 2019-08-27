@@ -60,7 +60,7 @@
     "response-time": "^2.3.2",
     "restify": "^7.7.0",
     "serve-static": "^1.14.1",
-    "standard": "^13.1.0",
+    "standard": "^14.0.2",
     "supertest": "^3.4.2",
     "swagger-tools": "^0.10.4",
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v15.11.0",
