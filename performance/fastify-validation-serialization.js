@@ -32,7 +32,7 @@ fastify.route({
     const { name, age } = request.params
     return {
       msg: `Dear ${name}, you still can learn at your ${age}s ` +
-        `that fastify is awesome ;)`,
+        'that fastify is awesome ;)',
       name,
       age,
       numbers: [...Array(1000).keys()]

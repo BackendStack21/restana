@@ -42,12 +42,12 @@
   },
   "devDependencies": {
     "0http": "^1.2.3",
+    "@hapi/hapi": "^18.4.0",
     "anumargak": "^2.2.0",
     "chai": "^4.2.0",
     "connect-query": "^1.0.0",
     "express": "^4.17.1",
     "fastify": "^2.8.0",
-    "@hapi/hapi": "^18.4.0",
     "http-cache-middleware": "^1.2.3",
     "koa": "^2.8.2",
     "koa-router": "^7.4.0",
