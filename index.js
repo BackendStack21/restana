@@ -57,13 +57,6 @@ module.exports = (options = {}) => {
   const router = options.routerFactory ? options.routerFactory(options) : requestRouter(options)
   // routes holder
   const routes = {}
-  // routes registration shortcut factory
-  const addRoute = (methods) => (path, ...args) => {
-    routeRegister(app, methods, path, args)
-
-    // supporting method chaining for routes registration
-    return app
-  }
 
   // global middlewares holder
   const middlewares = [{
@@ -71,11 +64,13 @@ module.exports = (options = {}) => {
     context: {}
   }]
 
-  // error handler
-  const errorHandler = options.errorHandler || ((err, req, res) => res.send(err))
-
   // the "restana" service interface
   const app = {
+    /**
+     * Application global error handler
+     */
+    errorHandler: options.errorHandler || ((err, req, res) => res.send(err)),
+
     /**
      * HTTP server instance
      */
@@ -148,13 +143,13 @@ module.exports = (options = {}) => {
             ...middlewares.slice(0),
             {
               context: {},
-              handler: handlerCall(handler, ctx, errorHandler) // -> Function
+              handler: handlerCall(handler, ctx, app.errorHandler) // -> Function
             }
-          ], req, res, errorHandler)
+          ], req, res, app.errorHandler)
         } else {
           // directly call the route handler only
           // NOTE: we do this to increase performance
-          return handlerCall(handler, ctx, errorHandler)(req, res)
+          return handlerCall(handler, ctx, app.errorHandler)(req, res)
         }
       })
 
@@ -174,7 +169,7 @@ module.exports = (options = {}) => {
 
       if (middlewares.length > 1) {
         // call route middlewares and route handler
-        next(middlewares, req, res, errorHandler)
+        next(middlewares, req, res, app.errorHandler)
       } else {
         // directly call the request router
         // NOTE: we do this to increase performance
@@ -216,14 +211,22 @@ module.exports = (options = {}) => {
     routes: () => Object.keys(routes)
   }
 
+  // exposing raw route registration to improve extensibility
+  app.addRoute = (methods) => (path, ...args) => {
+    routeRegister(app, methods, path, args)
+
+    // supporting method chaining for routes registration
+    return app
+  }
+
+  // exposing "all" HTTP verbs as request routing registration
+  app.all = app.addRoute(methods)
+
   // exposing HTTP verbs as request routing methods
   // express.js like routes middlewares signature is supported: app.get('/', m1, m2, handler)
   methods.forEach((method) => {
-    app[method] = addRoute(method)
+    app[method] = app.addRoute(method)
   })
-
-  // exposing "all" HTTP verbs as request routing registration
-  app.all = addRoute(methods)
 
   // integrator callback
   app.callback = () => app.handle
