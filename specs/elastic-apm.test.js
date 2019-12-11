@@ -44,7 +44,7 @@ describe('Elastic APM Instrumentation', () => {
         expect(response.text).to.equal('Hello World!')
       })
 
-    expect(pattern).to.equal('/hello')
+    expect(pattern).to.equal('GET /hello')
   })
 
   it('should not set pattern on 404', async () => {
@@ -63,7 +63,7 @@ describe('Elastic APM Instrumentation', () => {
         expect(response.body.id).to.equal('restana')
       })
 
-    expect(pattern).to.equal('/user/:id')
+    expect(pattern).to.equal('GET /user/:id')
   })
 
   it('should successfully terminate the service', async () => {
