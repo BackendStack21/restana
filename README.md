@@ -281,6 +281,39 @@ const server = http.createServer(service.callback())
 //...
 ```
 
+## Application Performance Monitoring (APM)
+As a Node.js framework implementation based on the standard `http` module, `restana` benefits from out of the box instrumentation on 
+existing APM agents such as:
+- https://www.npmjs.com/package/newrelic
+- https://www.npmjs.com/package/elastic-apm-node
+
+### Elastic APM - Route Naming
+"Routes Naming" discovery is not supported out of the box, but we have created our custom integration for Elastic APM:
+```js
+// getting the Elastic APM agent
+const apm = require('elastic-apm-node').start({
+  secretToken: process.env.APM_SECRET_TOKEN,
+  serverUrl: process.env.APM_SERVER_URL
+})
+
+// getting restana instrumentator 
+const elasticApm = require('restana/libs/elastic-apm')
+const patch = elasticApm({ apm })
+
+// creating a restana application
+const service = require('restana')()
+
+// attach route naming instrumentation before registering service routes
+patch(service)
+
+// register your routes or middlewares
+service.get('/hello', (req, res) => {
+  res.send('Hello World!')
+})
+
+// ...
+```
+
 ## Performance comparison (framework overhead)
 ### Which is the fastest?
 You can checkout `restana` performance index on the ***"Which is the fastest"*** project: https://github.com/the-benchmarker/web-frameworks#full-table-1
