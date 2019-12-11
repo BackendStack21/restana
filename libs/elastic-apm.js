@@ -1,5 +1,11 @@
 const methods = require('./methods')
 
+/**
+ * Elastic APM custom instrumentation
+ *
+ * Supported features:
+ * - route names
+ */
 module.exports = ({ apm }) => {
   return {
     patch (app) {
@@ -8,7 +14,6 @@ module.exports = ({ apm }) => {
 
         app[method] = (path, ...args) => {
           args.unshift((req, res, next) => {
-            // instrumenting APM transaction name
             apm.setTransactionName(`${method.toUpperCase()} ${path}`)
 
             return next()
