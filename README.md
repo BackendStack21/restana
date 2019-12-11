@@ -314,7 +314,6 @@ service.get('/hello', (req, res) => {
 // ...
 ```
 
-
 ## Performance comparison (framework overhead)
 ### Which is the fastest?
 You can checkout `restana` performance index on the ***"Which is the fastest"*** project: https://github.com/the-benchmarker/web-frameworks#full-table-1
