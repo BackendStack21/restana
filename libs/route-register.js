@@ -25,7 +25,7 @@ module.exports = (app, methods, path, args) => {
     middlewares.push(...handler)
     // handler is fist element
     handler = args.shift()
-    // ctx is second element
+    // ctx is second element (here it can be optional)
     ctx = args.shift()
   } else if (typeof handler !== 'function') {
     // last element is not a function, should be handler ctx
