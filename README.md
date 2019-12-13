@@ -298,7 +298,7 @@ const apm = require('elastic-apm-node').start({
 
 // getting restana instrumentator 
 const elasticApm = require('restana/libs/elastic-apm')
-const patch = elasticApm({ apm })
+const { patch } = elasticApm({ apm })
 
 // creating a restana application
 const service = require('restana')()
