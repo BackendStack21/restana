@@ -141,8 +141,8 @@ declare namespace restana {
     start(port?: number, host?: string): Promise<Server<P>>
     close(): Promise<void>
     routes(): string[]
-
-    addRoute: (methods: String | Array<String>) =>  RegisterRoute<P>
+    addRoute (methods: String | Array<String>): RegisterRoute<P>
+    
     get: RegisterRoute<P>
     delete: RegisterRoute<P>
     patch: RegisterRoute<P>
