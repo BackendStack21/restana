@@ -14,10 +14,6 @@ pem.createCertificate({
     })
   })
 
-  app.start(3000).then(() => {
-    console.log('server running on port 3000')
-  })
-
   const io = require('socket.io')()
   io.on('connection', socket => {
     console.log(socket.id)
@@ -25,4 +21,6 @@ pem.createCertificate({
 
   io.listen(app.getServer())
   io.set('origins', '*:*')
+
+  app.start(3000)
 })
