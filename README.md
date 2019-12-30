@@ -3,6 +3,9 @@
 [![NPM version](https://img.shields.io/npm/v/restana.svg?style=flat)](https://www.npmjs.com/package/restana)  
 Blazing fast, tiny and minimalist *connect-like* web framework for building REST micro-services.  
 
+![Performance Benchmarks](benchmark-30122019.png)
+> MacBook Pro 2019, 2,4 GHz Intel Core i9, 32 GB 2400 MHz DDR4  
+> - wrk -t8 -c40 -d5s http://127.0.0.1:3000/hi
 
 Read more:  *[Building ultra-fast REST APIs with Node.js (restana vs express vs fastify)](https://medium.com/@kyberneees/building-ultra-fast-rest-apis-with-node-js-and-restana-1d65b0d524b7)*
 
