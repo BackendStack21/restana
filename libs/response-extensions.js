@@ -12,7 +12,6 @@ module.exports.send = (options, req, res) => (data = 200, code = 200, headers = 
   if (headers !== null) {
     // attach custom headers on the response
     Object.keys(headers).forEach((key) => {
-      // IMPORTANT: 'key.toLowerCase()' give us big performance gain
       res.setHeader(key.toLowerCase(), headers[key])
     })
   }
@@ -26,28 +25,21 @@ module.exports.send = (options, req, res) => (data = 200, code = 200, headers = 
     const errorCode = data.status || data.code || data.statusCode
     code = typeof errorCode === 'number' ? parseInt(errorCode) : 500
     data = {
-      errClass: data.constructor.name,
       code,
       message: data.message,
       data: data.data
     }
+    res.setHeader(CONTENT_TYPE_HEADER, 'application/json')
   }
 
-  // emit response event to allow post-processing
-  // TODO: We need to make this event notification async without affecting performance
   const params = {
     res,
     req,
     data,
     code
   }
-  if (options.disableResponseEvent !== true) {
-    res.emit('response', params)
-  }
-
   if (typeof data === 'object' && data instanceof Buffer === false) {
     if (!res.hasHeader(CONTENT_TYPE_HEADER)) {
-      // transparently setting the 'content-type' header if JSON
       res.setHeader(CONTENT_TYPE_HEADER, 'application/json')
     }
     params.data = JSON.stringify(params.data)

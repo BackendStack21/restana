@@ -22,10 +22,6 @@ describe('Express.js like routes handlers', () => {
     res.send(200)
   })
 
-  service.get('/hello2/:name', (req, res) => {
-    res.send(200)
-  }, [m1, m2, m3])
-
   it('should start the service', async () => {
     server = await service.start(~~process.env.PORT)
   })
@@ -33,15 +29,6 @@ describe('Express.js like routes handlers', () => {
   it('should GET 200 on /hello/:name', async () => {
     await request(server)
       .get('/hello/express')
-      .expect(200)
-      .then((response) => {
-        expect(response.body.name).to.equal('express')
-      })
-  })
-
-  it('should GET 200 on /hello2/:name', async () => {
-    await request(server)
-      .get('/hello2/express')
       .expect(200)
       .then((response) => {
         expect(response.body.name).to.equal('express')
