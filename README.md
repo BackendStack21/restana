@@ -110,7 +110,7 @@ service.post('/star/:username', async (req, res) => {
   await starService.star(req.params.username)
   const stars = await starService.count(req.params.username)
 
-  res.send(stars)
+  res.send({ stars })
 })
 ```
 
