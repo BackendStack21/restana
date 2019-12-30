@@ -13,17 +13,5 @@ module.exports = (options) => {
     })
   })
 
-  router._use = router.use
-
-  router.use = (prefix, ...middlewares) => {
-    if (typeof prefix === 'function') {
-      middlewares = prefix
-      prefix = '/'
-    }
-    router._use(prefix, middlewares)
-
-    return this
-  }
-
   return router
 }
