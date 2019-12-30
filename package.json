@@ -1,13 +1,13 @@
 {
   "name": "restana",
-  "version": "3.4.2",
+  "version": "4.0.0",
   "description": "Super fast and minimalist web framework for building REST micro-services.",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
     "lint": "npx standard",
     "format": "npx standard --fix",
-    "test": "PORT=3000 NODE_ENV=testing npx nyc --check-coverage --lines 95 node ./node_modules/mocha/bin/mocha tests.js specs/*.test.js",
+    "test": "PORT=3000 NODE_ENV=testing npx nyc --check-coverage --lines 95 node ./node_modules/mocha/bin/mocha specs/*.test.js",
     "postinstall": "node ./libs/tasks/postinstall.js"
   },
   "repository": {
@@ -22,7 +22,7 @@
     "service"
   ],
   "engines": {
-    "node": ">=7.x"
+    "node": ">=10.x"
   },
   "author": "Rolando Santamaria Maso <kyberneees@gmail.com>",
   "license": "MIT",
@@ -38,17 +38,17 @@
   ],
   "homepage": "https://github.com/jkyberneees/ana#readme",
   "dependencies": {
-    "find-my-way": "^2.2.1"
+    "0http": "^2.1.0"
   },
   "devDependencies": {
-    "0http": "^1.2.4",
     "@hapi/hapi": "^18.4.0",
     "anumargak": "^2.2.0",
     "chai": "^4.2.0",
     "connect-query": "^1.0.0",
     "express": "^4.17.1",
+    "express-jwt": "^5.3.1",
     "fastify": "^2.11.0",
-    "http-cache-middleware": "^1.2.3",
+    "http-cache-middleware": "^1.2.4",
     "koa": "^2.11.0",
     "koa-router": "^7.4.0",
     "mocha": "^6.2.2",

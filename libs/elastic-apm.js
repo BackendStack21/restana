@@ -14,7 +14,7 @@ module.exports = ({ apm }) => {
 
         app[method] = (path, ...args) => {
           args.unshift((req, res, next) => {
-            apm.setTransactionName(`${method.toUpperCase()} ${path}`)
+            apm.setTransactionName(`${req.method} ${path}`)
 
             return next()
           })

@@ -5,7 +5,7 @@ const http = require('http')
 
 describe('Restana Web Framework - Smoke', () => {
   let server
-  const service = require('./index')({
+  const service = require('../index')({
     server: http.createServer()
   })
 
@@ -19,23 +19,18 @@ describe('Restana Web Framework - Smoke', () => {
     service.get(
       '/pets/:id',
       function (req, res) {
-        res.body = this[req.params.id]
-        res.send(200)
-      },
-      [
-        {
+        res.body = {
           name: 'Happy Cat'
         }
-      ]
+        res.send(200)
+      }
     )
 
-    service.get('/async/:name', async (req) => {
-      return req.params.name
+    service.get('/async/:name', async (req, res) => {
+      res.send(req.params.name)
     })
 
-    service.get('/middlewares/:name', async (req) => {
-      return req.params.name
-    }, {}, [(req, res, next) => {
+    service.get('/middlewares/:name', (req, res, next) => {
       req.params.name = req.params.name.toUpperCase()
       next()
     }, (req, res, next) => {
@@ -47,14 +42,13 @@ describe('Restana Web Framework - Smoke', () => {
     }, (req, res, next) => {
       req.params.name += '0'
       next()
-    }])
+    }, (req, res) => {
+      res.send(req.params.name)
+    })
 
     service.get('/error', () => {
       throw new Error('error')
     })
-
-    service.get('/handler-override', (req, res) => res.send('1'))
-    service.get('/handler-override', (req, res) => res.send('2'))
 
     service.all('/sheet.css', (req, res) => res.send(200))
 
@@ -68,6 +62,14 @@ describe('Restana Web Framework - Smoke', () => {
       .then((response) => {
         expect(response.body.name).to.equal('Happy Cat')
       })
+  })
+
+  it('should get service router', async () => {
+    expect(typeof service.getRouter()).to.equal('object')
+  })
+
+  it('should get new router', async () => {
+    expect(typeof service.newRouter()).to.equal('object')
   })
 
   it('should GET plain/text response /async/:name', async () => {
@@ -112,19 +114,6 @@ describe('Restana Web Framework - Smoke', () => {
       .expect(404)
   })
 
-  it('should receive service routing keys array - i.e: ["[GET]/pets/:id"]', async () => {
-    expect(service.routes().includes('[GET]/pets/:id')).to.equal(true)
-  })
-
-  it('should override route handler', async () => {
-    await request(server)
-      .get('/handler-override')
-      .expect(200)
-      .then((response) => {
-        expect(response.text).to.equal('2')
-      })
-  })
-
   it('should receive 200 on /sheet.css using .all registration', async () => {
     await request(server)
       .get('/sheet.css')
@@ -135,30 +124,6 @@ describe('Restana Web Framework - Smoke', () => {
     await request(server)
       .put('/sheet.css')
       .expect(200)
-  })
-
-  let errMsg
-  it('should register 500 middleware - subsequent calls should fail with 500 error code', async () => {
-    service.use((req, res, next) => {
-      res.on('response', e => {
-        if (e.code >= 400) {
-          if (e.data && e.data.errClass) {
-            errMsg = e.data.errClass + ': ' + e.data.message
-          }
-        }
-      })
-
-      return next(new Error('Simulated ERROR!'))
-    })
-  })
-
-  it('should fail on GET /pets/0 - after 500 middleware', async () => {
-    await request(server)
-      .get('/pets/0')
-      .expect(500)
-      .then((response) => {
-        expect(errMsg).to.equal('Error: Simulated ERROR!')
-      })
   })
 
   it('integrator callback should exist on service ', async () => {

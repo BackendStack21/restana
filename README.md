@@ -2,10 +2,12 @@
 [![Build Status](https://travis-ci.org/jkyberneees/ana.svg?branch=master)](https://travis-ci.org/jkyberneees/ana)
 [![NPM version](https://img.shields.io/npm/v/restana.svg?style=flat)](https://www.npmjs.com/package/restana)  
 Blazing fast, tiny and minimalist *connect-like* web framework for building REST micro-services.  
-[> Check how much faster!](https://github.com/the-benchmarker/web-frameworks#full-table-1)
-> Uses 'find-my-way' router: https://www.npmjs.com/package/find-my-way
 
-What else?  *[Building ultra-fast REST APIs with Node.js (restana vs express vs fastify)](https://medium.com/@kyberneees/building-ultra-fast-rest-apis-with-node-js-and-restana-1d65b0d524b7)*
+![Performance Benchmarks](benchmark-30122019.png)
+> MacBook Pro 2019, 2,4 GHz Intel Core i9, 32 GB 2400 MHz DDR4  
+> - wrk -t8 -c40 -d5s http://127.0.0.1:3000/hi
+
+Read more:  *[Building ultra-fast REST APIs with Node.js (restana vs express vs fastify)](https://medium.com/@kyberneees/building-ultra-fast-rest-apis-with-node-js-and-restana-1d65b0d524b7)*
 
 ## Usage
 ```bash
@@ -31,45 +33,15 @@ const service = require('restana')({
 > * [HTTPS service demo](demos/https-service.js)
 > * [HTTP2 service demo](demos/http2-service.js)
 
-### Configuration
-- `server`: Allows to override the HTTP server instance to be used.
-- `routerFactory`: Router factory function to allow default `find-my-way` router override. 
+### Configuration options
+- `server`: Allows to optionally override the HTTP server instance to be used.
 - `prioRequestsProcessing`: If `TRUE`, HTTP requests processing/handling is prioritized using `setImmediate`. Default value: `TRUE`
-- `ignoreTrailingSlash`: If `TRUE`, trailing slashes on routes are ignored. Default value: `FALSE`
-- `allowUnsafeRegex`: If `TRUE`, potentially catastrophic exponential-time regular expressions are disabled. Default value: `FALSE`
-- `maxParamLength`: Defines the custom length for parameters in parametric (standard, regex and multi) routes. Default value: `100`
-- `defaultRoute`: Default route handler when no route match occurs. Default value: `((req, res) => res.send(404))`
-- `disableResponseEvent`: If `TRUE`, there won't be `response` events triggered on the `res` object. Default value: `FALSE`
+- `defaultRoute`: Optional route handler when no route match occurs. Default value: `((req, res) => res.send(404))`
 - `errorHandler`: Optional global error handler function. Default value: `(err, req, res) => res.send(err)`
+- `routerCacheSize`: The router matching cache size, indicates how many request matches will be kept in memory. Default value: `2000`
 
-```js
-// accessing service configuration
-service.getConfigOptions()
-// accessing restana HTTP server instance
-service.getServer()
-```
 
-#### Example usage:
-```js 
-const service = require('restana')({
-  ignoreTrailingSlash: true
-});
-```
-
-#### Optionally overwrite router factory method:
-> In this example we use `anumargak` router instead of `find-my-way`.
-```js 
-const anumargak = require('anumargak')
-const service = require('restana')({
-  routerFactory: (options) => {
-    return anumargak(options)
-  }
-})
-...
-```
-> Please consider that when using `anumargak` router, request params are accessible via: `req._path.params`
-
-### Creating a micro-service & routes registration
+### Full service example
 ```js
 const bodyParser = require('body-parser')
 
@@ -80,7 +52,7 @@ const PetsModel = {
   // ... 
 }
 
-// registering routes using method chaining
+// registering service routes
 service
   .get('/pets/:id', async (req, res) => {
     res.send(await PetsModel.findOne(req.params.id))
@@ -99,12 +71,15 @@ service
   })
 
 service.get('/version', function (req, res) {
-  res.body = { // optionally you can send the response data in the body property
+  // optionally you can send the response data in the body property
+  res.body = { 
     version: '1.0.0'
   }
-  res.send() // 200 is the default response code
+  // 200 is the default response code
+  res.send() 
 })
 ```
+
 Supported HTTP methods:
 ```js
 const methods = ['get', 'delete', 'put', 'patch', 'post', 'head', 'options', 'trace']
@@ -113,7 +88,7 @@ const methods = ['get', 'delete', 'put', 'patch', 'post', 'head', 'options', 'tr
 #### Using .all routes registration
 You can also register a route handler for `all` supported HTTP methods:
 ```js
-service.all('/allmethodsroute', function (req, res) {
+service.all('/allmethodsroute', (req, res) => {
   res.send(200)
 })
 ```
@@ -135,12 +110,9 @@ service.post('/star/:username', async (req, res) => {
   await starService.star(req.params.username)
   const stars = await starService.count(req.params.username)
 
-  return stars
+  res.send({ stars })
 })
 ```
-> IMPORTANT: Returned value can't be `undefined`, for such cases use `res.send(...`
-
-
 
 ### Sending custom headers:
 ```js
@@ -171,46 +143,43 @@ service.get('/throw', (req, res) => {
 })
 ```
 
-### Middlewares support:
+### Global middlewares
 ```js
-const service = require('restana')({})
+const service = require('restana')()
 
-// custom middleware to attach the X-Response-Time header to the response
 service.use((req, res, next) => {
-  const now = new Date().getTime()
-  res.on('response', e => {
-    e.res.setHeader('X-Response-Time', new Date().getTime() - now)
-  })
-
-  return next()
+  // do something
+  next()
 });
+...
+```
 
-// the /v1/welcome route handler
-service.get('/v1/welcome', (req, res) => {
-  res.send('Hello World!')
-})
+### Prefix middlewares
+```js
+const service = require('restana')()
 
-// start the server
-service.start()
+service.use('/admin', (req, res, next) => {
+  // do something
+  next()
+});
+...
 ```
 
 ### Route level middlewares
 Connecting middlewares to specific routes is also supported:
 ```js
-service.get('/hi/:name', async (req, res) => {
-  return 'Hello ' + req.params.name // -> "name" will be uppercase here
-}, {}, [(req, res, next) => {
-  req.params.name = req.params.name.toUpperCase()
-  next()
-}]) // route middlewares can be passed in an Array after the handler context param
-```
-Express.js like signature also supported:
-```js
-service.get('/hi/:name', m1, m2, handler [, ctx])
-```
+const service = require('restana')()
 
+service.get('/admin', (req, res, next) => {
+  // do something
+  next()
+}, (req, res) => {
+  res.send('admin data')
+});
+...
+```
 #### Third party middlewares support:
-> Almost all middlewares using the *function (req, res, next)* signature format should work, considering that no custom framework feature is used.
+> All middlewares using the `function (req, res, next)` signature format are compatible with restana.
 
 Examples :
 * **raw-body**: [https://www.npmjs.com/package/raw-body](https://www.npmjs.com/package/raw-body). See demo: [raw-body.js](demos/raw-body.js)
@@ -219,17 +188,18 @@ Examples :
 * **swagger-tools**: [https://www.npmjs.com/package/swagger-tools](https://www.npmjs.com/package/swagger-tools). See demo: [swagger](demos/swagger/index.js)
 
 #### Async middlewares support
-Starting from `v3.3.x`, you can now also use async middlewares as described below:
+Since version `v3.3.x`, you can also use async middlewares as described below:
 ```js
 service.use(async (req, res, next) => {
   await next()
-  console.log('Global middlewares execution completed!')
+  console.log('All middlewares and route handler executed!')
 }))
 service.use(logging())
 service.use(jwt())
+...
 ```
 
-In the same way you can also capture uncaught exceptions inside your async middlewares:
+In the same way you can also capture uncaught exceptions inside the request processing flow:
 ```js
 service.use(async (req, res, next) => {
   try {
@@ -242,8 +212,6 @@ service.use(async (req, res, next) => {
 service.use(logging())
 service.use(jwt())
 ```
-> NOTE: Global and Route level middlewares execution run separately!
-
 ## AWS Serverless Integration
 `restana` is compatible with the [serverless-http](https://github.com/dougmoscrop/serverless-http) library, so restana based services can also run as AWS lambdas 🚀
 ```js 
@@ -322,5 +290,19 @@ You can checkout `restana` performance index on the ***"Which is the fastest"***
 https://goo.gl/forms/qlBwrf5raqfQwteH3
 
 ## Breacking changes
+### 4.x:
+> Restana version 4.x is much more simple to maintain, mature and faster!
+#### Added
+ - Node.js v10.x+ is required.
+ - `0http` sequential router is now the default and only HTTP router.
+ - Overall middlewares support was improved.
+ - Nested routers are now supported.
+ - Improved error handler through async middlewares.
+ - New `getRouter` and `newRouter` methods are added for accesing default and nested routers.
+#### Removed
+ - The `response` event was removed.
+ - `find-my-way` router is replaced by `0http` sequential router.
+ - Returning result inside async handler is not allowed anymore. Use `res.send...`
 ### 3.x: 
+#### Removed
 - Support for `turbo-http` library was dropped.

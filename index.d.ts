@@ -42,6 +42,18 @@ declare namespace restana {
     ): void
   }
 
+  interface Router <P extends Protocol> {
+    get: RegisterRoute<P>
+    delete: RegisterRoute<P>
+    patch: RegisterRoute<P>
+    post: RegisterRoute<P>
+    put: RegisterRoute<P>
+    head: RegisterRoute<P>
+    options: RegisterRoute<P>
+    trace: RegisterRoute<P>
+    all: RegisterRoute<P>
+  }
+
   type Response<P extends Protocol> = P extends Protocol.HTTP2
     ? Http2ServerResponse & ResponseExtensions
     : ServerResponse & ResponseExtensions
@@ -74,7 +86,6 @@ declare namespace restana {
     (
       path: string,
       handler: RequestHandler<P>,
-      context?: {},
       middlewares?: RequestHandler<P>[]
     ): Service<P>
 
@@ -82,7 +93,6 @@ declare namespace restana {
       path: string,
       middleware1: RequestHandler<P>,
       handler: RequestHandler<P>,
-      context?: {}
     ): Service<P>
 
     (
@@ -90,7 +100,6 @@ declare namespace restana {
       middleware1: RequestHandler<P>,
       middleware2: RequestHandler<P>,
       handler: RequestHandler<P>,
-      context?: {}
     ): Service<P>
 
     (
@@ -99,7 +108,6 @@ declare namespace restana {
       middleware2: RequestHandler<P>,
       middleware3: RequestHandler<P>,
       handler: RequestHandler<P>,
-      context?: {}
     ): Service<P>
   }
 
@@ -107,51 +115,28 @@ declare namespace restana {
     method: Method
     path: string
     handler: RequestHandler<P>
-    ctx: {}
     middlewares: RequestHandler<P>[]
   }
 
-  interface Router { }
-
   interface Options<P extends Protocol> {
     server?: Server<P>
-    routerFactory?(options: Options<P>): Router
     prioRequestsProcessing?: boolean
-    ignoreTrailingSlash?: boolean
-    allowUnsafeRegex?: boolean
-    maxParamLength?: number
+    routerCacheSize?: number
     defaultRoute?: RequestHandler<P>
-    disableResponseEvent?: boolean
     errorHandler?: ErrorHandler<P>
   }
 
-  interface Service<P extends Protocol> {
+  interface Service<P extends Protocol> extends Router<P> {
+    getRouter(): Router<P>,
+    newRouter(): Router<P>
     errorHandler: ErrorHandler<P>,
     getServer(): Server<P>,
     getConfigOptions(): Options<P>
-    use(middleware: RequestHandler<P>, context?: {}): void
-    route(
-      method: Method,
-      path: string,
-      handler: RequestHandler<P>,
-      ctx?: {},
-      middlewares?: RequestHandler<P>[]
-    ): Route<P>
+    use(middleware: RequestHandler<P>): restana.Service<P>
+    use(prefix: string, middleware: RequestHandler<P>): restana.Service<P>
     handle(req: Request<P>, res: Response<P>): void
     start(port?: number, host?: string): Promise<Server<P>>
     close(): Promise<void>
-    routes(): string[]
-    addRoute (methods: String | Array<String>): RegisterRoute<P>
-    
-    get: RegisterRoute<P>
-    delete: RegisterRoute<P>
-    patch: RegisterRoute<P>
-    post: RegisterRoute<P>
-    put: RegisterRoute<P>
-    head: RegisterRoute<P>
-    options: RegisterRoute<P>
-    trace: RegisterRoute<P>
-    all: RegisterRoute<P>
   }
 }
 
