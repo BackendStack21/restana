@@ -64,6 +64,14 @@ describe('Restana Web Framework - Smoke', () => {
       })
   })
 
+  it('should get service router', async () => {
+    expect(typeof service.getRouter()).to.equal('object')
+  })
+
+  it('should get new router', async () => {
+    expect(typeof service.newRouter()).to.equal('object')
+  })
+
   it('should GET plain/text response /async/:name', async () => {
     await request(server)
       .get('/async/Cool')

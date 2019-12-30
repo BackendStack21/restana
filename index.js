@@ -34,8 +34,8 @@ module.exports = (options = {}) => {
       res.send(err)
     }),
 
-    newRouter (opts = options) {
-      return requestRouter(opts)
+    newRouter () {
+      return requestRouter(options)
     },
 
     getServer () {
