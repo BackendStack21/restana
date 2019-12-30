@@ -2,10 +2,9 @@
 [![Build Status](https://travis-ci.org/jkyberneees/ana.svg?branch=master)](https://travis-ci.org/jkyberneees/ana)
 [![NPM version](https://img.shields.io/npm/v/restana.svg?style=flat)](https://www.npmjs.com/package/restana)  
 Blazing fast, tiny and minimalist *connect-like* web framework for building REST micro-services.  
-[> Check how much faster!](https://github.com/the-benchmarker/web-frameworks#full-table-1)
-> Uses 'find-my-way' router: https://www.npmjs.com/package/find-my-way
 
-What else?  *[Building ultra-fast REST APIs with Node.js (restana vs express vs fastify)](https://medium.com/@kyberneees/building-ultra-fast-rest-apis-with-node-js-and-restana-1d65b0d524b7)*
+
+Read more:  *[Building ultra-fast REST APIs with Node.js (restana vs express vs fastify)](https://medium.com/@kyberneees/building-ultra-fast-rest-apis-with-node-js-and-restana-1d65b0d524b7)*
 
 ## Usage
 ```bash
@@ -36,6 +35,7 @@ const service = require('restana')({
 - `prioRequestsProcessing`: If `TRUE`, HTTP requests processing/handling is prioritized using `setImmediate`. Default value: `TRUE`
 - `defaultRoute`: Optional route handler when no route match occurs. Default value: `((req, res) => res.send(404))`
 - `errorHandler`: Optional global error handler function. Default value: `(err, req, res) => res.send(err)`
+- `routerCacheSize`: The router matching cache size, indicates how many request matches will be kept in memory. Default value: `2000`
 
 
 ### Full service example
@@ -288,8 +288,9 @@ https://goo.gl/forms/qlBwrf5raqfQwteH3
 
 ## Breacking changes
 ### 4.x:
-> Restana version 4.x is much more simple, evolved and faster!
+> Restana version 4.x is much more simple to maintain, mature and faster!
 #### Added
+ - Node.js v10.x+ is required.
  - `0http` sequential router is now the default and only HTTP router.
  - Overall middlewares support was improved.
  - Nested routers are now supported.
