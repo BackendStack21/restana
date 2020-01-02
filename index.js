@@ -46,7 +46,11 @@ module.exports = (options = {}) => {
       return options
     },
 
-    use: router.use,
+    use: (...args) => {
+      router.use.apply(router, args)
+
+      return app
+    },
 
     handle: (req, res) => {
       // request object population
@@ -72,7 +76,11 @@ module.exports = (options = {}) => {
   }
 
   shortcuts.forEach((method) => {
-    app[method] = router[method]
+    app[method] = (...args) => {
+      router[method].apply(router, args)
+
+      return app
+    }
   })
 
   app.callback = () => app.handle
