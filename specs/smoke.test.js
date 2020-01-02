@@ -32,16 +32,18 @@ describe('Restana Web Framework - Smoke', () => {
 
     service.get('/middlewares/:name', (req, res, next) => {
       req.params.name = req.params.name.toUpperCase()
-      next()
-    }, (req, res, next) => {
+
+      return next()
+    }, async (req, res, next) => {
       if (req.params.name === 'ERROR') {
         throw new Error('Upps')
       } else {
-        next()
+        return next()
       }
     }, (req, res, next) => {
       req.params.name += '0'
-      next()
+
+      return next()
     }, (req, res) => {
       res.send(req.params.name)
     })
