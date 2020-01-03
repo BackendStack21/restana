@@ -1,6 +1,6 @@
 {
   "name": "restana",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "Super fast and minimalist web framework for building REST micro-services.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -38,7 +38,7 @@
   ],
   "homepage": "https://github.com/jkyberneees/ana#readme",
   "dependencies": {
-    "0http": "^2.1.0"
+    "0http": "^2.2.0"
   },
   "devDependencies": {
     "@hapi/hapi": "^18.4.0",
