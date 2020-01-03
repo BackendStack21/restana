@@ -90,7 +90,7 @@ module.exports = (options = {}) => {
     try {
       await next()
     } catch (err) {
-      return app.errorHandler(err, req, res)
+      return options.errorHandler(err, req, res)
     }
   })
 
