@@ -1,6 +1,6 @@
 {
   "name": "restana",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "description": "Super fast and minimalist web framework for building REST micro-services.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -38,7 +38,7 @@
   ],
   "homepage": "https://github.com/jkyberneees/ana#readme",
   "dependencies": {
-    "0http": "^2.2.0"
+    "0http": "^2.2.1"
   },
   "devDependencies": {
     "@hapi/hapi": "^18.4.0",
@@ -65,7 +65,7 @@
     "standard": "^14.3.1",
     "supertest": "^3.4.2",
     "swagger-tools": "^0.10.4",
-    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v15.11.0",
+    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v16.5.0",
     "winston": "^2.4.4"
   }
 }
