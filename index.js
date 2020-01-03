@@ -12,6 +12,9 @@ const exts = {
 }
 
 module.exports = (options = {}) => {
+  options.errorHandler = options.errorHandler || ((err, req, res) => {
+    res.send(err)
+  })
   const router = requestRouter(options)
   const server = options.server || require('http').createServer()
   const prp = undefined === options.prioRequestsProcessing ? true : options.prioRequestsProcessing
@@ -30,9 +33,7 @@ module.exports = (options = {}) => {
       return router
     },
 
-    errorHandler: options.errorHandler || ((err, req, res) => {
-      res.send(err)
-    }),
+    errorHandler: options.errorHandler,
 
     newRouter () {
       return requestRouter(options)
