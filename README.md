@@ -236,6 +236,7 @@ module.exports.handler = async (event, context) => {
 `restana` restana based services can also run as Cloud Functions for Firebase 🚀
 ```js 
 // required dependencies
+const functions = require("firebase-functions");
 const restana = require('restana')
 
 // creating service
