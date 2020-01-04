@@ -232,6 +232,23 @@ module.exports.handler = async (event, context) => {
 }
 ``` 
 
+## Cloud Functions for Firebase Integration
+`restana` restana based services can also run as Cloud Functions for Firebase 🚀
+```js 
+// required dependencies
+const functions = require("firebase-functions");
+const restana = require('restana')
+
+// creating service
+const service = restana()
+service.get('/hello', (req, res) => {
+  res.send('Hello World!')
+})
+
+// lambda integration
+exports = module.exports = functions.https.onRequest(app.callback());
+``` 
+
 ## Serving static files
 You can read more about serving static files with restana in this link:
 https://thejs.blog/2019/07/12/restana-static-serving-the-frontend-with-node-js-beyond-nginx/
