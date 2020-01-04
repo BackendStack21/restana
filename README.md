@@ -178,6 +178,21 @@ service.get('/admin', (req, res, next) => {
 });
 ...
 ```
+
+### Nested routers
+Nested routers are supported as well:
+```js
+const service = require('restana')()
+const nestedRouter = service.newRouter()
+
+nestedRouter.get('/hello', (req, res) => {
+  res.send('Hello World!')
+})
+service.use('/v1', nestedRouter) 
+...
+```
+In this example the router routes will be available under `/v1` prefix. For example: `GET /v1/hello`
+
 #### Third party middlewares support:
 > All middlewares using the `function (req, res, next)` signature format are compatible with restana.
 
