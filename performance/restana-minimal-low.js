@@ -1,6 +1,5 @@
 const low = require('0http/lib/server/low')
 const service = require('../index')({
-  disableResponseEvent: true,
   prioRequestsProcessing: false,
   server: low()
 })
