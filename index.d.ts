@@ -42,7 +42,7 @@ declare namespace restana {
     ): void
   }
 
-  interface Router <P extends Protocol> {
+  interface Router<P extends Protocol> {
     get: RegisterRoute<P>
     delete: RegisterRoute<P>
     patch: RegisterRoute<P>
@@ -134,6 +134,7 @@ declare namespace restana {
     getConfigOptions(): Options<P>
     use(middleware: RequestHandler<P>): restana.Service<P>
     use(prefix: string, middleware: RequestHandler<P>): restana.Service<P>
+    use(prefix: string, middleware: Router<P>): restana.Service<P>
     handle(req: Request<P>, res: Response<P>): void
     start(port?: number, host?: string): Promise<Server<P>>
     close(): Promise<void>
