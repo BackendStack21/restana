@@ -65,7 +65,6 @@
     "standard": "^14.3.1",
     "supertest": "^3.4.2",
     "swagger-tools": "^0.10.4",
-    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v16.5.0",
     "winston": "^2.4.4"
   }
 }
