@@ -1,7 +1,7 @@
 const apm = require('./apm-base')
 
 /**
- * Elastic APM custom instrumentation
+ * New Relic APM custom instrumentation
  *
  * Supported features:
  * - route names
