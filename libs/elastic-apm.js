@@ -1,4 +1,4 @@
-const methods = require('./methods')
+const apm = require('./apm-base')
 
 /**
  * Elastic APM custom instrumentation
@@ -6,22 +6,4 @@ const methods = require('./methods')
  * Supported features:
  * - route names
  */
-module.exports = ({ apm }) => {
-  return {
-    patch (app) {
-      methods.forEach(method => {
-        const ref = app[method]
-
-        app[method] = (path, ...args) => {
-          args.unshift((req, res, next) => {
-            apm.setTransactionName(`${req.method} ${path}`)
-
-            return next()
-          })
-
-          return ref(path, args)
-        }
-      })
-    }
-  }
-}
+module.exports = (options) => apm(options)
