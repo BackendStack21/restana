@@ -287,24 +287,43 @@ existing APM agents such as:
 - https://www.npmjs.com/package/newrelic
 - https://www.npmjs.com/package/elastic-apm-node
 
-### Elastic APM - Route Naming
-"Routes Naming" discovery is not supported out of the box, but we have created our custom integration for Elastic APM:
+### Elastic APM - Routes Naming
+"Routes Naming" discovery is not supported out of the box by the Elastic APM agent, therefore we have created our custom integration.
 ```js
 // getting the Elastic APM agent
-const apm = require('elastic-apm-node').start({
+const agent = require('elastic-apm-node').start({
   secretToken: process.env.APM_SECRET_TOKEN,
   serverUrl: process.env.APM_SERVER_URL
 })
 
-// getting restana instrumentator 
-const elasticApm = require('restana/libs/elastic-apm')
-const { patch } = elasticApm({ apm })
+// creating a restana application
+const service = require('restana')()
+
+// getting restana APM routes naming plugin 
+const apm = require('restana/libs/elastic-apm')
+// attach route naming instrumentation before registering service routes
+apm({ agent }.patch(service)
+
+// register your routes or middlewares
+service.get('/hello', (req, res) => {
+  res.send('Hello World!')
+})
+
+// ...
+```
+### New Relic - Routes Naming
+"Routes Naming" discovery is not supported out of the box by the New Relic APM agent, therefore we have created our custom integration.
+```js
+// getting the New Relic APM agent
+const agent = require('newrelic')
 
 // creating a restana application
 const service = require('restana')()
 
+// getting restana APM routes naming plugin 
+const apm = require('restana/libs/newrelic-apm')
 // attach route naming instrumentation before registering service routes
-patch(service)
+apm({ agent }.patch(service)
 
 // register your routes or middlewares
 service.get('/hello', (req, res) => {
