@@ -302,7 +302,7 @@ const service = require('restana')()
 // getting restana APM routes naming plugin 
 const apm = require('restana/libs/elastic-apm')
 // attach route naming instrumentation before registering service routes
-apm({ agent }.patch(service)
+apm({ agent }).patch(service)
 
 // register your routes or middlewares
 service.get('/hello', (req, res) => {
@@ -323,7 +323,7 @@ const service = require('restana')()
 // getting restana APM routes naming plugin 
 const apm = require('restana/libs/newrelic-apm')
 // attach route naming instrumentation before registering service routes
-apm({ agent }.patch(service)
+apm({ agent }).patch(service)
 
 // register your routes or middlewares
 service.get('/hello', (req, res) => {
