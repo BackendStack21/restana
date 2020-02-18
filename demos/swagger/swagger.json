@@ -15,8 +15,6 @@
         "tags": [
           "hello"
         ],
-        "x-swagger-router-controller": "Helloer",
-        "operationId": "sayHi",
         "summary": "Say hi",
         "description": "Helloer endpoint",
         "produces": [
