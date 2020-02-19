@@ -9,4 +9,11 @@ service.get('/throw', (req, res) => {
   throw new Error('Upps!')
 })
 
+const router = service.newRouter()
+router.get('/throw', (req, res) => {
+  throw new Error('Upps from nested router!')
+})
+
+service.use('/nested', router)
+
 service.start()
