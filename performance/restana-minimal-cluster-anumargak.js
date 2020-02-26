@@ -1,3 +1,5 @@
+'use strict'
+
 const anumargak = require('anumargak')
 const cluster = require('cluster')
 

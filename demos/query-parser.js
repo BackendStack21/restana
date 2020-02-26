@@ -1,3 +1,5 @@
+'use strict'
+
 const queryParser = require('connect-query')
 const service = require('./../index')({})
 service.use(queryParser())

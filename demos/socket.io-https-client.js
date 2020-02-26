@@ -1,3 +1,5 @@
+'use strict'
+
 const socket = require('socket.io-client')('https://localhost:3000', {
   transports: ['websocket'], rejectUnauthorized: false
 })

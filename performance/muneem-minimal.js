@@ -1,3 +1,5 @@
+'use strict'
+
 const Muneem = require('muneem')
 const service = Muneem()
 

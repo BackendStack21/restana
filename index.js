@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * restana Web Framework implementation
  *

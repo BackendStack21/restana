@@ -1,3 +1,5 @@
+'use strict'
+
 const service = require('./../index')({})
 
 // custom middleware to attach the X-Response-Time header to the response

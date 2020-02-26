@@ -1,3 +1,5 @@
+'use strict'
+
 /* global describe, it, beforeEach */
 const expect = require('chai').expect
 const request = require('supertest')

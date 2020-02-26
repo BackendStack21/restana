@@ -1,3 +1,5 @@
+'use strict'
+
 const service = require('./../index')({})
 const bodyParser = require('body-parser')
 

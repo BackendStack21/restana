@@ -1,3 +1,5 @@
+'use strict'
+
 const service = require('../index')({})
 
 // route without middlewares

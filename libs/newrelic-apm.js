@@ -1,3 +1,5 @@
+'use strict'
+
 const apm = require('./apm-base')
 
 /**

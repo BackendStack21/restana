@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * Supported HTTP methods
  */

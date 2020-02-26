@@ -1,3 +1,5 @@
+'use strict'
+
 /* global vertx */
 var Router = require('vertx-web-js/router')
 var router = Router.router(vertx)

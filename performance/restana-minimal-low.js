@@ -1,3 +1,5 @@
+'use strict'
+
 const low = require('0http/lib/server/low')
 const service = require('../index')({
   prioRequestsProcessing: false,

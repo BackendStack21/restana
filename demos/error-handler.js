@@ -1,3 +1,5 @@
+'use strict'
+
 const service = require('../index')({
   errorHandler (err, req, res) {
     console.log(`Unexpected error: ${err.message}`)
