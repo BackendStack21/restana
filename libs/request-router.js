@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * find-my-way router factory
  *

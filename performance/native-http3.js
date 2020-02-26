@@ -1,3 +1,5 @@
+'use strict'
+
 const http2 = require('http2')
 const pem = require('pem')
 

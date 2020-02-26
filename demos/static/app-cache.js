@@ -1,3 +1,5 @@
+'use strict'
+
 const files = require('serve-static')
 const path = require('path')
 

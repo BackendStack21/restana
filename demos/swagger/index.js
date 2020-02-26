@@ -1,3 +1,5 @@
+'use strict'
+
 const service = require('./../../index')({})
 const swagger = require('swagger-tools')
 const spec = require('./swagger.json')

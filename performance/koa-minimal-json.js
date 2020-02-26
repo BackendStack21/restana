@@ -1,3 +1,5 @@
+'use strict'
+
 const Koa = require('koa')
 const service = new Koa()
 const router = require('koa-router')()

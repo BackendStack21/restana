@@ -1,3 +1,5 @@
+'use strict'
+
 const http = require('https')
 const pem = require('pem')
 

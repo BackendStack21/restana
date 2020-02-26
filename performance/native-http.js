@@ -1,3 +1,5 @@
+'use strict'
+
 const http = require('http')
 
 const service = new http.Server()

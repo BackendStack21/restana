@@ -1,3 +1,5 @@
+'use strict'
+
 const service = require('express')({})
 
 service.get('/:name/:age', (req, res) => {
