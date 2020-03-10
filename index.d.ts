@@ -13,6 +13,16 @@ declare namespace restana {
     HTTP2 = 'http2'
   }
 
+  // https://github.com/microsoft/TypeScript/issues/1897#issuecomment-580962081
+  type Body =
+  | null
+  | boolean
+  | number
+  | string
+  | Buffer
+  | Body[]
+  | { [prop: string]: Body }
+
   enum Method {
     GET = 'get',
     DELETE = 'delete',
@@ -26,7 +36,8 @@ declare namespace restana {
 
   interface RequestExtensions {
     params: Record<string, string>
-    originalUrl: string
+    originalUrl: string,
+    body?: Body
   }
 
   type Request<P extends Protocol> = P extends Protocol.HTTP2
