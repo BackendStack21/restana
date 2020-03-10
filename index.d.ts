@@ -19,6 +19,7 @@ declare namespace restana {
   | boolean
   | number
   | string
+  | Buffer
   | Body[]
   | { [prop: string]: Body }
 
