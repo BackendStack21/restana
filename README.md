@@ -1,33 +1,25 @@
 # restana
+[![Build Status](https://travis-ci.org/jkyberneees/ana.svg?branch=master)](https://travis-ci.org/jkyberneees/ana)
+[![NPM version](https://img.shields.io/npm/v/restana.svg?style=flat)](https://www.npmjs.com/package/restana)  
+Blazing fast, tiny and minimalist *connect-like* web framework for building REST micro-services.  
 
-[![Build Status](https://travis-ci.org/jkyberneees/ana.svg?branch=master)](https://travis-ci.org/jkyberneees/ana) [![NPM version](https://img.shields.io/npm/v/restana.svg?style=flat)](https://www.npmjs.com/package/restana)  
-Blazing fast, tiny and minimalist _connect-like_ web framework for building REST micro-services.
+![Performance Benchmarks](benchmark-30122019.png)
+> MacBook Pro 2019, 2,4 GHz Intel Core i9, 32 GB 2400 MHz DDR4  
+> - wrk -t8 -c40 -d5s http://127.0.0.1:3000/hi
 
-![Performance Benchmarks](.gitbook/assets/benchmark-30122019.png)
-
-> MacBook Pro 2019, 2,4 GHz Intel Core i9, 32 GB 2400 MHz DDR4
->
-> * wrk -t8 -c40 -d5s [http://127.0.0.1:3000/hi](http://127.0.0.1:3000/hi)
-
-Read more: [_Building ultra-fast REST APIs with Node.js \(restana vs express vs fastify\)_](https://medium.com/@kyberneees/building-ultra-fast-rest-apis-with-node-js-and-restana-1d65b0d524b7)
+Read more:  *[Building ultra-fast REST APIs with Node.js (restana vs express vs fastify)](https://medium.com/@kyberneees/building-ultra-fast-rest-apis-with-node-js-and-restana-1d65b0d524b7)*
 
 ## Usage
-
 ```bash
 npm i restana --save
 ```
-
 ### Creating the service instance
-
 Create unsecure HTTP server:
-
-```javascript
+```js
 const service = require('restana')()
 ```
-
 Passing HTTP server instance:
-
-```javascript
+```js
 const https = require('https')
 const service = require('restana')({
   server: https.createServer({
@@ -38,21 +30,19 @@ const service = require('restana')({
 ```
 
 > See examples:
->
-> * [HTTPS service demo](https://github.com/jkyberneees/ana/tree/61326e0d941af5fbe087bc78d0b3df8c7da2eb36/demos/https-service.js)
-> * [HTTP2 service demo](https://github.com/jkyberneees/ana/tree/61326e0d941af5fbe087bc78d0b3df8c7da2eb36/demos/http2-service.js)
+> * [HTTPS service demo](demos/https-service.js)
+> * [HTTP2 service demo](demos/http2-service.js)
 
 ### Configuration options
+- `server`: Allows to optionally override the HTTP server instance to be used.
+- `prioRequestsProcessing`: If `TRUE`, HTTP requests processing/handling is prioritized using `setImmediate`. Default value: `TRUE`
+- `defaultRoute`: Optional route handler when no route match occurs. Default value: `((req, res) => res.send(404))`
+- `errorHandler`: Optional global error handler function. Default value: `(err, req, res) => res.send(err)`
+- `routerCacheSize`: The router matching cache size, indicates how many request matches will be kept in memory. Default value: `2000`
 
-* `server`: Allows to optionally override the HTTP server instance to be used.
-* `prioRequestsProcessing`: If `TRUE`, HTTP requests processing/handling is prioritized using `setImmediate`. Default value: `TRUE`
-* `defaultRoute`: Optional route handler when no route match occurs. Default value: `((req, res) => res.send(404))`
-* `errorHandler`: Optional global error handler function. Default value: `(err, req, res) => res.send(err)`
-* `routerCacheSize`: The router matching cache size, indicates how many request matches will be kept in memory. Default value: `2000`
 
 ### Full service example
-
-```javascript
+```js
 const bodyParser = require('body-parser')
 
 const service = require('restana')()
@@ -91,36 +81,30 @@ service.get('/version', function (req, res) {
 ```
 
 Supported HTTP methods:
-
-```javascript
+```js
 const methods = ['get', 'delete', 'put', 'patch', 'post', 'head', 'options', 'trace']
 ```
 
 #### Using .all routes registration
-
 You can also register a route handler for `all` supported HTTP methods:
-
-```javascript
+```js
 service.all('/allmethodsroute', (req, res) => {
   res.send(200)
 })
 ```
 
 #### Starting the service
-
-```javascript
+```js
 service.start(3000).then((server) => {})
 ```
 
 #### Stopping the service
-
-```javascript
+```js
 service.close().then(()=> {})
 ```
 
 ### Async / Await support
-
-```javascript
+```js
 // some fake "star" handler
 service.post('/star/:username', async (req, res) => {
   await starService.star(req.params.username)
@@ -131,16 +115,13 @@ service.post('/star/:username', async (req, res) => {
 ```
 
 ### Sending custom headers:
-
-```javascript
+```js
 res.send('Hello World', 200, {
   'x-response-time': 100
 })
 ```
-
 ### Acknowledge from low-level `end` operation
-
-```javascript
+```js
 res.send('Hello World', 200, {}, (err) => {
   if (err) {
     // upppsss
@@ -149,8 +130,7 @@ res.send('Hello World', 200, {}, (err) => {
 ```
 
 ### Global error handling
-
-```javascript
+```js
 const service = require('restana')({
   errorHandler (err, req, res) {
     console.log(`Something was wrong: ${err.message || err}`)
@@ -164,8 +144,7 @@ service.get('/throw', (req, res) => {
 ```
 
 ### Global middlewares
-
-```javascript
+```js
 const service = require('restana')()
 
 service.use((req, res, next) => {
@@ -176,8 +155,7 @@ service.use((req, res, next) => {
 ```
 
 ### Prefix middlewares
-
-```javascript
+```js
 const service = require('restana')()
 
 service.use('/admin', (req, res, next) => {
@@ -188,10 +166,8 @@ service.use('/admin', (req, res, next) => {
 ```
 
 ### Route level middlewares
-
 Connecting middlewares to specific routes is also supported:
-
-```javascript
+```js
 const service = require('restana')()
 
 service.get('/admin', (req, res, next) => {
@@ -204,10 +180,8 @@ service.get('/admin', (req, res, next) => {
 ```
 
 ### Nested routers
-
 Nested routers are supported as well:
-
-```javascript
+```js
 const service = require('restana')()
 const nestedRouter = service.newRouter()
 
@@ -217,25 +191,20 @@ nestedRouter.get('/hello', (req, res) => {
 service.use('/v1', nestedRouter) 
 ...
 ```
-
 In this example the router routes will be available under `/v1` prefix. For example: `GET /v1/hello`
 
 #### Third party middlewares support:
-
 > All middlewares using the `function (req, res, next)` signature format are compatible with restana.
 
 Examples :
-
-* **raw-body**: [https://www.npmjs.com/package/raw-body](https://www.npmjs.com/package/raw-body). See demo: [raw-body.js](https://github.com/jkyberneees/ana/tree/61326e0d941af5fbe087bc78d0b3df8c7da2eb36/demos/raw-body.js)
-* **express-jwt**: [https://www.npmjs.com/package/express-jwt](https://www.npmjs.com/package/express-jwt). See demo: [express-jwt.js](https://github.com/jkyberneees/ana/tree/61326e0d941af5fbe087bc78d0b3df8c7da2eb36/demos/express-jwt.js)
-* **body-parser**: [https://www.npmjs.com/package/body-parser](https://www.npmjs.com/package/body-parser). See demo: [body-parser.js](https://github.com/jkyberneees/ana/tree/61326e0d941af5fbe087bc78d0b3df8c7da2eb36/demos/body-parser.js)
-* **swagger-tools**: [https://www.npmjs.com/package/swagger-tools](https://www.npmjs.com/package/swagger-tools). See demo: [swagger](https://github.com/jkyberneees/ana/tree/61326e0d941af5fbe087bc78d0b3df8c7da2eb36/demos/swagger/index.js)
+* **raw-body**: [https://www.npmjs.com/package/raw-body](https://www.npmjs.com/package/raw-body). See demo: [raw-body.js](demos/raw-body.js)
+* **express-jwt**: [https://www.npmjs.com/package/express-jwt](https://www.npmjs.com/package/express-jwt). See demo: [express-jwt.js](demos/express-jwt.js)
+* **body-parser**: [https://www.npmjs.com/package/body-parser](https://www.npmjs.com/package/body-parser). See demo: [body-parser.js](demos/body-parser.js)
+* **swagger-tools**: [https://www.npmjs.com/package/swagger-tools](https://www.npmjs.com/package/swagger-tools). See demo: [swagger](demos/swagger/index.js)
 
 #### Async middlewares support
-
 Since version `v3.3.x`, you can also use async middlewares as described below:
-
-```javascript
+```js
 service.use(async (req, res, next) => {
   await next()
   console.log('All middlewares and route handler executed!')
@@ -246,8 +215,7 @@ service.use(jwt())
 ```
 
 In the same way you can also capture uncaught exceptions inside the request processing flow:
-
-```javascript
+```js
 service.use(async (req, res, next) => {
   try {
     await next()
@@ -259,12 +227,9 @@ service.use(async (req, res, next) => {
 service.use(logging())
 service.use(jwt())
 ```
-
 ## AWS Serverless Integration
-
 `restana` is compatible with the [serverless-http](https://github.com/dougmoscrop/serverless-http) library, so restana based services can also run as AWS lambdas 🚀
-
-```javascript
+```js 
 // required dependencies
 const serverless = require('serverless-http')
 const restana = require('restana')
@@ -280,13 +245,11 @@ const handler = serverless(app);
 module.exports.handler = async (event, context) => {
   return await handler(event, context)
 }
-```
+``` 
 
 ## Cloud Functions for Firebase Integration
-
 `restana` restana based services can also run as Cloud Functions for Firebase 🚀
-
-```javascript
+```js 
 // required dependencies
 const functions = require("firebase-functions");
 const restana = require('restana')
@@ -299,15 +262,14 @@ service.get('/hello', (req, res) => {
 
 // lambda integration
 exports = module.exports = functions.https.onRequest(app.callback());
-```
+``` 
 
 ## Serving static files
-
-You can read more about serving static files with restana in this link: [https://thejs.blog/2019/07/12/restana-static-serving-the-frontend-with-node-js-beyond-nginx/](https://thejs.blog/2019/07/12/restana-static-serving-the-frontend-with-node-js-beyond-nginx/)
+You can read more about serving static files with restana in this link:
+https://thejs.blog/2019/07/12/restana-static-serving-the-frontend-with-node-js-beyond-nginx/
 
 ## Third party integrations
-
-```javascript
+```js
 // ...
 const service = restana()
 service.get('/hello', (req, res) => {
@@ -319,18 +281,15 @@ const server = http.createServer(service.callback())
 //...
 ```
 
-## Application Performance Monitoring \(APM\)
-
-As a Node.js framework implementation based on the standard `http` module, `restana` benefits from out of the box instrumentation on existing APM agents such as:
-
-* [https://www.npmjs.com/package/newrelic](https://www.npmjs.com/package/newrelic)
-* [https://www.npmjs.com/package/elastic-apm-node](https://www.npmjs.com/package/elastic-apm-node)
+## Application Performance Monitoring (APM)
+As a Node.js framework implementation based on the standard `http` module, `restana` benefits from out of the box instrumentation on 
+existing APM agents such as:
+- https://www.npmjs.com/package/newrelic
+- https://www.npmjs.com/package/elastic-apm-node
 
 ### Elastic APM - Routes Naming
-
 "Routes Naming" discovery is not supported out of the box by the Elastic APM agent, therefore we have created our custom integration.
-
-```javascript
+```js
 // getting the Elastic APM agent
 const agent = require('elastic-apm-node').start({
   secretToken: process.env.APM_SECRET_TOKEN,
@@ -352,12 +311,9 @@ service.get('/hello', (req, res) => {
 
 // ...
 ```
-
 ### New Relic - Routes Naming
-
 "Routes Naming" discovery is not supported out of the box by the New Relic APM agent, therefore we have created our custom integration.
-
-```javascript
+```js
 // getting the New Relic APM agent
 const agent = require('newrelic')
 
@@ -377,40 +333,27 @@ service.get('/hello', (req, res) => {
 // ...
 ```
 
-## Performance comparison \(framework overhead\)
-
+## Performance comparison (framework overhead)
 ### Which is the fastest?
-
-You can checkout `restana` performance index on the _**"Which is the fastest"**_ project: [https://github.com/the-benchmarker/web-frameworks\#full-table-1](https://github.com/the-benchmarker/web-frameworks#full-table-1)
+You can checkout `restana` performance index on the ***"Which is the fastest"*** project: https://github.com/the-benchmarker/web-frameworks#full-table-1
 
 ## Using this project? Let us know 🚀
-
-[https://goo.gl/forms/qlBwrf5raqfQwteH3](https://goo.gl/forms/qlBwrf5raqfQwteH3)
+https://goo.gl/forms/qlBwrf5raqfQwteH3
 
 ## Breacking changes
-
 ### 4.x:
-
 > Restana version 4.x is much more simple to maintain, mature and faster!
->
-> #### Added
->
-> * Node.js v10.x+ is required.
-> * `0http` sequential router is now the default and only HTTP router.
-> * Overall middlewares support was improved.
-> * Nested routers are now supported.
-> * Improved error handler through async middlewares.
-> * New `getRouter` and `newRouter` methods are added for accesing default and nested routers.
->
->   **Removed**
->
-> * The `response` event was removed.
-> * `find-my-way` router is replaced by `0http` sequential router.
-> * Returning result inside async handler is not allowed anymore. Use `res.send...`
->
->   **3.x:**
->
->   **Removed**
->
->   * Support for `turbo-http` library was dropped.
-
+#### Added
+ - Node.js v10.x+ is required.
+ - `0http` sequential router is now the default and only HTTP router.
+ - Overall middlewares support was improved.
+ - Nested routers are now supported.
+ - Improved error handler through async middlewares.
+ - New `getRouter` and `newRouter` methods are added for accesing default and nested routers.
+#### Removed
+ - The `response` event was removed.
+ - `find-my-way` router is replaced by `0http` sequential router.
+ - Returning result inside async handler is not allowed anymore. Use `res.send...`
+### 3.x: 
+#### Removed
+- Support for `turbo-http` library was dropped.
