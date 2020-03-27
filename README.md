@@ -247,6 +247,9 @@ module.exports.handler = async (event, context) => {
 }
 ``` 
 
+> See also:  
+> Running restana service as a lambda using AWS SAM at https://github.com/jkyberneees/restana-serverless
+
 ## Cloud Functions for Firebase Integration
 `restana` restana based services can also run as Cloud Functions for Firebase 🚀
 ```js 
