@@ -62,8 +62,9 @@ module.exports = (options = {}) => {
       router.lookup(req, res)
     },
 
-    start: (port = 3000, host) => new Promise((resolve, reject) => {
-      server.listen(port, host, (err) => {
+    start: (...args) => new Promise((resolve, reject) => {
+      if (!args || !args.length) args = [3000]
+      server.listen(...args, (err) => {
         if (err) reject(err)
         resolve(server)
       })
