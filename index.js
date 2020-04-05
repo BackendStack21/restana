@@ -17,6 +17,8 @@ module.exports = (options = {}) => {
   options.errorHandler = options.errorHandler || ((err, req, res) => {
     res.send(err)
   })
+
+  const routes = new Set()
   const router = requestRouter(options)
   const server = options.server || require('http').createServer()
   const prp = undefined === options.prioRequestsProcessing ? true : options.prioRequestsProcessing
@@ -31,6 +33,10 @@ module.exports = (options = {}) => {
   }
 
   const app = {
+    routes () {
+      return [...routes]
+    },
+
     getRouter () {
       return router
     },
@@ -81,6 +87,7 @@ module.exports = (options = {}) => {
 
   shortcuts.forEach((method) => {
     app[method] = (...args) => {
+      routes.add(`${method.toUpperCase()}${args[0]}`)
       router[method].apply(router, args)
 
       return app
