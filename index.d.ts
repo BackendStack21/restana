@@ -138,6 +138,7 @@ declare namespace restana {
   }
 
   interface Service<P extends Protocol> extends Router<P> {
+    routes(): string[],
     getRouter(): Router<P>,
     newRouter(): Router<P>
     errorHandler: ErrorHandler<P>,

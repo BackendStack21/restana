@@ -59,6 +59,11 @@ describe('Restana Web Framework - Smoke', () => {
     server = await service.start(~~process.env.PORT)
   })
 
+  it('routes should exist on service', async () => {
+    expect(service.routes().includes('GET/async/:name')).to.equal(true)
+    expect(service.routes().includes('ALL/sheet.css')).to.equal(true)
+  })
+
   it('should GET JSON response /pets/:id', async () => {
     await request(server)
       .get('/pets/0')
