@@ -6,7 +6,7 @@
  * @license MIT
  */
 
-const shortcuts = ['get', 'delete', 'patch', 'post', 'put', 'head', 'options', 'trace', 'all']
+const methods = require('./libs/methods')
 const requestRouter = require('./libs/request-router')
 const exts = {
   request: {},
@@ -85,7 +85,7 @@ module.exports = (options = {}) => {
 
   }
 
-  shortcuts.forEach((method) => {
+  methods.forEach((method) => {
     app[method] = (...args) => {
       routes.add(`${method.toUpperCase()}${args[0]}`)
       router[method].apply(router, args)
