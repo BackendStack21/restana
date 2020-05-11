@@ -1,9 +1,7 @@
 'use strict'
 
 /**
- * find-my-way router factory
- *
- * @see https://github.com/delvedor/find-my-way
+ * @see: https://github.com/jkyberneees/0http#0http---sequential-default-router
  */
 const sequential = require('0http/lib/router/sequential')
 
