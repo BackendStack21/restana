@@ -36,7 +36,7 @@ declare namespace restana {
 
   interface RequestExtensions {
     params: Record<string, string>
-    query: Record<string, string>
+    query: Record<string, string | string[]>
     originalUrl: string,
     body?: Body
   }
