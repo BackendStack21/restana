@@ -38,7 +38,7 @@
   ],
   "homepage": "https://github.com/jkyberneees/ana#readme",
   "dependencies": {
-    "0http": "^2.5.1"
+    "0http": "^2.5.2"
   },
   "devDependencies": {
     "@hapi/hapi": "^19.1.1",
