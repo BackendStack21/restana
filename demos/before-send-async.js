@@ -11,14 +11,13 @@ const beforeSendAsyncHook = (req, res, sendArgs) => {
 service.use((req, res, next) => {
   const send = res.send
 
-  res.send = function (...args) {
-    return beforeSendAsyncHook(req, res, args)
-      .then(() => {
-        return send.apply(res, args)
-      })
-      .catch(err => {
-        return send.apply(res, err)
-      })
+  res.send = async function (...args) {
+    try {
+      await beforeSendAsyncHook(req, res, args)
+      return send.apply(res, args)
+    } catch (err) {
+      return send.apply(res, err)
+    }
   }
 
   return next()
