@@ -1,6 +1,6 @@
 'use strict'
 
-const { forEach } = require('../utils/object')
+const { forEach } = require('./utils')
 
 const CONTENT_TYPE_HEADER = 'content-type'
 const CONTENT_TYPE = {
@@ -29,7 +29,8 @@ const sendError = (res, error, cb) => {
   const errorCode = error.status || error.code || error.statusCode
   res.statusCode = typeof errorCode === 'number' ? parseInt(errorCode) : 500
   res.setHeader(CONTENT_TYPE_HEADER, CONTENT_TYPE.JSON)
-  sendJSON(res, {
+
+  return sendJSON(res, {
     code: res.statusCode,
     message: error.message,
     data: error.data
