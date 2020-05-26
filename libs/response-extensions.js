@@ -25,14 +25,14 @@ const parseErr = (error) => {
   const errorCode = error.status || error.code || error.statusCode
   const statusCode = typeof errorCode === 'number' ? parseInt(errorCode) : 500
 
-  return [
+  return {
     statusCode,
-    stringify({
+    data: stringify({
       code: statusCode,
       message: error.message,
       data: error.data
     })
-  ]
+  }
 }
 
 /**
@@ -44,10 +44,10 @@ module.exports.send = (options, req, res) => {
     let contentType
 
     if (data instanceof Error) {
-      const [statusCode, errStr] = parseErr(data)
+      const err = parseErr(data)
       contentType = TYPE_JSON
-      code = statusCode
-      data = errStr
+      code = err.statusCode
+      data = err.data
     } else {
       if (headers && typeof headers === 'object') {
         forEachObject(headers, (value, key) => {
