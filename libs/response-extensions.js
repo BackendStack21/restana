@@ -15,7 +15,9 @@ const stringify = (obj) => {
 }
 
 const preEnd = (res, contentType, statusCode) => {
-  res.setHeader(CONTENT_TYPE_HEADER, contentType || TYPE_PLAIN)
+  if (contentType) {
+    res.setHeader(CONTENT_TYPE_HEADER, contentType)
+  }
   res.statusCode = statusCode
 }
 
@@ -62,9 +64,11 @@ module.exports.send = (options, req, res) => {
       }
 
       if (data) {
-        if (data instanceof Buffer) {
+        if (typeof data === 'string') {
+          contentType = contentType || TYPE_PLAIN
+        } else if (data instanceof Buffer) {
           contentType = contentType || TYPE_OCTET
-        } else if (!!data && typeof data.pipe === 'function') {
+        } else if (typeof data.pipe === 'function') {
           contentType = contentType || TYPE_OCTET
 
           // NOTE: we exceptionally handle the response termination for streams
