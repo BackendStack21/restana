@@ -1,6 +1,7 @@
 /**
- * Benchmark to monitor performance regresions on the `res.send` method
+ * or chaining vs if
  */
+const { report } = require('./util')
 const Benchmark = require('benchmark')
 const suite = new Benchmark.Suite()
 
@@ -23,14 +24,6 @@ suite
     if (!headerExists) contentType = value
   })
   .on('complete', function () {
-    console.log(this.filter('successful').sort((a, b) => {
-      a = a.stats; b = b.stats
-      return (a.mean + a.moe > b.mean + b.moe ? 1 : -1)
-    }).map(suite => {
-      return {
-        name: suite.name,
-        mean: suite.stats.mean
-      }
-    }))
+    report(this)
   })
   .run({ async: false })
