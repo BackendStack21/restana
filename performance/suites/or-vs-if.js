@@ -29,7 +29,7 @@ suite
     }).map(suite => {
       return {
         name: suite.name,
-        mean: suite.stats.mean.toFixed(10)
+        mean: suite.stats.mean
       }
     }))
   })
