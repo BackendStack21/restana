@@ -59,7 +59,7 @@ module.exports.send = (options, req, res) => {
       contentType = res.getHeader(CONTENT_TYPE_HEADER)
 
       if (typeof data === 'number') {
-        code = parseInt(data, 10)
+        code = data
         data = res.body
       }
 
