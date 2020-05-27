@@ -42,6 +42,7 @@
   },
   "devDependencies": {
     "@hapi/hapi": "^19.1.1",
+    "benchmark": "^2.1.4",
     "chai": "^4.2.0",
     "express": "^4.17.1",
     "express-jwt": "^5.3.3",
@@ -49,6 +50,7 @@
     "http-cache-middleware": "^1.3.5",
     "koa": "^2.12.0",
     "koa-router": "^8.0.8",
+    "microtime": "^3.0.0",
     "mocha": "^7.1.2",
     "morgan": "^1.10.0",
     "muneem": "^2.4.5",
