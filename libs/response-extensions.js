@@ -65,22 +65,24 @@ module.exports.send = (options, req, res) => {
 
       if (data) {
         if (typeof data === 'string') {
-          contentType = contentType || TYPE_PLAIN
-        } else if (data instanceof Buffer) {
-          contentType = contentType || TYPE_OCTET
-        } else if (typeof data.pipe === 'function') {
-          contentType = contentType || TYPE_OCTET
-
-          // NOTE: we exceptionally handle the response termination for streams
-          preEnd(res, contentType, code)
-
-          data.pipe(res)
-          data.on('end', cb)
-
-          return
+          if (!contentType) contentType = TYPE_PLAIN
         } else if (typeof data === 'object') {
-          contentType = contentType || TYPE_JSON
-          data = stringify(data)
+          if (data instanceof Buffer) {
+            if (!contentType) contentType = TYPE_OCTET
+          } else if (typeof data.pipe === 'function') {
+            if (!contentType) contentType = TYPE_OCTET
+
+            // NOTE: we exceptionally handle the response termination for streams
+            preEnd(res, contentType, code)
+
+            data.pipe(res)
+            data.on('end', cb)
+
+            return
+          } else {
+            if (!contentType) contentType = TYPE_JSON
+            data = stringify(data)
+          }
         }
       }
     }
