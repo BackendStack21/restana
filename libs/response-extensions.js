@@ -9,7 +9,7 @@ const TYPE_OCTET = 'application/octet-stream'
 
 const NOOP = () => {}
 
-const stringify = (obj) => {
+const stringify = obj => {
   // ToDo: fast json stringify ?
   return JSON.stringify(obj)
 }
@@ -21,9 +21,9 @@ const preEnd = (res, contentType, statusCode) => {
   res.statusCode = statusCode
 }
 
-const parseErr = (error) => {
+const parseErr = error => {
   const errorCode = error.status || error.code || error.statusCode
-  const statusCode = typeof errorCode === 'number' ? parseInt(errorCode) : 500
+  const statusCode = typeof errorCode === 'number' ? errorCode : 500
 
   return {
     statusCode,
