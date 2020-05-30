@@ -64,8 +64,8 @@ describe('All Responses', () => {
   })
 
   service.get('/promise-rejected', (req, res) => {
-    const error = new Error('Rejected');
-    error.code = 503;
+    const error = new Error('Rejected')
+    error.code = 503
     res.setHeader('content-type', 'text/html')
     res.send(Promise.reject(error))
   })
@@ -170,7 +170,7 @@ describe('All Responses', () => {
     await request(server)
       .get('/promise-rejected')
       .expect(503)
-      .expect({ code : 503, message: 'Rejected' })
+      .expect({ code: 503, message: 'Rejected' })
       .expect('content-type', 'application/json; charset=utf-8')
   })
 
