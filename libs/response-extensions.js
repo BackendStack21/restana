@@ -80,6 +80,7 @@ module.exports.send = (options, req, res) => {
 
             return
           } else if (Promise.resolve(data) === data) { // http://www.ecma-international.org/ecma-262/6.0/#sec-promise.resolve
+            headers = null;
             return data
               .then(resolved => send(resolved, code, headers, cb))
               .catch(err => send(err, code, headers, cb))
