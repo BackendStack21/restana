@@ -53,6 +53,23 @@ describe('All Responses', () => {
     )
   })
 
+  service.get('/promise', (req, res) => {
+    res.send(Promise.resolve({ hello: 'world' }))
+  })
+
+  service.get('/promise-with-headers', (req, res) => {
+    res.setHeader('content-type', 'application/json')
+    res.setHeader('x-framework', 'restana')
+    res.send(Promise.resolve({ hello: 'world' }))
+  })
+
+  service.get('/promise-rejected', (req, res) => {
+    const error = new Error('Rejected')
+    error.code = 503
+    res.setHeader('content-type', 'text/html')
+    res.send(Promise.reject(error))
+  })
+
   service.get('/invalid-body', (req, res) => {
     res.body = true
     res.setHeader('content-type', 'text/plain; charset=utf-8')
@@ -117,7 +134,7 @@ describe('All Responses', () => {
       .expect({ id: 'restana' })
   })
 
-  it('should GET 200 and buffer content on /stream', async () => {
+  it('should GET 200 and html content on /stream', async () => {
     await request(server)
       .get('/stream')
       .expect(200)
@@ -130,6 +147,31 @@ describe('All Responses', () => {
       .get('/stream-octet')
       .expect(200)
       .expect('content-type', 'application/octet-stream')
+  })
+
+  it('should GET 200 and json content on /promise', async () => {
+    await request(server)
+      .get('/promise')
+      .expect(200)
+      .expect({ hello: 'world' })
+      .expect('content-type', 'application/json; charset=utf-8')
+  })
+
+  it('should GET 200 and json content on /promise-with-headers', async () => {
+    await request(server)
+      .get('/promise-with-headers')
+      .expect(200)
+      .expect({ hello: 'world' })
+      .expect('content-type', 'application/json')
+      .expect('x-framework', 'restana')
+  })
+
+  it('should GET 503 and json content on /promise-rejected', async () => {
+    await request(server)
+      .get('/promise-rejected')
+      .expect(503)
+      .expect({ code: 503, message: 'Rejected' })
+      .expect('content-type', 'application/json; charset=utf-8')
   })
 
   it('should GET 500 and buffer content on /invalid-body', async () => {

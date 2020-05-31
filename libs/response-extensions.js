@@ -40,7 +40,7 @@ const parseErr = error => {
  * No comments needed ;)
  */
 module.exports.send = (options, req, res) => {
-  return (data = 200, code = 200, headers = null, cb = NOOP) => {
+  const send = (data = 200, code = 200, headers = null, cb = NOOP) => {
     let contentType
 
     if (data instanceof Error) {
@@ -79,6 +79,11 @@ module.exports.send = (options, req, res) => {
             data.on('end', cb)
 
             return
+          } else if (Promise.resolve(data) === data) { // http://www.ecma-international.org/ecma-262/6.0/#sec-promise.resolve
+            headers = null
+            return data
+              .then(resolved => send(resolved, code, headers, cb))
+              .catch(err => send(err, code, headers, cb))
           } else {
             if (!contentType) contentType = TYPE_JSON
             data = stringify(data)
@@ -90,4 +95,6 @@ module.exports.send = (options, req, res) => {
     preEnd(res, contentType, code)
     res.end(data, cb)
   }
+
+  return send
 }
