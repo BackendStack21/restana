@@ -149,7 +149,9 @@ res.send(
   // response code (default 200)
   200, 
   // optional response headers (default NULL)
-  null, 
+  {
+    'x-cache-timeout': '5 minutes'
+  }, 
   // optional res.end callback
   err => { /*...*/ }
 )
