@@ -114,12 +114,33 @@ service.post('/star/:username', async (req, res) => {
 })
 ```
 
-### Sending custom headers:
+### Sending custom headers
 ```js
 res.send('Hello World', 200, {
   'x-response-time': 100
 })
 ```
+
+### The "res.send" method
+Same as in express, for `restana` we have implemented a handy `send` method that extends 
+every `res` object.  
+
+Supported datatypes are:
+- null
+- undefined
+- String
+- Buffer
+- Object
+- Stream
+- Promise
+
+Example usage:
+```js
+service.get('/promise', (req, res) => {
+  res.send(Promise.resolve('I am a Promise object!'))
+})
+```
+
 ### Acknowledge from low-level `end` operation
 ```js
 res.send('Hello World', 200, {}, (err) => {
