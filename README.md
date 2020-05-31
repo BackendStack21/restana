@@ -141,14 +141,21 @@ service.get('/promise', (req, res) => {
 })
 ```
 
-### Acknowledge from low-level `end` operation
+#### The method signature
 ```js
-res.send('Hello World', 200, null, (err) => {
-  if (err) {
-    // upppsss
-  }
-})
+res.send(
+  // data payload
+  'Hello World', 
+  // response code (default 200)
+  200, 
+  // optional response headers (default NULL)
+  null, 
+  // optional res.end callback
+  err => { /*...*/ }
+)
 ```
+> Optionally, you can also just send a response code:  
+> `res.send(401)`
 
 ### Global error handling
 ```js
