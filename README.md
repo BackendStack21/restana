@@ -143,7 +143,7 @@ service.get('/promise', (req, res) => {
 
 ### Acknowledge from low-level `end` operation
 ```js
-res.send('Hello World', 200, {}, (err) => {
+res.send('Hello World', 200, null, (err) => {
   if (err) {
     // upppsss
   }
@@ -170,7 +170,7 @@ const service = require('restana')()
 
 service.use((req, res, next) => {
   // do something
-  next()
+  return next()
 });
 ...
 ```
@@ -181,7 +181,7 @@ const service = require('restana')()
 
 service.use('/admin', (req, res, next) => {
   // do something
-  next()
+  return next()
 });
 ...
 ```
@@ -193,7 +193,7 @@ const service = require('restana')()
 
 service.get('/admin', (req, res, next) => {
   // do something
-  next()
+  return next()
 }, (req, res) => {
   res.send('admin data')
 });
