@@ -172,6 +172,12 @@ service.get('/throw', (req, res) => {
   throw new Error('Upps!')
 })
 ```
+#### errorHandler not being called?
+> PR: https://github.com/jkyberneees/ana/issues/81  
+
+Some middlewares don't do `return next()`, instead they just call `next()` to finish and continue the remaining middlewares execution. The second, is a bad practice as it silence any potential `Promise` rejection that happens in the downstream middlewares or handlers.  
+
+In restana (https://github.com/jkyberneees/ana/blob/master/index.js#L99) we enable async errors handling by default, however this mechanism fails when a subsequent middleware is registered containing the mentioned `next()` statement to finish their execution.
 
 ### Global middlewares
 ```js
