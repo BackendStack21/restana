@@ -87,8 +87,20 @@ module.exports = (options = {}) => {
 
   methods.forEach((method) => {
     app[method] = (...args) => {
-      routes.add(`${method.toUpperCase()}${args[0]}`)
-      router[method].apply(router, args)
+      if (Array.isArray(args[0])) {
+        let argsExceptPath = args.slice(1)
+        
+        args[0].map(urlPath => {
+          let indPathArgs = [...argsExceptPath]
+          indPathArgs.unshift(urlPath)
+          routes.add(`${method.toUpperCase()}${indPathArgs[0]}`)
+          router[method].apply(router, indPathArgs)
+        })
+      }
+      else {
+        routes.add(`${method.toUpperCase()}${args[0]}`)
+        router[method].apply(router, args)
+      }
 
       return app
     }
