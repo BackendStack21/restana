@@ -173,7 +173,7 @@ service.get('/throw', (req, res) => {
 })
 ```
 #### errorHandler not being called?
-> PR: https://github.com/jkyberneees/ana/issues/81  
+> Issue: https://github.com/jkyberneees/ana/issues/81  
 
 Some middlewares don't do `return next()`, instead they just call `next()` to finish and continue the remaining middlewares execution. The second, is a bad practice as it silence any potential `Promise` rejection that happens in the downstream middlewares or handlers.  
 
