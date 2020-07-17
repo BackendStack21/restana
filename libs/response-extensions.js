@@ -40,7 +40,7 @@ const parseErr = error => {
  * No comments needed ;)
  */
 module.exports.send = (options, req, res) => {
-  const send = (data = 200, code = 200, headers = null, cb = NOOP) => {
+  const send = (data = res.statusCode, code = res.statusCode, headers = null, cb = NOOP) => {
     let contentType
 
     if (data instanceof Error) {
