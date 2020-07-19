@@ -14,6 +14,11 @@ describe('All Responses', () => {
     res.send('Hello World!')
   })
 
+  service.get('/string-override-status', (req, res) => {
+    res.statusCode = 250;
+    res.send('Hello World!')
+  })
+
   service.get('/html-string', (req, res) => {
     res.setHeader('content-type', 'text/html; charset=utf-8')
     res.send('<p>Hello World!</p>')
@@ -90,6 +95,14 @@ describe('All Responses', () => {
     await request(server)
       .get('/string')
       .expect(200)
+      .expect('content-type', 'text/plain; charset=utf-8')
+      .expect('Hello World!')
+  })
+
+  it('should GET 250 and string content on /string-override-status', async () => {
+    await request(server)
+      .get('/string-override-status')
+      .expect(250)
       .expect('content-type', 'text/plain; charset=utf-8')
       .expect('Hello World!')
   })
