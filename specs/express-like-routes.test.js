@@ -24,6 +24,13 @@ describe('Express.js like routes handlers', () => {
     res.send(200)
   })
 
+  service.get(['/privet/:name', '/privet/'], (req,res) => {
+    let response = {
+      name: req.params.name ? req.params.name : 'default'
+    }
+    res.send(response,200)
+  })
+
   it('should start the service', async () => {
     server = await service.start(~~process.env.PORT)
   })
@@ -34,6 +41,24 @@ describe('Express.js like routes handlers', () => {
       .expect(200)
       .then((response) => {
         expect(response.body.name).to.equal('express')
+      })
+  })
+
+  it('should GET 200 on /privet/:name', async () => {
+    await request(server)
+      .get('/privet/express')
+      .expect(200)
+      .then((response) => {
+        expect(response.body.name).to.equal('express')
+      })
+  })
+
+  it('should GET 200 on /privet/', async () => {
+    await request(server)
+      .get('/privet/')
+      .expect(200)
+      .then((response) => {
+        expect(response.body.name).to.equal('default')
       })
   })
 
