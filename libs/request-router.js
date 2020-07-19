@@ -25,13 +25,27 @@ module.exports = (options, service = {}) => {
     router.use.apply(router, args)
 
     return service
-  },
+  }
 
   // attach routes registration shortcuts
   methods.forEach((method) => {
     service[method] = (...args) => {
-      routes.add(`${method.toUpperCase()}${args[0]}`)
-      router[method].apply(router, args)
+      if (Array.isArray(args[0])) {
+        // support multiple paths registration
+        const argsExceptPath = args.slice(1)
+
+        // for arch path
+        args[0].forEach(urlPath => {
+          const singleRouteArgs = [...argsExceptPath]
+          singleRouteArgs.unshift(urlPath)
+
+          routes.add(`${method.toUpperCase()}${singleRouteArgs[0]}`)
+          router[method].apply(router, singleRouteArgs)
+        })
+      } else {
+        routes.add(`${method.toUpperCase()}${args[0]}`)
+        router[method].apply(router, args)
+      }
 
       return service
     }

@@ -15,7 +15,7 @@ describe('All Responses', () => {
   })
 
   service.get('/string-override-status', (req, res) => {
-    res.statusCode = 250;
+    res.statusCode = 250
     res.send('Hello World!')
   })
 
