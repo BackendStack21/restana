@@ -6,7 +6,6 @@
  * @license MIT
  */
 
-const methods = require('./libs/methods')
 const requestRouter = require('./libs/request-router')
 const exts = {
   request: {},
@@ -18,29 +17,19 @@ module.exports = (options = {}) => {
     res.send(err)
   })
 
-  const routes = new Set()
-  const router = requestRouter(options)
   const server = options.server || require('http').createServer()
   const prp = undefined === options.prioRequestsProcessing ? true : options.prioRequestsProcessing
   if (prp) {
     server.on('request', (req, res) => {
-      setImmediate(() => app.handle(req, res))
+      setImmediate(() => service.handle(req, res))
     })
   } else {
     server.on('request', (req, res) => {
-      app.handle(req, res)
+      service.handle(req, res)
     })
   }
 
-  const app = {
-    routes () {
-      return [...routes]
-    },
-
-    getRouter () {
-      return router
-    },
-
+  const service = {
     errorHandler: options.errorHandler,
 
     newRouter () {
@@ -55,17 +44,11 @@ module.exports = (options = {}) => {
       return options
     },
 
-    use: (...args) => {
-      router.use.apply(router, args)
-
-      return app
-    },
-
     handle: (req, res) => {
       // request object population
       res.send = exts.response.send(options, req, res)
 
-      router.lookup(req, res)
+      service.getRouter().lookup(req, res)
     },
 
     start: (...args) => new Promise((resolve, reject) => {
@@ -82,21 +65,14 @@ module.exports = (options = {}) => {
         resolve()
       })
     })
-
   }
 
-  methods.forEach((method) => {
-    app[method] = (...args) => {
-      routes.add(`${method.toUpperCase()}${args[0]}`)
-      router[method].apply(router, args)
+  // apply router capabilities
+  requestRouter(options, service)
 
-      return app
-    }
-  })
+  service.callback = () => service.handle
 
-  app.callback = () => app.handle
-
-  app.use(async (req, res, next) => {
+  service.use(async (req, res, next) => {
     try {
       await next()
     } catch (err) {
@@ -104,5 +80,5 @@ module.exports = (options = {}) => {
     }
   })
 
-  return app
+  return service
 }
