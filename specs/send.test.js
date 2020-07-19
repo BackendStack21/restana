@@ -123,7 +123,6 @@ describe('All Responses', () => {
     await request(server)
       .get('/boolean')
       .expect(200)
-      .expect('content-type', 'application/octet-stream')
       .expect('true')
   })
 
