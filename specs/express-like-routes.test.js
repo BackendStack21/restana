@@ -24,11 +24,11 @@ describe('Express.js like routes handlers', () => {
     res.send(200)
   })
 
-  service.get(['/privet/:name', '/privet/'], (req,res) => {
-    let response = {
+  service.get(['/privet/:name', '/privet/'], (req, res) => {
+    const response = {
       name: req.params.name ? req.params.name : 'default'
     }
-    res.send(response,200)
+    res.send(response, 200)
   })
 
   it('should start the service', async () => {
