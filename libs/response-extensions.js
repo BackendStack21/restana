@@ -57,6 +57,10 @@ module.exports.send = (options, req, res) => {
 
       // NOTE: only retrieve content-type after setting custom headers
       contentType = res.getHeader(CONTENT_TYPE_HEADER)
+      
+      if (typeof data === 'boolean') {
+        data = stringify(data)
+      }
 
       if (typeof data === 'number') {
         code = data
