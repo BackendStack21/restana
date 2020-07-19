@@ -23,7 +23,11 @@ describe('All Responses', () => {
     res.setHeader('content-type', 'text/html; charset=utf-8')
     res.send('<p>Hello World!</p>')
   })
-
+  
+  service.get('/boolean', (req, res) => {
+    res.send(true)
+  })
+  
   service.get('/buffer', (req, res) => {
     res.send(Buffer.from('Hello World!'))
   })
@@ -113,6 +117,14 @@ describe('All Responses', () => {
       .expect(200)
       .expect('content-type', 'text/html; charset=utf-8')
       .expect('<p>Hello World!</p>')
+  })
+  
+  it('should GET 200 and send true on /boolean', async () => {
+    await request(server)
+      .get('/boolean')
+      .expect(200)
+      .expect('content-type', 'application/octet-stream')
+      .expect('true')
   })
 
   it('should GET 200 and buffer content on /buffer', async () => {
