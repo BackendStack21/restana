@@ -90,7 +90,7 @@ declare namespace restana {
 
   interface RegisterRoute<P extends Protocol> {
     (
-      path: string,
+      path: string | string[],
       ...middlewares: RequestHandler<P>[]
     ): Service<P>
   }
