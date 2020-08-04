@@ -215,6 +215,26 @@ service.get('/admin', (req, res, next) => {
 ...
 ```
 
+As well, multiple middleware callbacks are supported:
+
+```js
+const service = require('restana')()
+
+const cb0 = (req, res, next) => {
+  // do something
+  return next()
+}
+
+const cb1 = (req, res, next) => {
+  // do something
+  return next()
+}
+
+service.get('/test/:id', [cb0, cb1], (req, res) => {
+  res.send({ id: req.params.id })
+})
+```
+
 ### Nested routers
 Nested routers are supported as well:
 ```js
