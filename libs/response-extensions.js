@@ -10,7 +10,6 @@ const TYPE_OCTET = 'application/octet-stream'
 const NOOP = () => {}
 
 const stringify = obj => {
-  // ToDo: fast json stringify ?
   return JSON.stringify(obj)
 }
 
