@@ -325,7 +325,11 @@ exports = module.exports = functions.https.onRequest(app.callback());
 
 ## Serving static files
 You can read more about serving static files with restana in this link:
-https://thejs.blog/2019/07/12/restana-static-serving-the-frontend-with-node-js-beyond-nginx/
+https://itnext.io/restana-static-serving-the-frontend-with-node-js-beyond-nginx-e45fdb2e49cb  
+
+Also, the `restana-static` project simplifies the serving of static files using restana and docker containers:
+- https://github.com/jkyberneees/restana-static
+- https://hub.docker.com/r/kyberneees/restana-static
 
 ## Third party integrations
 ```js
