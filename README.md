@@ -403,7 +403,7 @@ You can checkout `restana` performance index on the ***"Which is the fastest"***
 ## Using this project? Let us know 🚀
 https://goo.gl/forms/qlBwrf5raqfQwteH3
 
-## Breacking changes
+## Breaking changes
 ### 4.x:
 > Restana version 4.x is much more simple to maintain, mature and faster!
 #### Added
