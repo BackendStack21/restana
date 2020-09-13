@@ -1,6 +1,6 @@
 {
   "name": "restana",
-  "version": "4.7.3",
+  "version": "4.7.4",
   "description": "Super fast and minimalist web framework for building REST micro-services.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -38,7 +38,7 @@
   ],
   "homepage": "https://github.com/jkyberneees/restana#readme",
   "dependencies": {
-    "0http": "^2.5.2"
+    "0http": "^3.0.0"
   },
   "devDependencies": {
     "@hapi/hapi": "^19.2.0",
@@ -62,7 +62,6 @@
     "serve-static": "^1.14.1",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
-    "standard": "^14.3.4",
     "supertest": "^4.0.2",
     "swagger-tools": "^0.10.4",
     "winston": "^3.3.3"
