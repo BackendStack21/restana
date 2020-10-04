@@ -5,6 +5,7 @@ Blazing fast, tiny and minimalist *connect-like* web framework for building REST
 
 ![Performance Benchmarks](benchmark-30122019.png)
 > MacBook Pro 2019, 2,4 GHz Intel Core i9, 32 GB 2400 MHz DDR4  
+>
 > - wrk -t8 -c40 -d5s http://127.0.0.1:3000/hi
 
 Read more:  *[restana = faster and efficient Node.js REST APIs](https://itnext.io/restana-faster-and-efficient-node-js-rest-apis-1ee5285ce66)*
@@ -29,7 +30,27 @@ const service = require('restana')({
 })
 ```
 
+Create restana HTTP server with `http.createServer()`:
+
+```js
+const http = require('http')
+const service = require('restana')()
+
+service.get('/hi', (req, res) => {
+  res.send({
+    msg: 'Hello World!'
+  })
+})
+
+http.createServer(service).listen(3000, '0.0.0.0', function () {
+  console.log('running')
+})
+```
+
+Please take note that in the last case, `service.close()` would **not** be available, since restana does **not** have access to http server instance created by `http.createServer`.
+
 > See examples:
+>
 > * [HTTPS service demo](demos/https-service.js)
 > * [HTTP2 service demo](demos/http2-service.js)
 
@@ -301,7 +322,7 @@ const handler = serverless(app);
 module.exports.handler = async (event, context) => {
   return await handler(event, context)
 }
-``` 
+```
 
 > See also:  
 > Running restana service as a lambda using AWS SAM at https://github.com/jkyberneees/restana-serverless
@@ -321,7 +342,7 @@ service.get('/hello', (req, res) => {
 
 // lambda integration
 exports = module.exports = functions.https.onRequest(app.callback());
-``` 
+```
 
 ## Serving static files
 You can read more about serving static files with restana in this link:
