@@ -29,7 +29,16 @@ module.exports = (options = {}) => {
     })
   }
 
-  const service = {
+  const handle = (req, res) => {
+    // request object population
+    res.send = exts.response.send(options, req, res)
+
+    service.getRouter().lookup(req, res)
+  }
+
+  const service = handle
+
+  const service_ = {
     errorHandler: options.errorHandler,
 
     newRouter () {
@@ -44,12 +53,7 @@ module.exports = (options = {}) => {
       return options
     },
 
-    handle: (req, res) => {
-      // request object population
-      res.send = exts.response.send(options, req, res)
-
-      service.getRouter().lookup(req, res)
-    },
+    handle: handle,
 
     start: (...args) => new Promise((resolve, reject) => {
       if (!args || !args.length) args = [3000]
@@ -66,6 +70,8 @@ module.exports = (options = {}) => {
       })
     })
   }
+
+  Object.assign(service, service_)
 
   // apply router capabilities
   requestRouter(options, service)
