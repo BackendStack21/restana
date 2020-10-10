@@ -31,7 +31,6 @@ const service = require('restana')({
 ```
 
 Create restana HTTP server with `http.createServer()`:
-
 ```js
 const http = require('http')
 const service = require('restana')()
@@ -46,13 +45,11 @@ http.createServer(service).listen(3000, '0.0.0.0', function () {
   console.log('running')
 })
 ```
+> Please take note that in the last case, `service.close()` would **not** be available, since restana does **not** have access to http server instance created by `http.createServer`.
 
-Please take note that in the last case, `service.close()` would **not** be available, since restana does **not** have access to http server instance created by `http.createServer`.
-
-> See examples:
->
-> * [HTTPS service demo](demos/https-service.js)
-> * [HTTP2 service demo](demos/http2-service.js)
+Optionally, learn through examples:
+* [HTTPS service demo](demos/https-service.js)
+* [HTTP2 service demo](demos/http2-service.js)
 
 ### Configuration options
 - `server`: Allows to optionally override the HTTP server instance to be used.
