@@ -47,7 +47,7 @@
     "express": "^4.17.1",
     "express-jwt": "^5.3.3",
     "fastify": "^2.15.3",
-    "http-cache-middleware": "^1.3.5",
+    "http-cache-middleware": "^1.3.6",
     "koa": "^2.13.0",
     "koa-router": "^8.0.8",
     "microtime": "^3.0.0",
