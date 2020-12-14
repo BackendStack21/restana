@@ -1,7 +1,11 @@
 # restana
 [![Build Status](https://travis-ci.org/jkyberneees/ana.svg?branch=master)](https://travis-ci.org/jkyberneees/ana)
-[![NPM version](https://img.shields.io/npm/v/restana.svg?style=flat)](https://www.npmjs.com/package/restana)  
-Blazing fast, tiny and minimalist *connect-like* web framework for building REST micro-services.  
+[![NPM version](https://badgen.net/npm/v/restana)](https://www.npmjs.com/package/restana)
+[![NPM Total Downloads](https://badgen.net/npm/dt/restana)](https://www.npmjs.com/package/restana)
+[![License](https://badgen.net/npm/license/restana)](https://www.npmjs.com/package/restana)
+[![TypeScript support](https://badgen.net/npm/types/restana)](https://www.npmjs.com/package/restana)
+[![Github stars](https://badgen.net/github/stars/jkyberneees/restana?icon=github)](https://github.com/jkyberneees/restana)
+
 
 > You can read more:  *[restana = faster and efficient Node.js REST APIs](https://itnext.io/restana-faster-and-efficient-node-js-rest-apis-1ee5285ce66)*
 
