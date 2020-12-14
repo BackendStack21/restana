@@ -1,5 +1,4 @@
 # restana
-[![Build Status](https://travis-ci.org/jkyberneees/ana.svg?branch=master)](https://travis-ci.org/jkyberneees/ana)
 [![NPM version](https://badgen.net/npm/v/restana)](https://www.npmjs.com/package/restana)
 [![NPM Total Downloads](https://badgen.net/npm/dt/restana)](https://www.npmjs.com/package/restana)
 [![License](https://badgen.net/npm/license/restana)](https://www.npmjs.com/package/restana)
