@@ -6,6 +6,7 @@
 [![TypeScript support](https://badgen.net/npm/types/restana)](https://www.npmjs.com/package/restana)
 [![Github stars](https://badgen.net/github/stars/jkyberneees/restana?icon=github)](https://github.com/jkyberneees/restana)
 
+Blazing fast, tiny and minimalist *connect-like* web framework for building REST micro-services.  
 
 > You can read more:  *[restana = faster and efficient Node.js REST APIs](https://itnext.io/restana-faster-and-efficient-node-js-rest-apis-1ee5285ce66)*
 
