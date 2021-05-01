@@ -196,18 +196,18 @@ service.get('/throw', (req, res) => {
 #### errorHandler not being called?
 > Issue: https://github.com/jkyberneees/ana/issues/81  
 
-Some middlewares don't call `return next()` inside a synchronous flow. In restana (https://github.com/jkyberneees/ana/blob/master/index.js#L99) we enable async errors handling by default, however this mechanism fails when a subsequent middleware is just calling `next()` in a sync/async flow. 
+Some middlewares don't call `return next()` inside a synchronous flow. In restana we enable async errors handling by default, however this mechanism fails when a subsequent middleware is just calling `next()` inside a sync or async flow. 
 
 Known incompatible middlewares:
-- body-parser
+- body-parser (https://www.npmjs.com/package/body-parser)
 
-How to bring async compatibility to existing middlewares? The `body-parser` example:
+How to bring async chain compatibility to existing middlewares? The `body-parser` example:
 ```js
 const jsonParser = require('body-parser').json()
 const service = require('restana')()
 
 service.use((req, res, next) => {
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     jsonParser(req, res, (err) => {
       return resolve(next(err))
     })
@@ -466,9 +466,5 @@ https://goo.gl/forms/qlBwrf5raqfQwteH3
 
 ## Support / Donate 💚
 You can support the maintenance of this project: 
-- Paypal: https://www.paypal.me/kyberneees
-- NANO Crypto Coin: `nano_3zm9steh8mb374f8be3rbytqhgzzarczhwtxhihkqt83a4m46oa3xidfiauc`
-- XRP Crypto Coin: `rarQgNuiqF9gFLLwd5fdku4jYa9EXpiyCp`
-- TRON Crypto Coin: `TJ5Bbf9v4kpptnRsePXYDvnYcYrS5Tyxus`
-- BITCOIN Crypto Coin: `bc1qcrr58venyh54ztvkqym39p9rhnxg4308t0802f`
-- Ethereum Crypto Coin: `0xD73c8E63a83eBD8Df3fB3d0090f1fe7a1eEB980B`
+- PayPal: https://www.paypal.me/kyberneees
+- [TRON](https://www.binance.com/en/buy-TRON) Wallet: `TJ5Bbf9v4kpptnRsePXYDvnYcYrS5Tyxus`
