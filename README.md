@@ -196,9 +196,24 @@ service.get('/throw', (req, res) => {
 #### errorHandler not being called?
 > Issue: https://github.com/jkyberneees/ana/issues/81  
 
-Some middlewares don't do `return next()`, instead they just call `next()` to finish and continue the remaining middlewares execution. The second, is a bad practice as it silence any potential `Promise` rejection that happens in the downstream middlewares or handlers.  
+Some middlewares don't call `return next()` inside a synchronous flow. In restana (https://github.com/jkyberneees/ana/blob/master/index.js#L99) we enable async errors handling by default, however this mechanism fails when a subsequent middleware is just calling `next()` in a sync/async flow. 
 
-In restana (https://github.com/jkyberneees/ana/blob/master/index.js#L99) we enable async errors handling by default, however this mechanism fails when a subsequent middleware is registered containing the mentioned `next()` statement to finish their execution.
+Known incompatible middlewares:
+- body-parser
+
+How to bring async compatibility to existing middlewares? The `body-parser` example:
+```js
+const jsonParser = require('body-parser').json()
+const service = require('restana')()
+
+service.use((req, res, next) => {
+  return new Promise((resolve, reject) => {
+    jsonParser(req, res, (err) => {
+      return resolve(next(err))
+    })
+  })
+})
+```
 
 ### Global middlewares
 ```js
