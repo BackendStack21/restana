@@ -1,8 +1,8 @@
 'use strict'
 
 /* global vertx */
-var Router = require('vertx-web-js/router')
-var router = Router.router(vertx)
+const Router = require('vertx-web-js/router')
+const router = Router.router(vertx)
 
 router.route('/hi').handler(function (routingContext) {
   routingContext.response().putHeader('content-type', 'text/html').end('Hello World!')
