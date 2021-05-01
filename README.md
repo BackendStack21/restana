@@ -304,6 +304,13 @@ service.use(async (req, res, next) => {
 service.use(logging())
 service.use(jwt())
 ```
+
+### Service Events
+Service events are accessible through the `service.events` object, an instance of https://nodejs.org/api/events.html
+
+#### Available events
+- `service.events.BEFORE_ROUTE_REGISTER`: This event is triggered before registering a route. 
+
 ## AWS Serverless Integration
 `restana` is compatible with the [serverless-http](https://github.com/dougmoscrop/serverless-http) library, so restana based services can also run as AWS lambdas 🚀
 ```js 

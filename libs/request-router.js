@@ -5,6 +5,15 @@
  */
 const sequential = require('0http/lib/router/sequential')
 const methods = require('./methods')
+const EventEmitter = require('events')
+const BEFORE_ROUTE_REGISTER_EVENT = 'beforeRouteRegister'
+
+function registerRoute ({ routes, service, router, method, args }) {
+  service.events.emit(BEFORE_ROUTE_REGISTER_EVENT, method, args)
+
+  routes.add(`${method.toUpperCase()}${args[0]}`)
+  router[method].apply(router, args)
+}
 
 module.exports = (options, service = {}) => {
   const routes = new Set()
@@ -20,6 +29,12 @@ module.exports = (options, service = {}) => {
   // attach router id
   service.id = router.id
 
+  // service events hub
+  service.events = new EventEmitter({
+    captureRejections: true
+  })
+  service.events.BEFORE_ROUTE_REGISTER = BEFORE_ROUTE_REGISTER_EVENT
+
   // attach use method
   service.use = (...args) => {
     router.use.apply(router, args)
@@ -34,17 +49,15 @@ module.exports = (options, service = {}) => {
         // support multiple paths registration
         const argsExceptPath = args.slice(1)
 
-        // for arch path
-        args[0].forEach(urlPath => {
-          const singleRouteArgs = [...argsExceptPath]
-          singleRouteArgs.unshift(urlPath)
+        // for each path
+        args[0].forEach(path => {
+          const args = [...argsExceptPath]
+          args.unshift(path)
 
-          routes.add(`${method.toUpperCase()}${singleRouteArgs[0]}`)
-          router[method].apply(router, singleRouteArgs)
+          registerRoute({ routes, service, router, method, args })
         })
       } else {
-        routes.add(`${method.toUpperCase()}${args[0]}`)
-        router[method].apply(router, args)
+        registerRoute({ routes, service, router, method, args })
       }
 
       return service

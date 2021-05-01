@@ -7,13 +7,13 @@ const TYPE_JSON = 'application/json; charset=utf-8'
 const TYPE_PLAIN = 'text/plain; charset=utf-8'
 const TYPE_OCTET = 'application/octet-stream'
 
-const NOOP = () => {}
+const NOOP = () => { }
 
 const stringify = obj => {
   return JSON.stringify(obj)
 }
 
-const preEnd = (res, contentType, statusCode) => {
+const beforeEnd = (res, contentType, statusCode, data) => {
   if (contentType) {
     res.setHeader(CONTENT_TYPE_HEADER, contentType)
   }
@@ -72,7 +72,7 @@ module.exports.send = (options, req, res) => {
             if (!contentType) contentType = TYPE_OCTET
 
             // NOTE: we exceptionally handle the response termination for streams
-            preEnd(res, contentType, code)
+            beforeEnd(res, contentType, code, data)
 
             data.pipe(res)
             data.on('end', cb)
@@ -91,7 +91,7 @@ module.exports.send = (options, req, res) => {
       }
     }
 
-    preEnd(res, contentType, code)
+    beforeEnd(res, contentType, code, data)
     res.end(data, cb)
   }
 
