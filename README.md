@@ -374,6 +374,9 @@ Also, the `restana-static` project simplifies the serving of static files using 
 - https://github.com/jkyberneees/restana-static
 - https://hub.docker.com/r/kyberneees/restana-static
 
+## Swagger/OpenAPI integration
+- https://www.npmjs.com/package/restana-swagger-validator
+
 ## Third party integrations
 ```js
 // ...
