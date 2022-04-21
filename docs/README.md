@@ -210,8 +210,9 @@ service.use((req, res, next) => {
   })
 })
 ```
+## Middlewares
 
-## Global middlewares
+### Global middlewares
 ```js
 const service = require('restana')()
 
@@ -222,7 +223,7 @@ service.use((req, res, next) => {
 ...
 ```
 
-## Prefix middlewares
+### Prefix middlewares
 ```js
 const service = require('restana')()
 
@@ -233,7 +234,7 @@ service.use('/admin', (req, res, next) => {
 ...
 ```
 
-## Route level middlewares
+### Route level middlewares
 Connecting middlewares to specific routes is also supported:
 ```js
 const service = require('restana')()
