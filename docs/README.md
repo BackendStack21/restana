@@ -268,29 +268,7 @@ service.get('/test/:id', [cb0, cb1], (req, res) => {
 })
 ```
 
-## Nested routers
-Nested routers are supported as well:
-```js
-const service = require('restana')()
-const nestedRouter = service.newRouter()
-
-nestedRouter.get('/hello', (req, res) => {
-  res.send('Hello World!')
-})
-service.use('/v1', nestedRouter) 
-...
-```
-In this example the router routes will be available under `/v1` prefix. For example: `GET /v1/hello`
-
-## Third party middlewares support:
-> All middlewares using the `function (req, res, next)` signature format are compatible with restana.
-
-Examples :
-* **raw-body**: [https://www.npmjs.com/package/raw-body](https://www.npmjs.com/package/raw-body). See demo: [raw-body.js](demos/raw-body.js)
-* **express-jwt**: [https://www.npmjs.com/package/express-jwt](https://www.npmjs.com/package/express-jwt). See demo: [express-jwt.js](demos/express-jwt.js)
-* **body-parser**: [https://www.npmjs.com/package/body-parser](https://www.npmjs.com/package/body-parser). See demo: [body-parser.js](demos/body-parser.js)
-
-## Async middlewares support
+### Async middlewares
 Since version `v3.3.x`, you can also use async middlewares as described below:
 ```js
 service.use(async (req, res, next) => {
@@ -315,6 +293,28 @@ service.use(async (req, res, next) => {
 service.use(logging())
 service.use(jwt())
 ```
+
+## Nested routers
+Nested routers are supported as well:
+```js
+const service = require('restana')()
+const nestedRouter = service.newRouter()
+
+nestedRouter.get('/hello', (req, res) => {
+  res.send('Hello World!')
+})
+service.use('/v1', nestedRouter) 
+...
+```
+In this example the router routes will be available under `/v1` prefix. For example: `GET /v1/hello`
+
+## Third party middlewares support:
+> All middlewares using the `function (req, res, next)` signature format are compatible with restana.
+
+Examples :
+* **raw-body**: [https://www.npmjs.com/package/raw-body](https://www.npmjs.com/package/raw-body). See demo: [raw-body.js](demos/raw-body.js)
+* **express-jwt**: [https://www.npmjs.com/package/express-jwt](https://www.npmjs.com/package/express-jwt). See demo: [express-jwt.js](demos/express-jwt.js)
+* **body-parser**: [https://www.npmjs.com/package/body-parser](https://www.npmjs.com/package/body-parser). See demo: [body-parser.js](demos/body-parser.js)
 
 ## Service Events
 Service events are accessible through the `service.events` object, an instance of https://nodejs.org/api/events.html
