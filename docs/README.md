@@ -11,7 +11,7 @@ Read more online:
 - restana = faster and efficient Node.js REST APIs: https://itnext.io/restana-faster-and-efficient-node-js-rest-apis-1ee5285ce66
 
 ![Performance Benchmarks](Benchmarks.png)
-> Check it yourself: https://web-frameworks-benchmark.netlify.app/result?f=feathersjs,0http,koa,nestjs-express,express,sails,nestjs-fastify,restana
+> Check it yourself: https://web-frameworks-benchmark.netlify.app/result?f=feathersjs,0http,koa,nestjs-express,express,sails,nestjs-fastify,restana,fastify
 
 
 # Usage
