@@ -5,14 +5,27 @@
 [![TypeScript support](https://badgen.net/npm/types/restana)](https://www.npmjs.com/package/restana)
 [![Github stars](https://badgen.net/github/stars/jkyberneees/restana?icon=github)](https://github.com/jkyberneees/restana)
 
-Blazing fast, tiny and minimalist *connect-like* web framework for building REST micro-services.  
-
-Read more online:  
-- restana = faster and efficient Node.js REST APIs: https://itnext.io/restana-faster-and-efficient-node-js-rest-apis-1ee5285ce66
+Restana is a lightweight and fast Node.js framework for building RESTful APIs. Inspired by Express, it provides a simple and intuitive API for routing, handling requests and responses, and middleware management. It is designed to be easy to use and integrate with other Node.js modules, allowing developers to quickly build scalable and maintainable APIs.
 
 ![Performance Benchmarks](Benchmarks.png)
 > Check it yourself: https://web-frameworks-benchmark.netlify.app/result?f=feathersjs,0http,koa,nestjs-express,express,sails,nestjs-fastify,restana,fastify
 
+### Express.js comparison (in the eyes of ChatGPT/OpenAI)
+Restana and Express are both popular web frameworks for building REST APIs in Node.js.
+
+#### Performance:
+- Restana is a lightweight framework, offering faster performance than Express.
+- Express is more feature-rich and can handle complex applications, but this added functionality comes with a slight performance trade-off.
+
+#### Speed of Development
+- Express has a larger community and more resources available, making it easier to find answers to development questions.
+- Restana is more straightforward and has a smaller learning curve, allowing for faster development of simple APIs.
+
+#### Features:
+- Express has a wide range of built-in features, such as routing, middleware, and template engines.
+- Restana focuses on simplicity and speed, offering basic features such as routing and middleware.
+
+Ultimately, the choice between Restana and Express will depend on the specific requirements of a project.
 
 # Usage
 Install
@@ -461,6 +474,9 @@ Removed:
 ## 3.x
 Removed:
 - Support for `turbo-http` library was dropped.
+
+# Media
+- restana = faster and efficient Node.js REST APIs: https://itnext.io/restana-faster-and-efficient-node-js-rest-apis-1ee5285ce66
 
 # Support / Donate 💚
 You can support the maintenance of this project: 
