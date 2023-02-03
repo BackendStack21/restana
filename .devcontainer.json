@@ -1,0 +1,4 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:0-18",
+  "forwardPorts": [3000, 8080]
+}
