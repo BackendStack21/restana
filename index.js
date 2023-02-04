@@ -53,7 +53,7 @@ module.exports = (options = {}) => {
       return options
     },
 
-    handle: handle,
+    handle,
 
     start: (...args) => new Promise((resolve, reject) => {
       if (!args || !args.length) args = [3000]
