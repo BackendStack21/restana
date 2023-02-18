@@ -5,6 +5,8 @@
 [![TypeScript support](https://badgen.net/npm/types/restana)](https://www.npmjs.com/package/restana)
 [![Github stars](https://badgen.net/github/stars/jkyberneees/restana?icon=github)](https://github.com/jkyberneees/restana)
 
+<img src="restana-logo.svg" width="200">  
+
 Restana is a lightweight and fast Node.js framework for building RESTful APIs. Inspired by Express, it provides a simple and intuitive API for routing, handling requests and responses, and middleware management. It is designed to be easy to use and integrate with other Node.js modules, allowing developers to quickly build scalable and maintainable APIs.
 
 ![Performance Benchmarks](Benchmarks.png)
