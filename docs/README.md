@@ -15,7 +15,7 @@ Restana is a lightweight and fast Node.js framework for building RESTful APIs. I
 ### Express.js comparison (in the eyes of ChatGPT/OpenAI)
 Restana and Express are both popular web frameworks for building REST APIs in Node.js.
 
-#### Performance:
+#### Performance
 - Restana is a lightweight framework, offering faster performance than Express.
 - Express is more feature-rich and can handle complex applications, but this added functionality comes with a slight performance trade-off.
 
@@ -23,7 +23,7 @@ Restana and Express are both popular web frameworks for building REST APIs in No
 - Express has a larger community and more resources available, making it easier to find answers to development questions.
 - Restana is more straightforward and has a smaller learning curve, allowing for faster development of simple APIs.
 
-#### Features:
+#### Features
 - Express has a wide range of built-in features, such as routing, middleware, and template engines.
 - Restana focuses on simplicity and speed, offering basic features such as routing and middleware.
 
