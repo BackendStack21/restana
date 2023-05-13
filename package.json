@@ -1,6 +1,6 @@
 {
   "name": "restana",
-  "version": "4.9.7",
+  "version": "4.9.8",
   "description": "Super fast and minimalist web framework for building REST micro-services.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -38,7 +38,7 @@
   ],
   "homepage": "https://github.com/jkyberneees/restana#readme",
   "dependencies": {
-    "0http": "^3.4.2"
+    "0http": "^3.5.2"
   },
   "devDependencies": {
     "benchmark": "^2.1.4",
