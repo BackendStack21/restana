@@ -1,6 +1,6 @@
 'use strict'
 
-const service = require('./../index')({})
+const service = require('./../dist/index')({})
 const rawbody = require('raw-body')
 
 service.use(async (req, res, next) => {

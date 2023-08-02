@@ -1,4 +1,4 @@
-const restana = require('../../index')
+const restana = require('../../dist/index')
 const path = require('path')
 
 const {

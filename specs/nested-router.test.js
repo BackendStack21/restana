@@ -6,7 +6,7 @@ const request = require('supertest')
 
 describe('Buffer Responses', () => {
   let server
-  const service = require('../index')()
+  const service = require('../dist/index')()
   const nestedRouter = service.newRouter()
 
   nestedRouter.get('/hello', (req, res) => {

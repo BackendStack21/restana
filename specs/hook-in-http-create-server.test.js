@@ -6,7 +6,7 @@ const http = require('http')
 
 describe('http.createServer()', () => {
   let server
-  const service = require('../index')()
+  const service = require('../dist/index')()
 
   service.get('/string', (req, res) => {
     res.send('Hello World!')

@@ -7,7 +7,7 @@ const http = require('http')
 
 describe('Restana Web Framework - Smoke', () => {
   let server
-  const service = require('../index')({
+  const service = require('../dist/index')({
     server: http.createServer()
   })
 

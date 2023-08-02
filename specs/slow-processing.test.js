@@ -5,7 +5,7 @@ const request = require('supertest')
 
 describe('Slow requests processing', () => {
   let server
-  const service = require('../index')({
+  const service = require('../dist/index')({
     prioRequestsProcessing: false
   })
   service.get('/hello', (req, res) => {

@@ -1,7 +1,7 @@
 'use strict'
 
 const http = require('http')
-const service = require('./../index')()
+const service = require('./../dist/index')()
 
 service.get('/hi', (req, res) => {
   res.send({

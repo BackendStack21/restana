@@ -1,6 +1,6 @@
 'use strict'
 
-const service = require('./../index')({})
+const service = require('./../dist/index')({})
 service.get('/params', (req, res) => {
   res.send(req.query)
 })

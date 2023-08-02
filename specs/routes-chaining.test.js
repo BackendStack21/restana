@@ -5,7 +5,7 @@ const request = require('supertest')
 
 describe('Routes registration - method chaining', () => {
   let server
-  const service = require('../index')()
+  const service = require('../dist/index')()
   const op200 = (req, res) => {
     res.send()
   }

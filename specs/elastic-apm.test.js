@@ -21,7 +21,7 @@ describe('Elastic APM Instrumentation', () => {
     pattern = null
   })
 
-  const service = require('../index')()
+  const service = require('../dist/index')()
   patch(service)
 
   service.get('/hello', (req, res) => {

@@ -1,6 +1,6 @@
 'use strict'
 
-const service = require('../index')({})
+const service = require('../dist/index')({})
 
 // route without middlewares
 service.get('/hi/:name', async (req, res) => {

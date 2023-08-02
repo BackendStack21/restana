@@ -6,7 +6,7 @@ const expect = require('chai').expect
 
 describe('Express.js like routes handlers', () => {
   let server
-  const service = require('../index')()
+  const service = require('../dist/index')()
 
   const m1 = (req, res, next) => {
     next()

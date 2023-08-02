@@ -1,6 +1,6 @@
 'use strict'
 
-const service = require('../index')({
+const service = require('../dist/index')({
   errorHandler (err, req, res) {
     console.log(`Unexpected error: ${err.message}`)
     res.send(err)

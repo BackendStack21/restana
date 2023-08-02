@@ -1,6 +1,6 @@
 'use strict'
 
-const service = require('./../index')({})
+const service = require('./../dist/index')({})
 
 const beforeSendAsyncHook = (req, res, sendArgs) => {
   sendArgs[0] += 'from pre-send handler!'

@@ -1,6 +1,6 @@
 'use strict'
 
-const service = require('./../index')({})
+const service = require('./../dist/index')({})
 
 // custom middleware to attach the X-Response-Time header to the response
 service.use(require('response-time')())

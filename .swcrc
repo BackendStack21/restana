@@ -1,0 +1,40 @@
+{
+    // "$schema": "https://json.schemastore.org/swcrc",
+    "jsc": {
+        "parser": {
+            "syntax": "ecmascript",
+            "jsx": false,
+            "dynamicImport": false,
+            "privateMethod": true,
+            "functionBind": true,
+            "exportDefaultFrom": false,
+            "exportNamespaceFrom": false,
+            "decorators": false,
+            "decoratorsBeforeExport": false,
+            "topLevelAwait": true,
+            "importMeta": false
+        },
+        "target": "es2018",
+        "loose": true,
+        "externalHelpers": false,
+        "minify": {
+            "compress": {
+                "defaults": true,
+                "dead_code": true
+            },
+            "mangle": {
+                "keepFnNames": false,
+                "keepClassNames": false
+            }
+        }
+    },
+    "module": {
+        "type": "commonjs",
+        // These are defaults.
+        "strict": true,
+        "strictMode": true,
+        "lazy": false,
+        "ignoreDynamic": true
+    },
+    "minify": true
+}
