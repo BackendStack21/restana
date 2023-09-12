@@ -6,4 +6,5 @@ node_js:
 
 script:
   - npx standard
+  - npm run build
   - npm run test

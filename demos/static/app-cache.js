@@ -3,7 +3,7 @@
 const files = require('serve-static')
 const path = require('path')
 
-const app = require('../../index')({
+const app = require('../../dist/index')({
   disableResponseEvent: true
 })
 app.use(require('http-cache-middleware')())

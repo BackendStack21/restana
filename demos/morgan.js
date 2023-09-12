@@ -1,6 +1,6 @@
 'use strict'
 
-const service = require('./../index')({})
+const service = require('./../dist/index')({})
 const morgan = require('morgan')
 
 service.use(morgan('tiny'))

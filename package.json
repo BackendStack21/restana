@@ -2,9 +2,12 @@
   "name": "restana",
   "version": "4.9.8",
   "description": "Super fast and minimalist web framework for building REST micro-services.",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "build": "npx rimraf ./dist && npm run build:cjs && npm run copy:types",
+    "build:cjs": "npx swc libs -d dist -D -s",
+    "copy:types": "cp index.d.ts ./dist/index.d.ts",
     "lint": "npx standard",
     "format": "npx standard --fix",
     "test": "cross-env PORT=3000 NODE_ENV=testing npx nyc --check-coverage --lines 95 node ./node_modules/mocha/bin/mocha specs/*.test.js",
@@ -32,15 +35,15 @@
   "files": [
     "LICENSE.md",
     "README.md",
-    "index.js",
-    "index.d.ts",
-    "libs/"
+    "dist/"
   ],
   "homepage": "https://github.com/jkyberneees/restana#readme",
   "dependencies": {
     "0http": "^3.5.2"
   },
   "devDependencies": {
+    "@swc/cli": "^0.1.62",
+    "@swc/core": "^1.3.73",
     "benchmark": "^2.1.4",
     "body-parser": "^1.20.1",
     "chai": "^4.3.7",
@@ -56,6 +59,7 @@
     "pem": "^1.14.6",
     "response-time": "^2.3.2",
     "restana-swagger-validator": "^0.1.4",
+    "rimraf": "^5.0.1",
     "serve-static": "^1.15.0",
     "socket.io": "^4.5.4",
     "socket.io-client": "^4.5.4",
