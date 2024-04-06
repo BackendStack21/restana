@@ -1,7 +1,7 @@
 'use strict'
 
 const low = require('0http/lib/server/low')
-const service = require('../index')({
+const service = require('../dist/index')({
   prioRequestsProcessing: false,
   server: low()
 })

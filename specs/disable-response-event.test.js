@@ -6,7 +6,7 @@ const expect = require('chai').expect
 
 describe('Disable Response Event', () => {
   let server
-  const service = require('../index')({
+  const service = require('../dist/index')({
     disableResponseEvent: true
   })
   service.use((req, res, next) => {

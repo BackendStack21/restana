@@ -8,7 +8,7 @@ const stream = require('stream')
 
 describe('All Responses', () => {
   let server
-  const service = require('../index')()
+  const service = require('../dist/index')()
 
   service.get('/string', (req, res) => {
     res.send('Hello World!')
