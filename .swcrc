@@ -1,5 +1,5 @@
 {
-    // "$schema": "https://json.schemastore.org/swcrc",
+    "$schema": "https://json.schemastore.org/swcrc",
     "jsc": {
         "parser": {
             "syntax": "ecmascript",
@@ -23,18 +23,16 @@
                 "dead_code": true
             },
             "mangle": {
-                "keepFnNames": false,
-                "keepClassNames": false
+                "keepFnNames": true,
+                "keepClassNames": true
             }
         }
     },
     "module": {
         "type": "commonjs",
-        // These are defaults.
         "strict": true,
         "strictMode": true,
-        "lazy": false,
-        "ignoreDynamic": true
+        "lazy": false
     },
     "minify": true
 }
