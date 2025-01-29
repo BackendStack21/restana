@@ -9,7 +9,7 @@ router1.get('/hi/:name', (req, res) => {
 })
 
 // restana service
-const service = require('./../index')({})
+const service = require('./../dist/index')({})
 service.use('/actions', router1)
 
 service.start()

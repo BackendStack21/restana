@@ -6,10 +6,10 @@
  * @license MIT
  */
 
-const requestRouter = require('./libs/request-router')
+const requestRouter = require('./request-router')
 const exts = {
   request: {},
-  response: require('./libs/response-extensions')
+  response: require('./response-extensions')
 }
 
 module.exports = (options = {}) => {
