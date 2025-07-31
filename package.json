@@ -38,7 +38,7 @@
   ],
   "homepage": "https://github.com/jkyberneees/restana#readme",
   "dependencies": {
-    "0http": "^4.0.0"
+    "0http": "^4.3.0"
   },
   "devDependencies": {
     "benchmark": "^2.1.4",
