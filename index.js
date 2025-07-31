@@ -13,9 +13,11 @@ const exts = {
 }
 
 module.exports = (options = {}) => {
-  options.errorHandler = options.errorHandler || ((err, req, res) => {
-    res.send(err)
-  })
+  options.errorHandler =
+    options.errorHandler ||
+    ((err, req, res) => {
+      res.send(err)
+    })
 
   const server = options.server || require('http').createServer()
   const prp = undefined === options.prioRequestsProcessing ? true : options.prioRequestsProcessing
@@ -55,20 +57,22 @@ module.exports = (options = {}) => {
 
     handle,
 
-    start: (...args) => new Promise((resolve, reject) => {
-      if (!args || !args.length) args = [3000]
-      server.listen(...args, (err) => {
-        if (err) reject(err)
-        resolve(server)
-      })
-    }),
+    start: (...args) =>
+      new Promise((resolve, reject) => {
+        if (!args || !args.length) args = [3000]
+        server.listen(...args, (err) => {
+          if (err) reject(err)
+          resolve(server)
+        })
+      }),
 
-    close: () => new Promise((resolve, reject) => {
-      server.close((err) => {
-        if (err) reject(err)
-        resolve()
+    close: () =>
+      new Promise((resolve, reject) => {
+        server.close((err) => {
+          if (err) reject(err)
+          resolve()
+        })
       })
-    })
   }
 
   Object.assign(service, service_)
@@ -77,14 +81,6 @@ module.exports = (options = {}) => {
   requestRouter(options, service)
 
   service.callback = () => service.handle
-
-  service.use(async (req, res, next) => {
-    try {
-      await next()
-    } catch (err) {
-      return options.errorHandler(err, req, res)
-    }
-  })
 
   return service
 }
