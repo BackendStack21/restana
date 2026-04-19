@@ -57,5 +57,11 @@ service.get('/hi', (req, res) => res.send('Hello World!'))
 http.createServer(service).listen(3000, '0.0.0.0')
 ```
 
+# Security Defaults
+Restana ships with secure defaults out of the box:
+- **Error handling**: The default error handler returns a generic `Internal Server Error` message, preventing internal details (stack traces, database errors, file paths) from leaking to clients. Provide a custom `errorHandler` to control what gets exposed.
+- **Stream safety**: Stream errors are handled gracefully, preventing connection leaks.
+- **Immutable config**: `getConfigOptions()` returns a frozen copy, preventing middleware from mutating internal framework options.
+
 # More
 - Website and documentation: https://restana.21no.de
