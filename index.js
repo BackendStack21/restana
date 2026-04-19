@@ -16,7 +16,10 @@ module.exports = (options = {}) => {
   options.errorHandler =
     options.errorHandler ||
     ((err, req, res) => {
-      res.send(err)
+      const statusCode = typeof (err.status || err.code || err.statusCode) === 'number'
+        ? (err.status || err.code || err.statusCode)
+        : 500
+      res.send({ code: statusCode, message: 'Internal Server Error' }, statusCode)
     })
 
   const server = options.server || require('http').createServer()
@@ -52,7 +55,7 @@ module.exports = (options = {}) => {
     },
 
     getConfigOptions () {
-      return options
+      return Object.freeze({ ...options })
     },
 
     handle,

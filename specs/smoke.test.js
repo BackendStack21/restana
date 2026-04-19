@@ -104,7 +104,7 @@ describe('Restana Web Framework - Smoke', () => {
       .get('/middlewares/error')
       .expect(500)
       .then((response) => {
-        expect(response.body.message).to.equal('Upps')
+        expect(response.body.message).to.equal('Internal Server Error')
       })
   })
 
@@ -113,7 +113,7 @@ describe('Restana Web Framework - Smoke', () => {
       .get('/error')
       .expect(500)
       .then((response) => {
-        expect(response.body.message).to.equal('error')
+        expect(response.body.message).to.equal('Internal Server Error')
       })
   })
 

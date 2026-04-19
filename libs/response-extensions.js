@@ -38,8 +38,10 @@ const parseErr = error => {
  * The friendly 'res.send' method
  * No comments needed ;)
  */
+const MAX_PROMISE_DEPTH = 3
+
 module.exports.send = (options, req, res) => {
-  const send = (data = res.statusCode, code = res.statusCode, headers = null, cb = NOOP) => {
+  const send = (data = res.statusCode, code = res.statusCode, headers = null, cb = NOOP, _promiseDepth = 0) => {
     let contentType
 
     if (data instanceof Error) {
@@ -76,13 +78,22 @@ module.exports.send = (options, req, res) => {
 
             data.pipe(res)
             data.on('end', cb)
+            data.on('error', () => {
+              res.end(cb)
+            })
 
             return
           } else if (Promise.resolve(data) === data) { // http://www.ecma-international.org/ecma-262/6.0/#sec-promise.resolve
-            headers = null
-            return data
-              .then(resolved => send(resolved, code, headers, cb))
-              .catch(err => send(err, code, headers, cb))
+            if (_promiseDepth >= MAX_PROMISE_DEPTH) {
+              data = stringify({ code: 500, message: 'Internal Server Error' })
+              contentType = TYPE_JSON
+              code = 500
+            } else {
+              headers = null
+              return data
+                .then(resolved => send(resolved, code, headers, cb, _promiseDepth + 1))
+                .catch(err => send(err, code, headers, cb, _promiseDepth + 1))
+            }
           } else {
             if (!contentType) contentType = TYPE_JSON
             data = stringify(data)

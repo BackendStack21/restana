@@ -80,7 +80,7 @@ Optionally, learn through examples:
 - `server`: Allows to optionally override the HTTP server instance to be used.
 - `prioRequestsProcessing`: If `TRUE`, HTTP requests processing/handling is prioritized using `setImmediate`. Default value: `TRUE`
 - `defaultRoute`: Optional route handler when no route match occurs. Default value: `((req, res) => res.send(404))`
-- `errorHandler`: Optional global error handler function. Default value: `(err, req, res) => res.send(err)`
+- `errorHandler`: Optional global error handler function. Default value: `(err, req, res) => res.send({ code, message: 'Internal Server Error' }, code)`. The default handler returns a generic error message to prevent leaking sensitive internal details (e.g. database connection strings, file paths, stack traces). The appropriate HTTP status code is still preserved from `err.status`, `err.code`, or `err.statusCode`.
 - `routerCacheSize`: The router matching cache size, indicates how many request matches will be kept in memory. Default value: `2000`
 
 # Full service example
@@ -136,6 +136,12 @@ service.start(3000).then((server) => {})
 service.close().then(()=> {})
 ```
 
+## Accessing configuration options
+```js
+const opts = service.getConfigOptions()
+```
+> `getConfigOptions()` returns a frozen shallow copy of the configuration options. This prevents third-party middleware from accidentally or maliciously modifying internal framework options at runtime.
+
 ## Async / Await support
 ```js
 service.post('/star/:username', async (req, res) => {
@@ -163,8 +169,8 @@ Supported datatypes are:
 - String
 - Buffer
 - Object
-- Stream
-- Promise
+- Stream (errors on the stream are handled gracefully, terminating the response instead of leaving the connection hanging)
+- Promise (recursive promise resolution is capped at a depth of 3 to prevent event loop starvation)
 
 Example usage:
 ```js
@@ -192,6 +198,9 @@ res.send(
 > `res.send(401)`
 
 ## Global error handling
+By default, restana returns a generic `Internal Server Error` message to the client, preventing internal details from being leaked. The HTTP status code is preserved from `err.status`, `err.code`, or `err.statusCode` (defaults to `500`).
+
+To customize error responses, provide your own `errorHandler`:
 ```js
 const service = require('restana')({
   errorHandler (err, req, res) {
@@ -204,6 +213,7 @@ service.get('/throw', (req, res) => {
   throw new Error('Upps!')
 })
 ```
+> **Note:** When using `res.send(err)` in a custom error handler, the error's `message` and `data` properties will be serialized and sent to the client. Make sure your custom handler only exposes information you intend to be public.
 ### errorHandler not being called?
 > Issue: https://github.com/jkyberneees/ana/issues/81  
 
@@ -457,6 +467,15 @@ service.get('/hello', (req, res) => {
 https://goo.gl/forms/qlBwrf5raqfQwteH3
 
 # Breaking changes
+## 5.2
+> Restana version 5.2 includes important security hardening while remaining backward compatible for most users.  
+
+Changed:
+ - The default `errorHandler` no longer sends `err.message` or `err.data` to clients. It now returns a generic `{ code, message: 'Internal Server Error' }` response. If you need the previous behavior, provide a custom `errorHandler`.
+ - `getConfigOptions()` now returns a frozen shallow copy of the options object instead of a direct mutable reference.
+ - Stream responses (`res.send(stream)`) now handle stream errors gracefully, terminating the response instead of leaving the connection hanging.
+ - Promise resolution in `res.send()` is now capped at a depth of 3 to prevent event loop starvation from deeply nested promise chains.
+
 ## 4.x
 > Restana version 4.x is much more simple to maintain, mature and faster!  
 
