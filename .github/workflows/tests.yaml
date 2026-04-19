@@ -4,12 +4,15 @@ on: [push, pull_request]
 jobs:
   testing:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.x, 22.x]
     steps:
-      - uses: actions/checkout@v1
-      - name: Setup Environment (Using NodeJS 16.x)
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - name: Setup Environment (Using NodeJS ${{ matrix.node-version }})
+        uses: actions/setup-node@v4
         with:
-          node-version: 16.x
+          node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
         run: npm install
