@@ -255,7 +255,7 @@ describe('Security Fixes', () => {
 
     service.get('/promise-deep', (req, res) => {
       // Create a very deeply nested promise chain (beyond MAX_PROMISE_DEPTH)
-      let p = Promise.resolve(Promise.resolve(Promise.resolve(Promise.resolve({ status: 'too-deep' }))))
+      const p = Promise.resolve(Promise.resolve(Promise.resolve(Promise.resolve({ status: 'too-deep' }))))
       res.send(p)
     })
 
