@@ -467,8 +467,8 @@ service.get('/hello', (req, res) => {
 https://goo.gl/forms/qlBwrf5raqfQwteH3
 
 # Breaking changes
-## 5.x
-> Restana version 5.x includes important security hardening while remaining backward compatible for most users.  
+## 5.2
+> Restana version 5.2 includes important security hardening while remaining backward compatible for most users.  
 
 Changed:
  - The default `errorHandler` no longer sends `err.message` or `err.data` to clients. It now returns a generic `{ code, message: 'Internal Server Error' }` response. If you need the previous behavior, provide a custom `errorHandler`.
