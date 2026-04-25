@@ -9,9 +9,24 @@ const TYPE_OCTET = 'application/octet-stream'
 
 const NOOP = () => { }
 
+//
+// Headers that MUST NOT be set via the res.send() headers parameter.
+// These should only be managed by the framework or explicitly via res.setHeader().
+//
+const FORBIDDEN_HEADERS = new Set([
+  'transfer-encoding',
+  'content-length',
+  'connection',
+  'keep-alive',
+  'host',
+  'set-cookie'
+])
+
 const stringify = obj => {
   return JSON.stringify(obj)
 }
+
+const STATUS_TEXTS = require('http').STATUS_CODES
 
 const beforeEnd = (res, contentType, statusCode, data) => {
   if (contentType) {
@@ -20,9 +35,21 @@ const beforeEnd = (res, contentType, statusCode, data) => {
   res.statusCode = statusCode
 }
 
+const isProduction = () => process.env.NODE_ENV === 'production'
+
 const parseErr = error => {
   const errorCode = error.status || error.code || error.statusCode
   const statusCode = typeof errorCode === 'number' ? errorCode : 500
+
+  if (isProduction()) {
+    return {
+      statusCode,
+      data: stringify({
+        code: statusCode,
+        message: STATUS_TEXTS[statusCode] || 'Internal Server Error'
+      })
+    }
+  }
 
   return {
     statusCode,
@@ -52,7 +79,19 @@ module.exports.send = (options, req, res) => {
     } else {
       if (headers && typeof headers === 'object') {
         forEachObject(headers, (value, key) => {
-          res.setHeader(key.toLowerCase(), value)
+          // Block forbidden headers (hop-by-hop, security-sensitive)
+          if (typeof key !== 'string' || FORBIDDEN_HEADERS.has(key.toLowerCase())) {
+            return
+          }
+          // Sanitize array values — prevent header injection via arrays
+          if (Array.isArray(value)) {
+            return
+          }
+          try {
+            res.setHeader(key.toLowerCase(), value)
+          } catch (e) {
+            // Silently skip invalid headers (e.g. CRLF in key or value)
+          }
         })
       }
 

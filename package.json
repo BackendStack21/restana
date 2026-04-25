@@ -1,6 +1,6 @@
 {
   "name": "restana",
-  "version": "v5.2.0",
+  "version": "v6.0.0",
   "description": "Super fast and minimalist web framework for building REST micro-services.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -22,7 +22,7 @@
     "service"
   ],
   "engines": {
-    "node": ">=10.x"
+    "node": ">=24.x"
   },
   "author": "Rolando Santamaria Maso <kyberneees@gmail.com>",
   "license": "MIT",

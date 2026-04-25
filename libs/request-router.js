@@ -4,7 +4,7 @@
  * @see: https://github.com/jkyberneees/0http#0http---sequential-default-router
  */
 const sequential = require('0http/lib/router/sequential')
-const methods = require('./methods')
+const getMethods = require('./methods')
 const EventEmitter = require('events')
 const BEFORE_ROUTE_REGISTER_EVENT = 'beforeRouteRegister'
 
@@ -43,6 +43,7 @@ module.exports = (options, service = {}) => {
   }
 
   // attach routes registration shortcuts
+  const methods = getMethods(options)
   methods.forEach((method) => {
     service[method] = (...args) => {
       if (Array.isArray(args[0])) {

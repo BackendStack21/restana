@@ -80,8 +80,18 @@ Optionally, learn through examples:
 - `server`: Allows to optionally override the HTTP server instance to be used.
 - `prioRequestsProcessing`: If `TRUE`, HTTP requests processing/handling is prioritized using `setImmediate`. Default value: `TRUE`
 - `defaultRoute`: Optional route handler when no route match occurs. Default value: `((req, res) => res.send(404))`
-- `errorHandler`: Optional global error handler function. Default value: `(err, req, res) => res.send({ code, message: 'Internal Server Error' }, code)`. The default handler returns a generic error message to prevent leaking sensitive internal details (e.g. database connection strings, file paths, stack traces). The appropriate HTTP status code is still preserved from `err.status`, `err.code`, or `err.statusCode`.
+- `errorHandler`: Optional global error handler function. Default value: `(err, req, res) => { const statusCode = typeof (err.status || err.code || err.statusCode) === 'number' ? (err.status || err.code || err.statusCode) : 500; res.send({ code: statusCode, message: 'Internal Server Error' }, statusCode) }`. The default handler returns a generic error message to prevent leaking sensitive internal details (e.g. database connection strings, file paths, stack traces). The appropriate HTTP status code is still preserved from `err.status`, `err.code`, or `err.statusCode`.
 - `routerCacheSize`: The router matching cache size, indicates how many request matches will be kept in memory. Default value: `2000`
+- `enableTrace`: When `TRUE`, the `TRACE` HTTP method handler is available for debugging purposes. Default value: `FALSE`. ⚠️ Not recommended for production deployments.
+- `securityHeaders`: When `TRUE`, default security headers are set on every response. Set to `FALSE` to disable (e.g. when using Helmet or serving non-browser clients). Default value: `TRUE`.
+
+### Security defaults (v6.0+)
+Restana now ships with these security hardening measures enabled by default:
+- **Header injection protection**: Security-sensitive and hop-by-hop headers are blocked from the `res.send()` headers parameter.
+- **Production error masking**: In `NODE_ENV=production`, `res.send(err)` masks the error message and strips `err.data` to prevent internal details from leaking.
+- **Default security headers**: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `X-XSS-Protection: 0`, and `Strict-Transport-Security` (on HTTPS) are set on every response. Disable with `securityHeaders: false`.
+- **TRACE method disabled by default**: Eliminates Cross-Site Tracing attack surface. Re-enable for debugging via `enableTrace: true` (not recommended in production).
+- **Deep frozen config**: `getConfigOptions()` now freezes nested plain objects, not just the top-level copy.
 
 # Full service example
 ```js
@@ -115,8 +125,13 @@ service.start(3000)
 # API and features
 ## Supported HTTP methods:
 ```js
-const methods = ['get', 'delete', 'put', 'patch', 'post', 'head', 'options', 'trace']
+const methods = ['get', 'delete', 'put', 'patch', 'post', 'head', 'options']
 ```
+> ⚠️ `TRACE` is disabled by default in v6.0.0 to reduce attack surface (Cross-Site Tracing risk). Re-enable explicitly for debugging with `enableTrace: true` in the service constructor:
+> ```js
+> const service = restana({ enableTrace: true })
+> service.trace('/debug', (req, res) => res.send('Echo: ' + req.url))
+> ```
 
 ### Using .all routes registration
 You can also register a route handler for `all` supported HTTP methods:
@@ -140,7 +155,7 @@ service.close().then(()=> {})
 ```js
 const opts = service.getConfigOptions()
 ```
-> `getConfigOptions()` returns a frozen shallow copy of the configuration options. This prevents third-party middleware from accidentally or maliciously modifying internal framework options at runtime.
+> `getConfigOptions()` returns a frozen copy of the configuration options. Top-level properties and nested plain objects are frozen, preventing third-party middleware from accidentally or maliciously modifying internal framework options at runtime. The `server` reference is a live object and is excluded from deep freezing.
 
 ## Async / Await support
 ```js
@@ -158,6 +173,8 @@ res.send('Hello World', 200, {
   'x-response-time': 100
 })
 ```
+> ⚠️ Security-sensitive and hop-by-hop headers are blocked from the `headers` parameter for security reasons:
+> `transfer-encoding`, `content-length`, `connection`, `keep-alive`, `host`, `set-cookie`. Use `res.setHeader()` explicitly if you need to set these.
 
 ## The "res.send" method
 Same as in express, for `restana` we have implemented a handy `send` method that extends 
@@ -213,7 +230,7 @@ service.get('/throw', (req, res) => {
   throw new Error('Upps!')
 })
 ```
-> **Note:** When using `res.send(err)` in a custom error handler, the error's `message` and `data` properties will be serialized and sent to the client. Make sure your custom handler only exposes information you intend to be public.
+> **Note:** When using `res.send(err)` in a custom error handler, the error's `message` and `data` properties will be serialized and sent to the client (in non-production environments). In `NODE_ENV=production`, `res.send(err)` masks the error message and strips `err.data` to prevent internal details from leaking.
 ### errorHandler not being called?
 > Issue: https://github.com/jkyberneees/ana/issues/81  
 
@@ -467,6 +484,20 @@ service.get('/hello', (req, res) => {
 https://goo.gl/forms/qlBwrf5raqfQwteH3
 
 # Breaking changes
+## 6.0
+> Restana version 6.0 focuses on security hardening and reducing attack surface.
+
+Added:
+  - Minimum Node.js version is now v24.x (current LTS).
+
+Changed:
+  - `TRACE` HTTP method is no longer supported by default. Removed from `methods.js` to prevent Cross-Site Tracing (XST) risks. Re-enable for debugging with `{ enableTrace: true }` in the service constructor.
+  - `res.send(data, code, headers)` now validates the `headers` parameter. Security-sensitive and hop-by-hop headers (`transfer-encoding`, `content-length`, `connection`, `keep-alive`, `host`, `set-cookie`) are silently dropped. Invalid header key characters (CRLF, newlines) are caught and skipped instead of crashing with a 500 error.
+  - `parseErr()` now respects `NODE_ENV`. In `production`, `res.send(err)` masks `err.message` and strips `err.data` to prevent internal details from leaking. In other environments, behavior is unchanged.
+  - `getConfigOptions()` now deep freezes nested plain objects in addition to the top-level freeze. The `server` reference is a live object and is excluded from freezing.
+  - Default security headers are now set on every response: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `X-XSS-Protection: 0`. `Strict-Transport-Security` is set automatically when TLS is detected (via `req.socket.encrypted` or `x-forwarded-proto: https` header). Disable with `{ securityHeaders: false }`.
+  - New `securityHeaders` option allows disabling default security headers entirely (default: `true`).
+
 ## 5.2
 > Restana version 5.2 includes important security hardening while remaining backward compatible for most users.  
 
