@@ -8,6 +8,7 @@
 
 const requestRouter = require('./libs/request-router')
 const applySecurityHeaders = require('./libs/security-headers')
+const { deepObjectClone } = require('./libs/utils')
 const exts = {
   request: {},
   response: require('./libs/response-extensions')
@@ -82,7 +83,7 @@ module.exports = (options = {}) => {
         const val = copy[key]
         if (val && typeof val === 'object' && !Array.isArray(val) &&
             key !== 'server' && val.constructor === Object) {
-          copy[key] = deepFreezePlain(JSON.parse(JSON.stringify(val)))
+          copy[key] = deepFreezePlain(deepObjectClone(val))
         }
       }
       return Object.freeze(copy)

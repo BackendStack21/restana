@@ -6,3 +6,15 @@ module.exports.forEachObject = (obj, cb) => {
     cb(obj[keys[i]], keys[i])
   }
 }
+
+/**
+ * Creates a deep clone of a serializable plain object.
+ * Uses JSON.parse/stringify for a clean, immutable copy.
+ * Skips non-serializable values (functions, symbols, undefined).
+ *
+ * @param {Object} obj
+ * @returns {Object}
+ */
+module.exports.deepObjectClone = (obj) => {
+  return JSON.parse(JSON.stringify(obj))
+}
