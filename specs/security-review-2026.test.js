@@ -408,6 +408,21 @@ describe('Security Review — April 2026', () => {
       expect(Object.isFrozen(opts.customNested)).to.equal(true)
     })
 
+    it('should NOT freeze user-provided original nested objects (no side effects)', () => {
+      const myConfig = { key: 'value', nested: { inner: 'secret' } }
+      const service = require('../index')({
+        customNested: myConfig
+      })
+
+      // Read config — this should NOT freeze the original
+      service.getConfigOptions()
+
+      // The user's original object must remain mutable
+      expect(Object.isFrozen(myConfig)).to.equal(false)
+      expect(() => { myConfig.key = 'updated' }).to.not.throw()
+      expect(() => { myConfig.nested.inner = 'changed' }).to.not.throw()
+    })
+
     it('should prevent mutation of top-level config properties', () => {
       const service = require('../index')()
       const opts = service.getConfigOptions()

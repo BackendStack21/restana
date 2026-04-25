@@ -62,12 +62,13 @@ module.exports = (options = {}) => {
 
     getConfigOptions () {
       const copy = { ...options }
-      // Deep-freeze nested plain objects (server is a live reference — exempted)
+      // Deep-clone + freeze nested plain objects so the user's originals
+      // are not mutated as a side effect of calling getConfigOptions().
       for (const key of Object.keys(copy)) {
         const val = copy[key]
         if (val && typeof val === 'object' && !Array.isArray(val) &&
             key !== 'server' && val.constructor === Object) {
-          Object.freeze(val)
+          copy[key] = Object.freeze(JSON.parse(JSON.stringify(val)))
         }
       }
       return Object.freeze(copy)
