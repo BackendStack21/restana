@@ -398,29 +398,35 @@ describe('Security Review — April 2026', () => {
       expect(opts.server).to.equal(service.getServer())
     })
 
-    it('should freeze nested plain objects in config options', () => {
+    it('should freeze nested plain objects in config options (all depths)', () => {
       const service = require('../index')({
-        customNested: { key: 'value', nested: { inner: 'secret' } }
+        customNested: { key: 'value', nested: { inner: 'secret', deeper: { deepest: true } } }
       })
       const opts = service.getConfigOptions()
 
-      // Nested plain objects should be frozen
+      // First level
       expect(Object.isFrozen(opts.customNested)).to.equal(true)
+      // Second level
+      expect(Object.isFrozen(opts.customNested.nested)).to.equal(true)
+      // Third level
+      expect(Object.isFrozen(opts.customNested.nested.deeper)).to.equal(true)
     })
 
     it('should NOT freeze user-provided original nested objects (no side effects)', () => {
-      const myConfig = { key: 'value', nested: { inner: 'secret' } }
+      const myConfig = { key: 'value', nested: { inner: 'secret', deeper: { deepest: true } } }
       const service = require('../index')({
         customNested: myConfig
       })
 
-      // Read config — this should NOT freeze the original
+      // Read config — this should NOT freeze the original at any depth
       service.getConfigOptions()
 
-      // The user's original object must remain mutable
       expect(Object.isFrozen(myConfig)).to.equal(false)
+      expect(Object.isFrozen(myConfig.nested)).to.equal(false)
+      expect(Object.isFrozen(myConfig.nested.deeper)).to.equal(false)
       expect(() => { myConfig.key = 'updated' }).to.not.throw()
       expect(() => { myConfig.nested.inner = 'changed' }).to.not.throw()
+      expect(() => { myConfig.nested.deeper.deepest = false }).to.not.throw()
     })
 
     it('should prevent mutation of top-level config properties', () => {

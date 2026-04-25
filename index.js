@@ -13,6 +13,20 @@ const exts = {
   response: require('./libs/response-extensions')
 }
 
+/**
+ * Recursively freezes a plain object and all nested plain objects.
+ * Skips arrays, Buffers, class instances, and other non-plain types.
+ */
+function deepFreezePlain (obj) {
+  if (obj && typeof obj === 'object' && obj.constructor === Object && !Object.isFrozen(obj)) {
+    Object.freeze(obj)
+    for (const key of Object.keys(obj)) {
+      deepFreezePlain(obj[key])
+    }
+  }
+  return obj
+}
+
 module.exports = (options = {}) => {
   options.errorHandler =
     options.errorHandler ||
@@ -62,13 +76,13 @@ module.exports = (options = {}) => {
 
     getConfigOptions () {
       const copy = { ...options }
-      // Deep-clone + freeze nested plain objects so the user's originals
+      // Deep-clone + deep-freeze nested plain objects so the user's originals
       // are not mutated as a side effect of calling getConfigOptions().
       for (const key of Object.keys(copy)) {
         const val = copy[key]
         if (val && typeof val === 'object' && !Array.isArray(val) &&
             key !== 'server' && val.constructor === Object) {
-          copy[key] = Object.freeze(JSON.parse(JSON.stringify(val)))
+          copy[key] = deepFreezePlain(JSON.parse(JSON.stringify(val)))
         }
       }
       return Object.freeze(copy)
