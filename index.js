@@ -7,6 +7,7 @@
  */
 
 const requestRouter = require('./libs/request-router')
+const applySecurityHeaders = require('./libs/security-headers')
 const exts = {
   request: {},
   response: require('./libs/response-extensions')
@@ -35,6 +36,11 @@ module.exports = (options = {}) => {
   }
 
   const handle = (req, res) => {
+    // Default security headers (can be overridden by application or disabled via options)
+    if (options.securityHeaders !== false) {
+      applySecurityHeaders(req, res)
+    }
+
     // request object population
     res.send = exts.response.send(options, req, res)
 
@@ -55,7 +61,16 @@ module.exports = (options = {}) => {
     },
 
     getConfigOptions () {
-      return Object.freeze({ ...options })
+      const copy = { ...options }
+      // Deep-freeze nested plain objects (server is a live reference — exempted)
+      for (const key of Object.keys(copy)) {
+        const val = copy[key]
+        if (val && typeof val === 'object' && !Array.isArray(val) &&
+            key !== 'server' && val.constructor === Object) {
+          Object.freeze(val)
+        }
+      }
+      return Object.freeze(copy)
     },
 
     handle,

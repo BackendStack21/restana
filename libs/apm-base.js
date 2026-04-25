@@ -1,6 +1,6 @@
 'use strict'
 
-const methods = require('./methods')
+const methods = require('./methods').BASE
 
 module.exports = (options) => {
   const agent = options.apm || options.agent
