@@ -8,24 +8,10 @@
 
 const requestRouter = require('./libs/request-router')
 const applySecurityHeaders = require('./libs/security-headers')
-const { deepObjectClone } = require('./libs/utils')
+const { deepFreezeObject } = require('./libs/utils')
 const exts = {
   request: {},
   response: require('./libs/response-extensions')
-}
-
-/**
- * Recursively freezes a plain object and all nested plain objects.
- * Skips arrays, Buffers, class instances, and other non-plain types.
- */
-function deepFreezePlain (obj) {
-  if (obj && typeof obj === 'object' && obj.constructor === Object && !Object.isFrozen(obj)) {
-    Object.freeze(obj)
-    for (const key of Object.keys(obj)) {
-      deepFreezePlain(obj[key])
-    }
-  }
-  return obj
 }
 
 module.exports = (options = {}) => {
@@ -63,6 +49,7 @@ module.exports = (options = {}) => {
   }
 
   const service = handle
+  let frozenConfig = null
 
   const service_ = {
     errorHandler: options.errorHandler,
@@ -76,17 +63,18 @@ module.exports = (options = {}) => {
     },
 
     getConfigOptions () {
-      const copy = { ...options }
-      // Deep-clone + deep-freeze nested plain objects so the user's originals
-      // are not mutated as a side effect of calling getConfigOptions().
-      for (const key of Object.keys(copy)) {
-        const val = copy[key]
-        if (val && typeof val === 'object' && !Array.isArray(val) &&
-            key !== 'server' && val.constructor === Object) {
-          copy[key] = deepFreezePlain(deepObjectClone(val))
+      if (!frozenConfig) {
+        const copy = { ...options }
+        // Deep-clone + deep-freeze nested plain objects so the user's originals
+        // are not mutated as a side effect of calling getConfigOptions().
+        for (const key of Object.keys(copy)) {
+          if (key !== 'server') {
+            copy[key] = deepFreezeObject(copy[key])
+          }
         }
+        frozenConfig = Object.freeze(copy)
       }
-      return Object.freeze(copy)
+      return frozenConfig
     },
 
     handle,

@@ -26,6 +26,8 @@ const stringify = obj => {
   return JSON.stringify(obj)
 }
 
+const STATUS_TEXTS = require('http').STATUS_CODES
+
 const beforeEnd = (res, contentType, statusCode, data) => {
   if (contentType) {
     res.setHeader(CONTENT_TYPE_HEADER, contentType)
@@ -44,7 +46,7 @@ const parseErr = error => {
       statusCode,
       data: stringify({
         code: statusCode,
-        message: 'Internal Server Error'
+        message: STATUS_TEXTS[statusCode] || 'Internal Server Error'
       })
     }
   }

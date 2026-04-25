@@ -250,8 +250,8 @@ describe('Security Review — April 2026', () => {
         .get('/leak')
         .expect(502)
 
-      // In production, the actual error message must be masked
-      expect(res.body.message).to.equal('Internal Server Error')
+      // In production, the actual error message must be masked with a generic status text
+      expect(res.body.message).to.equal('Bad Gateway')
       expect(res.body.message).to.not.include('ECONNREFUSED')
       expect(res.body.message).to.not.include('database.internal')
     })
