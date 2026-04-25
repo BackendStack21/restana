@@ -22,7 +22,7 @@
     "service"
   ],
   "engines": {
-    "node": ">=10.x"
+    "node": ">=24.x"
   },
   "author": "Rolando Santamaria Maso <kyberneees@gmail.com>",
   "license": "MIT",

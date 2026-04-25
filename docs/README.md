@@ -487,6 +487,9 @@ https://goo.gl/forms/qlBwrf5raqfQwteH3
 ## 6.0
 > Restana version 6.0 focuses on security hardening and reducing attack surface.
 
+Added:
+  - Minimum Node.js version is now v24.x (current LTS).
+
 Changed:
   - `TRACE` HTTP method is no longer supported by default. Removed from `methods.js` to prevent Cross-Site Tracing (XST) risks. Re-enable for debugging with `{ enableTrace: true }` in the service constructor.
   - `res.send(data, code, headers)` now validates the `headers` parameter. Security-sensitive and hop-by-hop headers (`transfer-encoding`, `content-length`, `connection`, `keep-alive`, `host`, `set-cookie`) are silently dropped. Invalid header key characters (CRLF, newlines) are caught and skipped instead of crashing with a 500 error.
