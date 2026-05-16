@@ -1,59 +1,626 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <title>restana</title>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <meta name="description"
-    content="Blazing fast, tiny and minimalist connect-like web framework for building REST micro-services.">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
-  <link href="https://fonts.googleapis.com/css?family=Outfit" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="restana — Blazing fast, tiny and minimalist REST framework for Node.js. Inspired by Express, with secure defaults, serverless support, and zero bloat." />
+  <meta name="keywords" content="restana,node.js,node,framework,rest,api,microservice,express,fast,lightweight,serverless" />
+  <meta name="author" content="21no.de" />
+  <meta name="theme-color" content="#0a0a0b" />
+  <meta name="robots" content="index, follow" />
+  <title>restana — Fast & Minimalist REST Framework for Node.js</title>
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://restana.21no.de/" />
+  <meta property="og:title" content="restana — Fast & Minimalist REST Framework for Node.js" />
+  <meta property="og:description" content="Blazing fast, secure-by-default REST framework for Node.js. Express-inspired API with serverless support, nested routers, and minimal dependencies." />
+  <meta property="og:image" content="https://restana.21no.de/restana-logo.svg" />
+  <meta property="og:image:width" content="1024" />
+  <meta property="og:image:height" content="1024" />
+  <meta property="og:site_name" content="restana" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="restana — Fast & Minimalist REST Framework for Node.js" />
+  <meta name="twitter:description" content="Blazing fast, secure-by-default REST framework for Node.js. Express-inspired API with serverless support, nested routers, and minimal dependencies." />
+  <meta name="twitter:image" content="https://restana.21no.de/restana-logo.svg" />
+
+  <link rel="canonical" href="https://restana.21no.de/" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+
+  <!-- Shared Assets -->
+  <link rel="stylesheet" href="https://assets.21no.de/fonts/fonts.css" />
+  <link rel="stylesheet" href="https://assets.21no.de/css/tokens.css" />
+  <link rel="stylesheet" href="https://assets.21no.de/css/base.css" />
+  <link rel="stylesheet" href="https://assets.21no.de/css/nav.css" />
+  <link rel="stylesheet" href="https://assets.21no.de/css/hero.css" />
+  <link rel="stylesheet" href="https://assets.21no.de/css/buttons.css" />
+  <link rel="stylesheet" href="https://assets.21no.de/css/cards.css" />
+  <link rel="stylesheet" href="https://assets.21no.de/css/footer.css" />
 
   <style>
-    body {
-      border-right-color: #8d8d8d;
-      font-family: 'Outfit', sans-serif;
+    /* === restana-specific === */
+
+    /* ── Hero ── */
+    .hero-logo {
+      width: 80px; height: 80px; margin: 0 auto 24px;
+      background: var(--accent-subtle); border: 1px solid rgba(56,189,248,0.15);
+      border-radius: 16px; display: flex; align-items: center; justify-content: center;
+      font-size: 42px; font-weight: 700; color: var(--accent);
+      font-family: var(--font-mono);
+    }
+    .hero h1 { margin-bottom: 12px; }
+    .hero h1 .accent { white-space: nowrap; }
+
+    /* ── Stats ── */
+    .hero-stats {
+      display: flex; gap: 32px; justify-content: center; align-items: baseline;
+      margin-top: 36px; flex-wrap: wrap;
+    }
+    .hero-stats .stat { text-align: center; }
+    .hero-stats .stat .num {
+      font-family: var(--font-mono); font-size: 24px; font-weight: 600; color: var(--text-primary);
+    }
+    .hero-stats .stat .label { font-size: 13px; color: var(--text-tertiary); margin-top: 2px; }
+
+    /* ── Features Grid ── */
+    .features-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px; margin-top: 40px;
+    }
+    .feature-card {
+      background: var(--bg-card); border: 1px solid var(--border-card);
+      border-radius: var(--radius-lg); padding: 28px; transition: border-color 0.15s;
+    }
+    .feature-card:hover { border-color: rgba(255,255,255,0.12); }
+    .feature-card .icon {
+      font-size: 24px; margin-bottom: 14px; display: block; color: var(--accent);
+    }
+    .feature-card h3 {
+      font-size: 17px; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);
+    }
+    .feature-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
+
+    /* ── Security Feature Rows ── */
+    .security-list { display: flex; flex-direction: column; gap: 16px; margin-top: 32px; }
+    .security-item {
+      display: flex; align-items: flex-start; gap: 14px;
+      background: var(--bg-card); border: 1px solid var(--border-card);
+      border-radius: var(--radius-md); padding: 18px 22px;
+      transition: border-color 0.15s;
+    }
+    .security-item:hover { border-color: rgba(56,189,248,0.2); }
+    .security-item .sec-icon {
+      font-size: 20px; flex-shrink: 0; width: 32px; text-align: center;
+    }
+    .security-item h4 {
+      font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px;
+    }
+    .security-item p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+    /* ── Capability Item ── */
+    .capability-list { display: flex; flex-direction: column; gap: 32px; margin-top: 32px; }
+    .capability-item h3 {
+      font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;
+    }
+    .capability-item h4 {
+      font-size: 14px; font-weight: 500; color: var(--accent); margin: 16px 0 6px;
+    }
+    .capability-item p { font-size: 15px; color: var(--text-secondary); line-height: 1.7; }
+    .capability-item ul {
+      list-style: none; margin-top: 10px; display: flex; flex-direction: column; gap: 6px;
+    }
+    .capability-item li { font-size: 14px; color: var(--text-secondary); padding-left: 16px; position: relative; }
+    .capability-item li::before {
+      content: ''; position: absolute; left: 0; top: 9px;
+      width: 5px; height: 5px; border-radius: 50%; background: var(--accent);
     }
 
+    /* ── Install Box ── */
+    .install-box {
+      background: var(--bg-code); border: 1px solid var(--border-card);
+      border-radius: var(--radius-lg); padding: 20px 24px; max-width: 500px; text-align: left;
+      margin: 24px 0 0; cursor: pointer; transition: border-color 0.15s; position: relative;
+    }
+    .install-box:hover { border-color: rgba(255,255,255,0.12); }
+    .install-box code { font-size: 15px; color: var(--text-primary); }
+    .install-box .prompt { color: var(--accent); }
+    .install-box .copied {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      font-size: 12px; color: var(--green); opacity: 0; transition: opacity 0.2s;
+    }
+    .install-box .copied.show { opacity: 1; }
+
+    /* ── Examples Grid ── */
+    .examples-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 16px; margin-top: 32px;
+    }
+    .example-card {
+      background: var(--bg-code); border: 1px solid var(--border-card);
+      border-radius: var(--radius-md); overflow: hidden;
+    }
+    .example-card .ex-title {
+      display: block; font-size: 12px; font-family: var(--font-mono);
+      color: var(--text-tertiary); padding: 10px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .example-card pre {
+      margin: 0; padding: 16px; overflow-x: auto; font-size: 13px; line-height: 1.65;
+      color: var(--text-secondary); background: transparent;
+    }
+    .example-card pre code { color: var(--text-secondary); }
+    .k { color: #c792ea; } /* keyword */
+    .s { color: #c3e88d; } /* string */
+    .f { color: #82aaff; } /* function */
+    .n { color: #f78c6c; } /* number */
+    .c { color: #676e95; } /* comment */
+
+    /* ── Config Table ── */
+    .config-table {
+      width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 24px;
+      border: 1px solid var(--border-card); border-radius: var(--radius-md); overflow: hidden;
+    }
+    .config-table th {
+      text-align: left; padding: 12px 16px; font-weight: 500;
+      color: var(--text-tertiary); font-size: 12px; text-transform: uppercase;
+      letter-spacing: 0.5px; background: var(--bg-card); border-bottom: 1px solid var(--border-subtle);
+    }
+    .config-table td {
+      padding: 10px 16px; border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+    }
+    .config-table tr:last-child td { border-bottom: none; }
+    .config-table td:first-child {
+      font-family: var(--font-mono); font-size: 13px; color: var(--accent);
+    }
+
+    /* ── Integration Cards ── */
+    .integration-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px; margin-top: 32px;
+    }
+    .integration-card {
+      background: var(--bg-card); border: 1px solid var(--border-card);
+      border-radius: var(--radius-md); padding: 22px 24px;
+      transition: border-color 0.15s;
+    }
+    .integration-card:hover { border-color: rgba(56,189,248,0.2); }
+    .integration-card h4 { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+    .integration-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+    /* ── Scroll to Top ── */
+    .scroll-top {
+      position: fixed; bottom: 24px; right: 24px; z-index: 99;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--bg-card); border: 1px solid var(--border-card);
+      color: var(--text-secondary); font-size: 18px; cursor: pointer;
+      opacity: 0; transform: translateY(10px); transition: all 0.25s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .scroll-top.visible { opacity: 1; transform: translateY(0); }
+    .scroll-top:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .examples-grid { grid-template-columns: 1fr; }
+      .integration-grid { grid-template-columns: 1fr; }
+      .hero-stats { gap: 20px; }
+      .config-table { font-size: 12px; }
+      .config-table td, .config-table th { padding: 8px 10px; }
+    }
   </style>
 </head>
-
 <body>
-  <div id="app"></div>
-  <script>
-    window.$docsify = {
-      name: 'restana',
-      repo: 'https://github.com/BackendStack21/restana',
-      share: {
-        reddit: false,
-        linkedin: true,
-        facebook: true,
-        twitter: true,
-        whatsapp: true,
-        telegram: true,
+
+<!-- Navigation -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <span style="font-size:24px;color:var(--accent);font-weight:700;">⋈</span>
+      <span>restana</span>
+    </a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#security">Security</a>
+      <a href="#examples">Examples</a>
+      <a href="https://github.com/BackendStack21/restana" target="_blank">GitHub</a>
+      <a href="#install" class="nav-cta">Install</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-logo">R</div>
+    <h1>
+      Fast &amp; minimalist<br />
+      <span class="accent">REST framework for Node.js</span>
+    </h1>
+    <p>Blazing fast, tiny, and secure-by-default. Express-inspired API with serverless support, nested routers, and zero bloat.</p>
+    <div class="hero-actions">
+      <a href="#install" class="btn btn-primary">Get Started</a>
+      <a href="https://github.com/BackendStack21/restana" target="_blank" class="btn btn-secondary">View on GitHub</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="num">7</span><div class="label">HTTP methods</div></div>
+      <div class="stat"><span class="num">v6.0</span><div class="label">latest</div></div>
+      <div class="stat"><span class="num">Node 24+</span><div class="label">runtime</div></div>
+      <div class="stat"><span class="num">3</span><div class="label">dependencies</div></div>
+      <div class="stat"><span class="num">TS</span><div class="label">types built-in</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section id="features" class="section">
+  <div class="container">
+    <div class="section-label">Features</div>
+    <h2>Why restana?</h2>
+    <p class="lead">A framework designed for speed, simplicity, and production safety.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="icon">⚡</span>
+        <h3>Blazing Fast</h3>
+        <p>Lightweight routing with minimal overhead. The sequential router uses internal caching for repeated lookups — tuned for raw throughput.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">🛡</span>
+        <h3>Secure by Default</h3>
+        <p>Production error masking, header injection protection, security headers, TRACE disabled, and deep-frozen config — all on by default.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">🔗</span>
+        <h3>Middleware Engine</h3>
+        <p>Express-compatible middleware with full <code>async/await</code> support. Global, prefix, and route-level — you choose the scope.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">🧩</span>
+        <h3>Nested Routers</h3>
+        <p>Modular architecture with nested routers via <code>service.newRouter()</code>. Mount under prefixes and compose cleanly.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">☁️</span>
+        <h3>Serverless Ready</h3>
+        <p>Native integration with AWS Lambda via serverless-http and Google Cloud Functions for Firebase. Deploy anywhere.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">📦</span>
+        <h3>Minimal Footprint</h3>
+        <p>Three runtime dependencies. Zero bloat. The <code>res.send()</code> method handles null, strings, buffers, objects, streams, and promises — all in one call.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Security -->
+<section id="security" class="section">
+  <div class="container">
+    <div class="section-label">Security</div>
+    <h2>Safe Out of the Box</h2>
+    <p class="lead">restana v6.0 ships with hardened security defaults. No extra packages needed.</p>
+    <div class="security-list">
+      <div class="security-item">
+        <span class="sec-icon">🔒</span>
+        <div>
+          <h4>Production Error Masking</h4>
+          <p>Default error handler returns generic <code>Internal Server Error</code>. In <code>NODE_ENV=production</code>, <code>res.send(err)</code> strips stack traces and internal details. Customize with your own <code>errorHandler</code>.</p>
+        </div>
+      </div>
+      <div class="security-item">
+        <span class="sec-icon">🚫</span>
+        <div>
+          <h4>Header Injection Protection</h4>
+          <p>Security-sensitive and hop-by-hop headers (<code>transfer-encoding</code>, <code>content-length</code>, <code>connection</code>, <code>set-cookie</code>, etc.) are silently dropped from <code>res.send()</code>. Invalid header characters are caught, not crashed.</p>
+        </div>
+      </div>
+      <div class="security-item">
+        <span class="sec-icon">🛡</span>
+        <div>
+          <h4>Default Security Headers</h4>
+          <p>Every response gets <code>X-Content-Type-Options: nosniff</code>, <code>X-Frame-Options: DENY</code>, and <code>X-XSS-Protection: 0</code>. <code>Strict-Transport-Security</code> is set automatically on TLS connections. Disable with <code>securityHeaders: false</code>.</p>
+        </div>
+      </div>
+      <div class="security-item">
+        <span class="sec-icon">🔐</span>
+        <div>
+          <h4>TRACE Disabled by Default</h4>
+          <p>Eliminates Cross-Site Tracing (XST) attack surface. Re-enable for debugging with <code>enableTrace: true</code> — not recommended in production.</p>
+        </div>
+      </div>
+      <div class="security-item">
+        <span class="sec-icon">❄️</span>
+        <div>
+          <h4>Immutable Configuration</h4>
+          <p><code>getConfigOptions()</code> returns a deep-frozen copy. Nested plain objects are frozen too — middleware can't mutate internal framework options at runtime.</p>
+        </div>
+      </div>
+      <div class="security-item">
+        <span class="sec-icon">🌊</span>
+        <div>
+          <h4>Stream &amp; Promise Safety</h4>
+          <p>Stream errors are handled gracefully (connection terminates, no leak). Promise resolution is capped at depth 3 to prevent event loop starvation.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Quick Start Examples -->
+<section id="examples" class="section">
+  <div class="container">
+    <div class="section-label">Examples</div>
+    <h2>Quick Start</h2>
+    <p class="lead">Common patterns to get you moving fast.</p>
+    <div class="examples-grid">
+
+      <div class="example-card">
+        <span class="ex-title">basic-server.js</span>
+        <pre><code><span class="k">const</span> restana = <span class="f">require</span>(<span class="s">'restana'</span>)
+
+<span class="k">const</span> service = <span class="f">restana</span>()
+service.<span class="f">get</span>(<span class="s">'/hi'</span>, (req, res) => res.<span class="f">send</span>(<span class="s">'Hello World!'</span>))
+
+service.<span class="f">start</span>(<span class="n">3000</span>)</code></pre>
+      </div>
+
+      <div class="example-card">
+        <span class="ex-title">https-server.js</span>
+        <pre><code><span class="k">const</span> https = <span class="f">require</span>(<span class="s">'https'</span>)
+<span class="k">const</span> restana = <span class="f">require</span>(<span class="s">'restana'</span>)
+
+<span class="k">const</span> service = <span class="f">restana</span>({
+  server: https.<span class="f">createServer</span>({
+    key: keys.serviceKey,
+    cert: keys.certificate
+  })
+})
+service.<span class="f">get</span>(<span class="s">'/hi'</span>, (req, res) => res.<span class="f">send</span>(<span class="s">'Hello World!'</span>))
+service.<span class="f">start</span>(<span class="n">3000</span>)</code></pre>
+      </div>
+
+      <div class="example-card">
+        <span class="ex-title">json-api.js</span>
+        <pre><code>service.<span class="f">get</span>(<span class="s">'/api/users'</span>, (req, res) => {
+  res.<span class="f">send</span>({ users: [
+    { id: <span class="n">1</span>, name: <span class="s">'Alice'</span> },
+    { id: <span class="n">2</span>, name: <span class="s">'Bob'</span> }
+  ]})
+})</code></pre>
+      </div>
+
+      <div class="example-card">
+        <span class="ex-title">async-handler.js</span>
+        <pre><code>service.<span class="f">get</span>(<span class="s">'/users/:id'</span>, <span class="k">async</span> (req, res) => {
+  <span class="k">const</span> user = <span class="k">await</span> db.<span class="f">findById</span>(req.params.id)
+  <span class="k">if</span> (!user) {
+    res.statusCode = <span class="n">404</span>
+    <span class="k">return</span> res.<span class="f">send</span>(<span class="s">'Not found'</span>)
+  }
+  res.<span class="f">send</span>(user)
+})</code></pre>
+      </div>
+
+      <div class="example-card">
+        <span class="ex-title">nested-routers.js</span>
+        <pre><code><span class="k">const</span> nestedRouter = service.<span class="f">newRouter</span>()
+
+nestedRouter.<span class="f">get</span>(<span class="s">'/hello'</span>, (req, res) => {
+  res.<span class="f">send</span>(<span class="s">'Hello World!'</span>)
+})
+<span class="c">// Mount under /v1</span>
+service.<span class="f">use</span>(<span class="s">'/v1'</span>, nestedRouter)</code></pre>
+      </div>
+
+      <div class="example-card">
+        <span class="ex-title">middleware.js</span>
+        <pre><code><span class="c">// Global logger</span>
+service.<span class="f">use</span>((req, res, next) => {
+  console.<span class="f">log</span>(<span class="s">`${req.method} ${req.url}`</span>)
+  <span class="k">return</span> <span class="f">next</span>()
+})
+
+<span class="c">// Route-level auth</span>
+service.<span class="f">get</span>(<span class="s">'/admin'</span>, auth, (req, res) => {
+  res.<span class="f">send</span>(<span class="s">'Welcome, admin'</span>)
+})</code></pre>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Core Capabilities -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">Architecture</div>
+    <h2>Core Capabilities</h2>
+    <p class="lead">Everything you need, nothing you don't.</p>
+
+    <div class="capability-list">
+      <div class="capability-item">
+        <h3>1. HTTP Routing</h3>
+        <p>restana supports all standard HTTP methods with a clean, chainable API.</p>
+        <ul>
+          <li>GET, DELETE, PUT, PATCH, POST, HEAD, OPTIONS — plus <code>service.all()</code> for universal handlers</li>
+          <li>TRACE is disabled by default (re-enable with <code>enableTrace: true</code>)</li>
+          <li>Route matching uses an internal LRU cache — <code>routerCacheSize</code> controls cache depth (default: 2000)</li>
+        </ul>
+      </div>
+
+      <div class="capability-item">
+        <h3>2. The <code>res.send()</code> Method</h3>
+        <p>One method handles every response type. No <code>res.json()</code>, <code>res.text()</code>, or <code>res.stream()</code> needed.</p>
+        <ul>
+          <li><code>null</code> / <code>undefined</code> — empty 204</li>
+          <li><code>String</code> — text/plain</li>
+          <li><code>Buffer</code> — application/octet-stream</li>
+          <li><code>Object</code> — application/json</li>
+          <li><code>Stream</code> — piped with graceful error handling</li>
+          <li><code>Promise</code> — resolved recursively (depth cap: 3)</li>
+        </ul>
+        <p>Full signature: <code>res.send(data, statusCode, headers, callback)</code>. You can also send just a status code: <code>res.send(401)</code>.</p>
+      </div>
+
+      <div class="capability-item">
+        <h3>3. Middleware Support</h3>
+        <p>All middlewares using the <code>(req, res, next)</code> signature are compatible — including Express middleware from npm.</p>
+        <h4>Global Middleware</h4>
+        <p>Applies to every route. Use for logging, CORS, authentication.</p>
+        <h4>Prefix Middleware</h4>
+        <p>Scoped to a path prefix. <code>service.use('/admin', authMiddleware)</code></p>
+        <h4>Route-Level Middleware</h4>
+        <p>Multiple callbacks per route, including arrays of middleware functions.</p>
+        <h4>Async Middleware (v3.3+)</h4>
+        <p>Full <code>async/await</code> support. Catch uncaught exceptions in the request processing flow with try/catch wrappers.</p>
+      </div>
+
+      <div class="capability-item">
+        <h3>4. Custom Servers &amp; Events</h3>
+        <p>Server-agnostic. Use standard <code>http.Server</code>, <code>https.Server</code>, or your own implementation.</p>
+        <ul>
+          <li><code>service.start(port)</code> — returns a Promise with the server instance</li>
+          <li><code>service.close()</code> — graceful shutdown</li>
+          <li><code>service.callback()</code> — standard <code>(req, res)</code> handler for third-party integrations</li>
+          <li><code>service.events.BEFORE_ROUTE_REGISTER</code> — hook into route registration</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Installation -->
+<section id="install" class="section">
+  <div class="container">
+    <div class="section-label">Install</div>
+    <h2>Get Started</h2>
+    <p class="lead">One command and you're running.</p>
+    <div class="install-box" onclick="copyInstall()">
+      <code><span class="prompt">$</span> npm install restana</code>
+      <span class="copied" id="copied-msg">Copied!</span>
+    </div>
+  </div>
+</section>
+
+<!-- Configuration -->
+<section id="config" class="section">
+  <div class="container">
+    <div class="section-label">Configure</div>
+    <h2>Configuration Options</h2>
+    <p class="lead">Pass an options object to <code style="font-family:var(--font-mono)">restana(config)</code> — everything is optional.</p>
+
+    <table class="config-table">
+      <thead>
+        <tr><th>Option</th><th>Description</th><th>Default</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>server</td><td>Custom HTTP server instance</td><td>http.createServer()</td></tr>
+        <tr><td>prioRequestsProcessing</td><td>Use setImmediate for priority processing</td><td>true</td></tr>
+        <tr><td>defaultRoute</td><td>Handler for unmatched routes (404)</td><td>res.send(404)</td></tr>
+        <tr><td>errorHandler</td><td>Global error handler function</td><td>Safe-by-default (v6.0+)</td></tr>
+        <tr><td>routerCacheSize</td><td>Route match cache size</td><td>2000</td></tr>
+        <tr><td>enableTrace</td><td>Enable TRACE HTTP method</td><td>false</td></tr>
+        <tr><td>securityHeaders</td><td>Set default security headers on every response</td><td>true</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Integrations -->
+<section id="integrations" class="section">
+  <div class="container">
+    <div class="section-label">Integrations</div>
+    <h2>Deploy Anywhere</h2>
+    <p class="lead">restana works wherever Node.js runs — from serverless functions to dedicated servers.</p>
+    <div class="integration-grid">
+      <div class="integration-card">
+        <h4>☁️ AWS Lambda</h4>
+        <p>Compatible with <code>serverless-http</code>. Wrap your service in a single handler and deploy as a Lambda function.</p>
+      </div>
+      <div class="integration-card">
+        <h4>🔥 Cloud Functions for Firebase</h4>
+        <p>Use <code>service.callback()</code> with <code>functions.https.onRequest()</code> for zero-config Firebase deployment.</p>
+      </div>
+      <div class="integration-card">
+        <h4>📊 Elastic APM</h4>
+        <p>Built-in routes naming plugin for Elastic APM. Instrument your service with <code>restana/libs/elastic-apm</code>.</p>
+      </div>
+      <div class="integration-card">
+        <h4>📈 New Relic APM</h4>
+        <p>Built-in routes naming plugin for New Relic. Attach before registering routes with <code>restana/libs/newrelic-apm</code>.</p>
+      </div>
+      <div class="integration-card">
+        <h4>📄 Swagger / OpenAPI</h4>
+        <p>Validate requests against OpenAPI specs with <code>restana-swagger-validator</code>. Available on npm.</p>
+      </div>
+      <div class="integration-card">
+        <h4>📁 Static Files</h4>
+        <p>Serve static assets with <code>restana-static</code> — a dedicated Docker container for frontend serving.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="social-links">
+      <a href="https://github.com/BackendStack21/restana" target="_blank">GitHub</a>
+      <a href="https://www.npmjs.com/package/restana" target="_blank">npm</a>
+      <a href="https://21no.de/" target="_blank">21no.de</a>
+    </div>
+    <p>Open source under the MIT License. © 2025 <a href="https://21no.de/">21no.de</a></p>
+  </div>
+</footer>
+
+<!-- Scroll to top -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+  // Scroll to top visibility
+  const scrollBtn = document.getElementById('scrollTop')
+  window.addEventListener('scroll', () => {
+    scrollBtn.classList.toggle('visible', window.scrollY > 400)
+  })
+
+  // Copy install command
+  function copyInstall() {
+    navigator.clipboard.writeText('npm install restana').then(() => {
+      const msg = document.getElementById('copied-msg')
+      msg.classList.add('show')
+      setTimeout(() => msg.classList.remove('show'), 1800)
+    })
+  }
+
+  // Fade-in animation on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1'
+        entry.target.style.transform = 'translateY(0)'
       }
-    }
-  </script>
-  <!-- Docsify v4 -->
-  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+    })
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' })
 
-  <script src="https://unpkg.com/docsify-copy-code@2"></script>
-  <script src="https://unpkg.com/docsify-share/build/index.min.js"></script>
+  document.querySelectorAll('.feature-card, .security-item, .capability-item, .example-card, .integration-card').forEach(el => {
+    el.style.opacity = '0'
+    el.style.transform = 'translateY(20px)'
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease'
+    observer.observe(el)
+  })
 
-  <script type="text/javascript" charset="UTF-8"
-  src="//cdn.cookie-script.com/s/28dc51cd1b79414f499d222fffd2095d.js"></script>
+  // Trigger initial animation for visible elements
+  setTimeout(() => {
+    document.querySelectorAll('.feature-card, .security-item, .capability-item, .example-card, .integration-card').forEach(el => {
+      const rect = el.getBoundingClientRect()
+      if (rect.top < window.innerHeight) {
+        el.style.opacity = '1'
+        el.style.transform = 'translateY(0)'
+      }
+    })
+  }, 200)
+</script>
 
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-N33EXB3XSY"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-
-    gtag('config', 'G-N33EXB3XSY');
-  </script>
 </body>
-
 </html>
