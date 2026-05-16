@@ -42,12 +42,12 @@
 
     /* ── Hero ── */
     .hero-logo {
-      width: 80px; height: 80px; margin: 0 auto 24px;
+      width: 120px; height: 120px; margin: 0 auto 24px;
       background: var(--accent-subtle); border: 1px solid rgba(56,189,248,0.15);
-      border-radius: 16px; display: flex; align-items: center; justify-content: center;
-      font-size: 42px; font-weight: 700; color: var(--accent);
-      font-family: var(--font-mono);
+      border-radius: 20px; display: flex; align-items: center; justify-content: center;
+      padding: 18px;
     }
+    .hero-logo img { width: 100%; height: 100%; object-fit: contain; }
     .hero h1 { margin-bottom: 12px; }
     .hero h1 .accent { white-space: nowrap; }
 
@@ -233,7 +233,7 @@
 <!-- Hero -->
 <section class="hero">
   <div class="container">
-    <div class="hero-logo">R</div>
+    <div class="hero-logo"><img src="restana-logo.svg" alt="restana"></div>
     <h1>
       Fast &amp; minimalist<br />
       <span class="accent">REST framework for Node.js</span>
@@ -524,6 +524,72 @@ service.<span class="f">get</span>(<span class="s">'/admin'</span>, auth, (req, 
         <tr><td>securityHeaders</td><td>Set default security headers on every response</td><td>true</td></tr>
       </tbody>
     </table>
+
+    <div class="examples-grid" style="margin-top:28px;">
+
+      <div class="example-card">
+        <span class="ex-title">custom-error-handler.js</span>
+        <pre><code><span class="k">const</span> service = <span class="f">restana</span>({
+  errorHandler(err, req, res) {
+    console.<span class="f">error</span>(<span class="s">`Error: ${err.message}`</span>)
+    res.<span class="f">send</span>({ error: err.message }, err.status || <span class="n">500</span>)
+  }
+})</code></pre>
+      </div>
+
+      <div class="example-card">
+        <span class="ex-title">https-custom-server.js</span>
+        <pre><code><span class="k">const</span> https = <span class="f">require</span>(<span class="s">'https'</span>)
+<span class="k">const</span> fs = <span class="f">require</span>(<span class="s">'fs'</span>)
+<span class="k">const</span> service = <span class="f">restana</span>({
+  server: https.<span class="f">createServer</span>({
+    key: fs.<span class="f">readFileSync</span>(<span class="s">'key.pem'</span>),
+    cert: fs.<span class="f">readFileSync</span>(<span class="s">'cert.pem'</span>)
+  })
+})
+service.<span class="f">start</span>(<span class="n">443</span>)</code></pre>
+      </div>
+
+      <div class="example-card">
+        <span class="ex-title">custom-404.js</span>
+        <pre><code><span class="k">const</span> service = <span class="f">restana</span>({
+  defaultRoute(req, res) {
+    res.statusCode = <span class="n">404</span>
+    res.<span class="f">send</span>({ path: req.url, error: <span class="s">'Not Found'</span> })
+  }
+})</code></pre>
+      </div>
+
+      <div class="example-card">
+        <span class="ex-title">disable-cache.js</span>
+        <pre><code><span class="k">const</span> service = <span class="f">restana</span>({
+  routerCacheSize: <span class="n">0</span>  <span class="c">// disable LRU cache</span>
+})
+<span class="c">// Or: unlimited cache (useful for many static routes)</span>
+<span class="c">// routerCacheSize: -1</span></code></pre>
+      </div>
+
+      <div class="example-card">
+        <span class="ex-title">enable-trace-debug.js</span>
+        <pre><code><span class="k">const</span> service = <span class="f">restana</span>({
+  enableTrace: <span class="k">true</span>
+})
+service.<span class="f">trace</span>(<span class="s">'/debug'</span>, (req, res) => {
+  res.<span class="f">send</span>(<span class="s">'Echo: '</span> + req.url)
+})
+<span class="c">// ⚠️ Not recommended in production</span></code></pre>
+      </div>
+
+      <div class="example-card">
+        <span class="ex-title">disable-security-headers.js</span>
+        <pre><code><span class="k">const</span> service = <span class="f">restana</span>({
+  securityHeaders: <span class="k">false</span>
+})
+<span class="c">// Use when you manage headers yourself</span>
+<span class="c">// (e.g. with Helmet or for non-browser clients)</span></code></pre>
+      </div>
+
+    </div>
   </div>
 </section>
 
