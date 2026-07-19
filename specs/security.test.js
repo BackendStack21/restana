@@ -310,4 +310,108 @@ describe('Security Fixes', () => {
       await service.close()
     })
   })
+
+  describe('SEC-005: Out-of-range error status codes fall back to 500', () => {
+    let server
+    const service = require('../index')({
+      errorHandler (err, req, res) {
+        res.send(err)
+      }
+    })
+
+    service.get('/hello', (req, res) => {
+      res.send('world')
+    })
+
+    service.get('/error-code-99', (req, res) => {
+      const err = new Error('Low code')
+      err.code = 99
+      throw err
+    })
+
+    service.get('/error-status-huge', (req, res) => {
+      const err = new Error('Huge status')
+      err.status = 12345
+      throw err
+    })
+
+    service.get('/error-float-code', (req, res) => {
+      const err = new Error('Float code')
+      err.code = 200.5
+      throw err
+    })
+
+    it('should start service', async () => {
+      server = await service.start(~~process.env.PORT)
+    })
+
+    it('should return 500 instead of crashing when err.code is out of range', async () => {
+      await request(server)
+        .get('/error-code-99')
+        .expect(500)
+        .then((response) => {
+          expect(response.body.code).to.equal(500)
+        })
+    })
+
+    it('should return 500 instead of crashing when err.status exceeds 999', async () => {
+      await request(server)
+        .get('/error-status-huge')
+        .expect(500)
+        .then((response) => {
+          expect(response.body.code).to.equal(500)
+        })
+    })
+
+    it('should return 500 instead of crashing when err.code is not an integer', async () => {
+      await request(server)
+        .get('/error-float-code')
+        .expect(500)
+        .then((response) => {
+          expect(response.body.code).to.equal(500)
+        })
+    })
+
+    it('server should still be alive and responsive after out-of-range errors', async () => {
+      await request(server)
+        .get('/hello')
+        .expect(200)
+        .then((response) => {
+          expect(response.text).to.equal('world')
+        })
+    })
+
+    it('should successfully terminate the service', async () => {
+      await service.close()
+    })
+  })
+
+  describe('SEC-005b: Default error handler also survives out-of-range codes', () => {
+    let server
+    const service = require('../index')()
+
+    service.get('/error-bad-code', (req, res) => {
+      const err = new Error('boom')
+      err.code = 99
+      throw err
+    })
+
+    it('should start service', async () => {
+      server = await service.start(~~process.env.PORT)
+    })
+
+    it('should return 500 with generic message and keep the process alive', async () => {
+      await request(server)
+        .get('/error-bad-code')
+        .expect(500)
+        .then((response) => {
+          expect(response.body.code).to.equal(500)
+          expect(response.body.message).to.equal('Internal Server Error')
+        })
+    })
+
+    it('should successfully terminate the service', async () => {
+      await service.close()
+    })
+  })
 })

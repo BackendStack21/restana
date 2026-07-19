@@ -1,5 +1,18 @@
 'use strict'
 
+/**
+ * Coerces a value into a valid HTTP status code.
+ * Returns the fallback when the value is not an integer in the 100-999 range,
+ * preventing `RangeError: Invalid status code` crashes on res.statusCode.
+ *
+ * @param {*} code
+ * @param {number} [fallback=500]
+ * @returns {number}
+ */
+module.exports.toHttpStatusCode = (code, fallback = 500) => {
+  return Number.isInteger(code) && code >= 100 && code <= 999 ? code : fallback
+}
+
 module.exports.forEachObject = (obj, cb) => {
   const keys = Object.keys(obj)
   const length = keys.length
