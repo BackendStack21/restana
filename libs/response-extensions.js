@@ -1,6 +1,6 @@
 'use strict'
 
-const { forEachObject } = require('./utils')
+const { forEachObject, toHttpStatusCode } = require('./utils')
 
 const CONTENT_TYPE_HEADER = 'content-type'
 const TYPE_JSON = 'application/json; charset=utf-8'
@@ -32,14 +32,13 @@ const beforeEnd = (res, contentType, statusCode, data) => {
   if (contentType) {
     res.setHeader(CONTENT_TYPE_HEADER, contentType)
   }
-  res.statusCode = statusCode
+  res.statusCode = toHttpStatusCode(statusCode, res.statusCode)
 }
 
 const isProduction = () => process.env.NODE_ENV === 'production'
 
 const parseErr = error => {
-  const errorCode = error.status || error.code || error.statusCode
-  const statusCode = typeof errorCode === 'number' ? errorCode : 500
+  const statusCode = toHttpStatusCode(error.status || error.code || error.statusCode)
 
   if (isProduction()) {
     return {

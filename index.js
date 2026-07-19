@@ -8,7 +8,7 @@
 
 const requestRouter = require('./libs/request-router')
 const applySecurityHeaders = require('./libs/security-headers')
-const { deepFreezeObject } = require('./libs/utils')
+const { deepFreezeObject, toHttpStatusCode } = require('./libs/utils')
 const exts = {
   request: {},
   response: require('./libs/response-extensions')
@@ -18,9 +18,7 @@ module.exports = (options = {}) => {
   options.errorHandler =
     options.errorHandler ||
     ((err, req, res) => {
-      const statusCode = typeof (err.status || err.code || err.statusCode) === 'number'
-        ? (err.status || err.code || err.statusCode)
-        : 500
+      const statusCode = toHttpStatusCode(err.status || err.code || err.statusCode)
       res.send({ code: statusCode, message: 'Internal Server Error' }, statusCode)
     })
 
