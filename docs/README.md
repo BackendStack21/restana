@@ -506,7 +506,6 @@ Changed:
 - Configuration snapshots recursively clone and freeze arrays and support circular plain objects.
 - Forwarded protocol headers are ignored unless `trustProxy: true` is configured.
 - Connection-specific, proxy-authentication, upgrade, and cookie headers are blocked from the `res.send()` header map.
-- Cached route parameters are isolated between requests.
 
 Removed:
 - The obsolete `disableResponseEvent` example and install-time survey.

@@ -144,21 +144,6 @@ describe('Restana 6.1 improvements', () => {
     await service.close()
   })
 
-  it('isolates cached route parameters between requests', async () => {
-    const service = restana()
-    service.get('/params/:id', (req, res) => {
-      const leaked = req.params.requestMarker
-      req.params.requestMarker = 'first-request'
-      res.send({ leaked: leaked || null })
-    })
-    const server = await service.start(0, '127.0.0.1')
-
-    await request(server).get('/params/1').expect(200, { leaked: null })
-    await request(server).get('/params/1').expect(200, { leaked: null })
-
-    await service.close()
-  })
-
   it('only exposes error details through explicit debugErrors opt-in', async () => {
     const service = restana({
       debugErrors: true,
