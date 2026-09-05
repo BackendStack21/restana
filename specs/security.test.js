@@ -302,7 +302,7 @@ describe('Security Fixes', () => {
         .get('/promise-rejected')
         .expect(503)
         .then((response) => {
-          expect(response.body.message).to.equal('Rejected')
+          expect(response.body.message).to.equal('Service Unavailable')
           expect(response.body.code).to.equal(503)
         })
     })

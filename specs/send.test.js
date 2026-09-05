@@ -75,7 +75,7 @@ describe('All Responses', () => {
     res.send(Promise.reject(error))
   })
 
-  service.get('/invalid-body', (req, res) => {
+  service.get('/boolean-body', (req, res) => {
     res.body = true
     res.setHeader('content-type', 'text/plain; charset=utf-8')
     res.send()
@@ -187,10 +187,12 @@ describe('All Responses', () => {
       .expect('content-type', 'application/json; charset=utf-8')
   })
 
-  it('should GET 500 and buffer content on /invalid-body', async () => {
+  it('should GET a JSON boolean from res.body', async () => {
     await request(server)
-      .get('/invalid-body')
-      .expect(500)
+      .get('/boolean-body')
+      .expect(200)
+      .expect('content-type', 'application/json; charset=utf-8')
+      .expect('true')
   })
 
   it('should GET 501 and json content on /error', async () => {
