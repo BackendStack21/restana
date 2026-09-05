@@ -26,6 +26,14 @@ module.exports = (options, service = {}) => {
     })
   })
 
+  // Cached route matches must never share their params object across requests.
+  // Initializing the request-owned target makes 0http copy cached params into it.
+  const lookup = router.lookup.bind(router)
+  router.lookup = (req, ...args) => {
+    req.params ||= Object.create(null)
+    return lookup(req, ...args)
+  }
+
   // attach router id
   service.id = router.id
 

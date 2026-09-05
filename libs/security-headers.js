@@ -1,5 +1,12 @@
 'use strict'
 
+const isForwardedHttps = (value) => {
+  if (value === 'https' || value.startsWith('https,')) return true
+  const comma = value.indexOf(',')
+  const first = comma < 0 ? value : value.slice(0, comma)
+  return first.trim().toLowerCase() === 'https'
+}
+
 /**
  * Applies default security headers to the response, if not already set.
  * Headers can be overridden by the application via res.setHeader().
@@ -24,8 +31,7 @@ module.exports = (options, req, res) => {
   const isTLS = req.socket && req.socket.encrypted
   const trustProxy = options.trustProxy === true
   const forwardedProto = trustProxy && req.headers && req.headers['x-forwarded-proto']
-  const isForwardedTLS = typeof forwardedProto === 'string' &&
-    forwardedProto.split(',', 1)[0].trim().toLowerCase() === 'https'
+  const isForwardedTLS = typeof forwardedProto === 'string' && isForwardedHttps(forwardedProto)
 
   if (isTLS || isForwardedTLS) {
     if (!res.getHeader('strict-transport-security')) {

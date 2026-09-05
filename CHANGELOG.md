@@ -14,7 +14,7 @@
 - Configuration snapshots clone and freeze nested arrays and circular plain objects.
 - Stream failures use the configured error handler when a response can still be sent.
 - Forwarded protocol headers require explicit proxy trust.
-- Updated the router to `0http` 5 and refreshed development tooling.
+- Cached route parameters are isolated between requests while preserving the existing router line's performance characteristics.
 
 ### Removed
 - Obsolete `disableResponseEvent` references.

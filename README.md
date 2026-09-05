@@ -82,7 +82,7 @@ Error details are hidden by default in every environment. For local debugging on
 - Isolated, deeply frozen configuration snapshots.
 - Boolean response bodies and array-valued headers.
 - Correct `routerCacheSize: 0` behavior.
-- Updated TypeScript API, reproducible installs, and `0http` 5.
+- Updated TypeScript API, reproducible installs, and route-scaling benchmarks.
 - Expanded security and performance regression coverage.
 
 # More

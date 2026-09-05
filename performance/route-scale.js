@@ -4,6 +4,8 @@ const restana = require('../index')
 
 const ROUTES = 1000
 const LOOKUPS = 10000
+const SAMPLES = 5
+const paths = Array.from({ length: ROUTES }, (_, index) => `/route/${index}`)
 
 function buildService (routerCacheSize) {
   const service = restana({ prioRequestsProcessing: false, routerCacheSize })
@@ -13,7 +15,7 @@ function buildService (routerCacheSize) {
   return service
 }
 
-function run (name, service, pathAt) {
+function sample (service) {
   const router = service.getRouter()
   const response = {
     end () {},
@@ -24,13 +26,24 @@ function run (name, service, pathAt) {
   for (let index = 0; index < LOOKUPS; index++) {
     router.lookup({
       method: 'GET',
-      url: pathAt(index)
+      url: paths[index % ROUTES]
     }, response)
   }
 
-  const elapsed = Number(process.hrtime.bigint() - start) / 1e6
-  console.log(`${name}: ${LOOKUPS} lookups across ${ROUTES} routes in ${elapsed.toFixed(2)}ms`)
+  return Number(process.hrtime.bigint() - start) / 1e6
 }
 
-run('uncached', buildService(0), index => `/route/${index % ROUTES}`)
-run('warm-cache', buildService(ROUTES), () => '/route/999')
+function run (name, routerCacheSize) {
+  const service = buildService(routerCacheSize)
+
+  // Warm the JIT and, for the cached case, every path under test.
+  sample(service)
+  const samples = Array.from({ length: SAMPLES }, () => sample(service)).sort((a, b) => a - b)
+  const median = samples[Math.floor(samples.length / 2)]
+  const operationsPerSecond = Math.round(LOOKUPS / (median / 1000))
+
+  console.log(`${name}: median ${median.toFixed(2)}ms (${operationsPerSecond.toLocaleString()} lookups/sec)`)
+}
+
+run('uncached', 0)
+run('warm-cache', ROUTES)

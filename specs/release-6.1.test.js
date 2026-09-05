@@ -4,6 +4,7 @@
 const expect = require('chai').expect
 const http = require('http')
 const request = require('supertest')
+const stream = require('stream')
 const restana = require('../index')
 
 describe('Restana 6.1 improvements', () => {
@@ -57,6 +58,36 @@ describe('Restana 6.1 improvements', () => {
     await service.close()
   })
 
+  it('rejects injection in array-valued response headers', async () => {
+    const service = restana()
+    service.get('/', (req, res) => {
+      res.send('ok', 200, { vary: ['accept', 'origin\r\nx-injected: true'] })
+    })
+    const server = await service.start(0, '127.0.0.1')
+    const response = await request(server).get('/').expect(200, 'ok')
+
+    expect(response.headers.vary).to.equal(undefined)
+    expect(response.headers['x-injected']).to.equal(undefined)
+    await service.close()
+  })
+
+  it('masks an early stream failure through the default error handler', async () => {
+    const service = restana()
+    service.get('/', (req, res) => {
+      res.send(new stream.Readable({
+        read () {
+          this.destroy(new Error('sensitive stream failure'))
+        }
+      }))
+    })
+    const server = await service.start(0, '127.0.0.1')
+    const response = await request(server).get('/').expect(500)
+
+    expect(response.body.message).to.equal('Internal Server Error')
+    expect(JSON.stringify(response.body)).to.not.include('sensitive stream failure')
+    await service.close()
+  })
+
   it('only trusts x-forwarded-proto when trustProxy is enabled', async () => {
     const direct = restana()
     direct.get('/', (req, res) => res.send('ok'))
@@ -102,6 +133,21 @@ describe('Restana 6.1 improvements', () => {
     await request(server).get('/late').expect(404)
     service.get('/late', (req, res) => res.send('registered'))
     await request(server).get('/late').expect(200, 'registered')
+
+    await service.close()
+  })
+
+  it('isolates cached route parameters between requests', async () => {
+    const service = restana()
+    service.get('/params/:id', (req, res) => {
+      const leaked = req.params.requestMarker
+      req.params.requestMarker = 'first-request'
+      res.send({ leaked: leaked || null })
+    })
+    const server = await service.start(0, '127.0.0.1')
+
+    await request(server).get('/params/1').expect(200, { leaked: null })
+    await request(server).get('/params/1').expect(200, { leaked: null })
 
     await service.close()
   })
