@@ -3,7 +3,7 @@
 [![NPM Total Downloads](https://badgen.net/npm/dt/restana)](https://www.npmjs.com/package/restana)
 [![License](https://badgen.net/npm/license/restana)](https://www.npmjs.com/package/restana)
 [![TypeScript support](https://badgen.net/npm/types/restana)](https://www.npmjs.com/package/restana)
-[![Github stars](https://badgen.net/github/stars/jkyberneees/restana?icon=github)](https://github.com/jkyberneees/restana)
+[![Github stars](https://badgen.net/github/stars/BackendStack21/restana?icon=github)](https://github.com/BackendStack21/restana)
 
 <img src="restana-logo.svg" width="400">  
 
@@ -34,7 +34,7 @@ Install
 ```bash
 npm i restana
 ```
-Create unsecure API service:
+Create an HTTP API service:
 ```js
 const restana = require('restana')
 
@@ -84,12 +84,14 @@ Optionally, learn through examples:
 - `routerCacheSize`: The router matching cache size, indicates how many request matches will be kept in memory. Default value: `2000`
 - `enableTrace`: When `TRUE`, the `TRACE` HTTP method handler is available for debugging purposes. Default value: `FALSE`. ⚠️ Not recommended for production deployments.
 - `securityHeaders`: When `TRUE`, default security headers are set on every response. Set to `FALSE` to disable (e.g. when using Helmet or serving non-browser clients). Default value: `TRUE`.
+- `trustProxy`: When `TRUE`, trust the first `X-Forwarded-Proto` value when deciding whether to send HSTS. Only enable this behind a reverse proxy that replaces forwarded headers. Default value: `FALSE`.
+- `debugErrors`: When `TRUE`, `res.send(error)` includes `error.message` and `error.data` outside production. Use only for local debugging. Default value: `FALSE`.
 
 ### Security defaults (v6.0+)
 Restana now ships with these security hardening measures enabled by default:
 - **Header injection protection**: Security-sensitive and hop-by-hop headers are blocked from the `res.send()` headers parameter.
-- **Production error masking**: In `NODE_ENV=production`, `res.send(err)` masks the error message and strips `err.data` to prevent internal details from leaking.
-- **Default security headers**: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `X-XSS-Protection: 0`, and `Strict-Transport-Security` (on HTTPS) are set on every response. Disable with `securityHeaders: false`.
+- **Error masking**: `res.send(err)` masks the error message and strips `err.data` by default. Local development can opt in with `debugErrors: true`; production always masks details.
+- **Default security headers**: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `X-XSS-Protection: 0`, and `Strict-Transport-Security` (on direct HTTPS or a trusted HTTPS proxy) are set on responses. Disable with `securityHeaders: false`.
 - **TRACE method disabled by default**: Eliminates Cross-Site Tracing attack surface. Re-enable for debugging via `enableTrace: true` (not recommended in production).
 - **Deep frozen config**: `getConfigOptions()` now freezes nested plain objects, not just the top-level copy.
 
@@ -155,7 +157,7 @@ service.close().then(()=> {})
 ```js
 const opts = service.getConfigOptions()
 ```
-> `getConfigOptions()` returns a frozen copy of the configuration options. Top-level properties and nested plain objects are frozen, preventing third-party middleware from accidentally or maliciously modifying internal framework options at runtime. The `server` reference is a live object and is excluded from deep freezing.
+> `getConfigOptions()` returns an isolated configuration snapshot. Plain objects and arrays are recursively cloned and frozen, preventing third-party middleware from modifying internal framework options. The `server` and other custom class instances remain live references and should not contain secrets.
 
 ## Async / Await support
 ```js
@@ -170,7 +172,8 @@ service.post('/star/:username', async (req, res) => {
 ## Sending custom headers
 ```js
 res.send('Hello World', 200, {
-  'x-response-time': 100
+  'x-response-time': 100,
+  vary: ['accept', 'origin']
 })
 ```
 > ⚠️ Security-sensitive and hop-by-hop headers are blocked from the `headers` parameter for security reasons:
@@ -188,6 +191,8 @@ Supported datatypes are:
 - Object
 - Stream (errors on the stream are handled gracefully, terminating the response instead of leaving the connection hanging)
 - Promise (recursive promise resolution is capped at a depth of 3 to prevent event loop starvation)
+
+Boolean payloads are serialized as JSON. A number passed as the first argument remains the shorthand for an HTTP status code.
 
 Example usage:
 ```js
@@ -230,7 +235,7 @@ service.get('/throw', (req, res) => {
   throw new Error('Upps!')
 })
 ```
-> **Note:** When using `res.send(err)` in a custom error handler, the error's `message` and `data` properties will be serialized and sent to the client (in non-production environments). In `NODE_ENV=production`, `res.send(err)` masks the error message and strips `err.data` to prevent internal details from leaking.
+> **Note:** `res.send(err)` masks the error's `message` and `data` by default. Set `debugErrors: true` only for local development when detailed responses are required. Production mode always masks details.
 ### errorHandler not being called?
 > Issue: https://github.com/jkyberneees/ana/issues/81  
 
@@ -378,7 +383,7 @@ service.get('/hello', (req, res) => {
 })
 
 // lambda integration
-const handler = serverless(app);
+const handler = serverless(service)
 module.exports.handler = async (event, context) => {
   return await handler(event, context)
 }
@@ -401,7 +406,7 @@ service.get('/hello', (req, res) => {
 })
 
 // lambda integration
-exports = module.exports = functions.https.onRequest(app.callback());
+exports = module.exports = functions.https.onRequest(service.callback())
 ```
 
 ## Serving static files
@@ -484,6 +489,29 @@ service.get('/hello', (req, res) => {
 https://goo.gl/forms/qlBwrf5raqfQwteH3
 
 # Breaking changes
+## 6.1
+> Restana 6.1 improves lifecycle reliability, secure defaults, performance tooling, and TypeScript support.
+
+Added:
+- `trustProxy` explicitly enables forwarded-protocol handling for HSTS.
+- `debugErrors` explicitly enables detailed local error responses.
+- TypeScript coverage for lifecycle, events, callback integration, and TRACE opt-in.
+- Reproducible installs and performance smoke checks in CI.
+
+Changed:
+- `start()` now rejects on listen errors such as `EADDRINUSE`.
+- Error details are masked by default in every environment and remain masked in production.
+- Boolean response bodies are serialized as JSON; array-valued response headers are supported.
+- `routerCacheSize: 0` now correctly disables route caching.
+- Configuration snapshots recursively clone and freeze arrays and support circular plain objects.
+- Forwarded protocol headers are ignored unless `trustProxy: true` is configured.
+- Connection-specific, proxy-authentication, upgrade, and cookie headers are blocked from the `res.send()` header map.
+- The router dependency is updated to `0http` 5.
+
+Removed:
+- The obsolete `disableResponseEvent` example and install-time survey.
+- Legacy Travis CI configuration and the broken low-level performance demo.
+
 ## 6.0
 > Restana version 6.0 focuses on security hardening and reducing attack surface.
 
