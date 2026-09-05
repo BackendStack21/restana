@@ -18,7 +18,7 @@ describe('Buffer Responses', () => {
   service.use('/v1', nestedRouter)
 
   it('should start service', async () => {
-    server = await service.start(~~process.env.PORT)
+    server = await service.start(0, '127.0.0.1')
   })
 
   it('should hit GET /v1/hello on nested router', async () => {

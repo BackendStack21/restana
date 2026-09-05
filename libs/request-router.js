@@ -20,7 +20,7 @@ module.exports = (options, service = {}) => {
 
   const router = sequential({
     errorHandler: options.errorHandler,
-    cacheSize: options.routerCacheSize || 2000,
+    cacheSize: options.routerCacheSize ?? 2000,
     defaultRoute: options.defaultRoute || ((req, res) => {
       res.send(404)
     })

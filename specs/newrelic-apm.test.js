@@ -5,7 +5,7 @@ const expect = require('chai').expect
 const request = require('supertest')
 const newrelicApm = require('../libs/newrelic-apm')
 
-describe('Elastic APM Instrumentation', () => {
+describe('New Relic APM Instrumentation', () => {
   let server
   let pattern = null
 
@@ -35,7 +35,7 @@ describe('Elastic APM Instrumentation', () => {
   })
 
   it('should start service', async () => {
-    server = await service.start(~~process.env.PORT)
+    server = await service.start(0, '127.0.0.1')
   })
 
   it('should set transaction name = route pattern (/hello)', async () => {

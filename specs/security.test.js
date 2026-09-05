@@ -46,7 +46,7 @@ describe('Security Fixes', () => {
     })
 
     it('should start service', async () => {
-      server = await service.start(~~process.env.PORT)
+      server = await service.start(0, '127.0.0.1')
     })
 
     it('should NOT leak internal error messages in default handler', async () => {
@@ -120,6 +120,7 @@ describe('Security Fixes', () => {
     let server
     let capturedError = null
     const service = require('../index')({
+      debugErrors: true,
       errorHandler (err, req, res) {
         capturedError = err
         res.send(err)
@@ -134,7 +135,7 @@ describe('Security Fixes', () => {
     })
 
     it('should start service with custom error handler', async () => {
-      server = await service.start(~~process.env.PORT)
+      server = await service.start(0, '127.0.0.1')
     })
 
     it('should pass full error to custom handler and allow sending details (backward compat)', async () => {
@@ -182,7 +183,7 @@ describe('Security Fixes', () => {
     })
 
     it('should start service', async () => {
-      server = await service.start(~~process.env.PORT)
+      server = await service.start(0, '127.0.0.1')
     })
 
     it('should handle stream errors gracefully without hanging', async () => {
@@ -266,7 +267,7 @@ describe('Security Fixes', () => {
     })
 
     it('should start service', async () => {
-      server = await service.start(~~process.env.PORT)
+      server = await service.start(0, '127.0.0.1')
     })
 
     it('should resolve simple promises normally', async () => {
@@ -342,7 +343,7 @@ describe('Security Fixes', () => {
     })
 
     it('should start service', async () => {
-      server = await service.start(~~process.env.PORT)
+      server = await service.start(0, '127.0.0.1')
     })
 
     it('should return 500 instead of crashing when err.code is out of range', async () => {
@@ -397,7 +398,7 @@ describe('Security Fixes', () => {
     })
 
     it('should start service', async () => {
-      server = await service.start(~~process.env.PORT)
+      server = await service.start(0, '127.0.0.1')
     })
 
     it('should return 500 with generic message and keep the process alive', async () => {

@@ -8,7 +8,7 @@ const stream = require('stream')
 
 describe('All Responses', () => {
   let server
-  const service = require('../index')()
+  const service = require('../index')({ debugErrors: true })
 
   service.get('/string', (req, res) => {
     res.send('Hello World!')
@@ -88,7 +88,7 @@ describe('All Responses', () => {
   })
 
   it('should start service', async () => {
-    server = await service.start(~~process.env.PORT)
+    server = await service.start(0, '127.0.0.1')
   })
 
   it('should GET 200 and string content on /string', async () => {

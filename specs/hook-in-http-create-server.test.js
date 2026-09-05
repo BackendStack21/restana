@@ -14,7 +14,7 @@ describe('http.createServer()', () => {
 
   it('should start service', async () => {
     server = http.createServer(service)
-    server.listen(~~process.env.PORT, '0.0.0.0', () => {})
+    server.listen(0, '127.0.0.1', () => {})
   })
 
   it('should GET 200 and string content on /string', async () => {
