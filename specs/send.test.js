@@ -187,11 +187,11 @@ describe('All Responses', () => {
       .expect('content-type', 'application/json; charset=utf-8')
   })
 
-  it('should GET a JSON boolean from res.body', async () => {
+  it('should GET a boolean from res.body with an explicit content type', async () => {
     await request(server)
       .get('/boolean-body')
       .expect(200)
-      .expect('content-type', 'application/json; charset=utf-8')
+      .expect('content-type', 'text/plain; charset=utf-8')
       .expect('true')
   })
 
