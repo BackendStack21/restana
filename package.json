@@ -1,18 +1,21 @@
 {
   "name": "restana",
-  "version": "v6.0.1",
+  "version": "6.1.0",
   "description": "Super fast and minimalist web framework for building REST micro-services.",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "lint": "npx standard",
-    "format": "npx standard --fix",
-    "test": "cross-env PORT=3000 NODE_ENV=testing npx nyc --check-coverage --lines 95 node ./node_modules/mocha/bin/mocha specs/*.test.js",
-    "postinstall": "node ./libs/tasks/postinstall.js"
+    "lint": "standard",
+    "format": "standard --fix",
+    "test": "cross-env NODE_ENV=testing nyc --check-coverage --lines 95 mocha specs/*.test.js",
+    "test:types": "tsc",
+    "check": "npm run lint && npm run test:types && npm test",
+    "bench": "node performance/suites/res-send.js && node performance/suites/res-send-promise.js && node performance/route-scale.js",
+    "bench:ci": "node performance/suites/res-send-string.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jkyberneees/restana.git"
+    "url": "git+https://github.com/BackendStack21/restana.git"
   },
   "keywords": [
     "rest",
@@ -27,24 +30,25 @@
   "author": "Rolando Santamaria Maso <kyberneees@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jkyberneees/restana/issues"
+    "url": "https://github.com/BackendStack21/restana/issues"
   },
   "files": [
-    "LICENSE.md",
+    "LICENSE",
     "README.md",
     "index.js",
     "index.d.ts",
     "libs/"
   ],
-  "homepage": "https://github.com/jkyberneees/restana#readme",
+  "homepage": "https://github.com/BackendStack21/restana#readme",
   "dependencies": {
-    "0http": "^4.4.0"
+    "0http": "^5.1.0"
   },
   "overrides": {
     "diff": "9.0.0",
     "serialize-javascript": "7.0.5"
   },
   "devDependencies": {
+    "@types/node": "^26.4.1",
     "benchmark": "^2.1.4",
     "body-parser": "^2.2.2",
     "chai": "^6.2.2",
@@ -55,7 +59,7 @@
     "microtime": "^3.1.1",
     "mocha": "^11.7.5",
     "morgan": "^1.10.1",
-    "nyc": "^17.1.0",
+    "nyc": "^18.0.0",
     "openapi-validator-middleware": "^3.2.6",
     "pem": "^1.14.8",
     "response-time": "^2.3.4",
@@ -63,7 +67,9 @@
     "serve-static": "^2.2.1",
     "socket.io": "^4.8.3",
     "socket.io-client": "^4.8.3",
+    "standard": "^17.1.2",
     "supertest": "^7.2.2",
+    "typescript": "^7.0.2",
     "winston": "^3.19.0"
   }
 }

@@ -9,6 +9,7 @@ const extensions = require('../../libs/response-extensions')
 const send = extensions.send({}, {}, {
   statusCode: 200,
   end () {},
+  once () {},
   setHeader () {},
   getHeader () {}
 })
@@ -17,7 +18,8 @@ const buffer = Buffer.from('Hello World!')
 const json = { msg: 'Hello World' }
 const stream = {
   pipe () {},
-  on () {}
+  once () {},
+  unpipe () {}
 }
 const headers = {
   'content-type': 'text/plain',

@@ -1,12 +1,16 @@
 name: tests
 on: [push, pull_request]
 
+permissions:
+  contents: read
+
 jobs:
   testing:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     strategy:
       matrix:
-        node-version: [24.x]
+        node-version: [24.x, 26.x]
     steps:
       - uses: actions/checkout@v4
       - name: Setup Environment (Using NodeJS ${{ matrix.node-version }})
@@ -15,10 +19,19 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Linting
-        run: npx standard
+        run: npm run lint
+
+      - name: Check TypeScript declarations
+        run: npm run test:types
 
       - name: Run tests
         run: npm run test
+
+      - name: Run performance smoke test
+        run: npm run bench:ci
+
+      - name: Audit production dependencies
+        run: npm audit --omit=dev
