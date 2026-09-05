@@ -1,10 +1,10 @@
 import {
   Server as HttpServer,
   IncomingMessage,
-  ServerResponse,
-  ListenOptions
+  ServerResponse
 } from 'http'
 import { Server as HttpsServer } from 'https'
+import { ListenOptions } from 'net'
 import {
   Http2Server,
   Http2SecureServer,
@@ -98,8 +98,8 @@ declare namespace restana {
   ) => void | Promise<unknown>
 
   type RequestListener<P extends Protocol> = (
-    req: Request<P>,
-    res: Response<P>
+    req: P extends Protocol.HTTP2 ? Http2ServerRequest : IncomingMessage,
+    res: P extends Protocol.HTTP2 ? Http2ServerResponse : ServerResponse
   ) => void
 
   interface HttpError extends Error {
