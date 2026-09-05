@@ -108,6 +108,13 @@ describe('Restana 6.1 improvements', () => {
       .expect(200)
     expect(proxiedResponse.headers['strict-transport-security'])
       .to.equal('max-age=15552000; includeSubDomains')
+
+    const normalizedResponse = await request(proxiedServer)
+      .get('/')
+      .set('x-forwarded-proto', 'HTTPS, http')
+      .expect(200)
+    expect(normalizedResponse.headers['strict-transport-security'])
+      .to.equal('max-age=15552000; includeSubDomains')
     await proxied.close()
   })
 
