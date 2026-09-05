@@ -32,7 +32,7 @@ describe('Express.js like routes handlers', () => {
   })
 
   it('should start the service', async () => {
-    server = await service.start(~~process.env.PORT)
+    server = await service.start(0, '127.0.0.1')
   })
 
   it('should GET 200 on /hello/:name', async () => {

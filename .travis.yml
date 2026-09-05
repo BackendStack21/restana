@@ -1,7 +1,0 @@
-language: node_js
-node_js:
-  - "24"
-
-script:
-  - npx standard
-  - npm run test

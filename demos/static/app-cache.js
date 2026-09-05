@@ -3,9 +3,7 @@
 const files = require('serve-static')
 const path = require('path')
 
-const app = require('../../index')({
-  disableResponseEvent: true
-})
+const app = require('../../index')()
 app.use(require('http-cache-middleware')())
 
 const serve = files(path.join(__dirname, 'src'), {

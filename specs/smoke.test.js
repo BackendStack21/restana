@@ -56,7 +56,7 @@ describe('Restana Web Framework - Smoke', () => {
 
     service.all('/sheet.css', (req, res) => res.send(200))
 
-    server = await service.start(~~process.env.PORT)
+    server = await service.start(0, '127.0.0.1')
   })
 
   it('routes should exist on service', async () => {

@@ -15,7 +15,7 @@ describe('Routes registration - method chaining', () => {
     .get('/chain', op200)
 
   it('should start service', async () => {
-    server = await service.start(~~process.env.PORT)
+    server = await service.start(0, '127.0.0.1')
   })
 
   it('should GET 200 for all registered routes', async () => {

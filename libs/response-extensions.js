@@ -19,7 +19,14 @@ const FORBIDDEN_HEADERS = new Set([
   'connection',
   'keep-alive',
   'host',
-  'set-cookie'
+  'proxy-authenticate',
+  'proxy-authorization',
+  'proxy-connection',
+  'set-cookie',
+  'set-cookie2',
+  'te',
+  'trailer',
+  'upgrade'
 ])
 
 const stringify = obj => {
@@ -37,10 +44,10 @@ const beforeEnd = (res, contentType, statusCode, data) => {
 
 const isProduction = () => process.env.NODE_ENV === 'production'
 
-const parseErr = error => {
+const parseErr = (options, error) => {
   const statusCode = toHttpStatusCode(error.status || error.code || error.statusCode)
 
-  if (isProduction()) {
+  if (!options.debugErrors || isProduction()) {
     return {
       statusCode,
       data: stringify({
@@ -71,7 +78,7 @@ module.exports.send = (options, req, res) => {
     let contentType
 
     if (data instanceof Error) {
-      const err = parseErr(data)
+      const err = parseErr(options, data)
       contentType = TYPE_JSON
       code = err.statusCode
       data = err.data
@@ -80,10 +87,6 @@ module.exports.send = (options, req, res) => {
         forEachObject(headers, (value, key) => {
           // Block forbidden headers (hop-by-hop, security-sensitive)
           if (typeof key !== 'string' || FORBIDDEN_HEADERS.has(key.toLowerCase())) {
-            return
-          }
-          // Sanitize array values — prevent header injection via arrays
-          if (Array.isArray(value)) {
             return
           }
           try {
@@ -102,11 +105,14 @@ module.exports.send = (options, req, res) => {
         data = res.body
       }
 
-      if (data) {
+      if (data !== undefined && data !== null) {
         if (typeof data === 'string') {
           if (!contentType) contentType = TYPE_PLAIN
+        } else if (typeof data === 'boolean') {
+          if (!contentType) contentType = TYPE_JSON
+          data = stringify(data)
         } else if (typeof data === 'object') {
-          if (data instanceof Buffer) {
+          if (Buffer.isBuffer(data)) {
             if (!contentType) contentType = TYPE_OCTET
           } else if (typeof data.pipe === 'function') {
             if (!contentType) contentType = TYPE_OCTET
@@ -114,21 +120,43 @@ module.exports.send = (options, req, res) => {
             // NOTE: we exceptionally handle the response termination for streams
             beforeEnd(res, contentType, code, data)
 
-            data.pipe(res)
-            data.on('end', cb)
-            data.on('error', () => {
-              res.end(cb)
+            let callbackCalled = false
+            const complete = (err) => {
+              if (callbackCalled) return
+              callbackCalled = true
+              cb(err)
+            }
+
+            data.once('error', (err) => {
+              data.unpipe(res)
+              if (!res.headersSent && !res.destroyed) {
+                res.removeHeader(CONTENT_TYPE_HEADER)
+                try {
+                  const result = options.errorHandler(err, req, res)
+                  if (result && typeof result.then === 'function') {
+                    result.catch(handlerError => res.destroy(handlerError))
+                  }
+                } catch (handlerError) {
+                  res.destroy(handlerError)
+                }
+              } else {
+                res.destroy(err)
+              }
+              complete(err)
             })
+            res.once('finish', complete)
+            res.once('close', complete)
+            data.pipe(res)
 
             return
-          } else if (Promise.resolve(data) === data) { // http://www.ecma-international.org/ecma-262/6.0/#sec-promise.resolve
+          } else if (typeof data.then === 'function') {
             if (_promiseDepth >= MAX_PROMISE_DEPTH) {
               data = stringify({ code: 500, message: 'Internal Server Error' })
               contentType = TYPE_JSON
               code = 500
             } else {
               headers = null
-              return data
+              return Promise.resolve(data)
                 .then(resolved => send(resolved, code, headers, cb, _promiseDepth + 1))
                 .catch(err => send(err, code, headers, cb, _promiseDepth + 1))
             }

@@ -199,6 +199,19 @@
     }
     .scroll-top.visible { opacity: 1; transform: translateY(0); }
     .scroll-top:hover { border-color: var(--accent); color: var(--accent); }
+    .skip-link {
+      position: fixed; left: 12px; top: -80px; z-index: 1000;
+      padding: 10px 14px; background: var(--bg-card); color: var(--text-primary);
+    }
+    .skip-link:focus { top: 12px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+    }
 
     /* ── Responsive ── */
     @media (max-width: 768px) {
@@ -212,6 +225,7 @@
   </style>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to content</a>
 
 <!-- Navigation -->
 <nav class="nav">
@@ -220,15 +234,17 @@
       <span>restana</span>
     </a>
     <div class="nav-links">
+      <a href="#release">v6.1</a>
       <a href="#features">Features</a>
       <a href="#security">Security</a>
       <a href="#examples">Examples</a>
-      <a href="https://github.com/BackendStack21/restana" target="_blank">GitHub</a>
+      <a href="https://github.com/BackendStack21/restana" target="_blank" rel="noopener noreferrer">GitHub</a>
       <a href="#install" class="nav-cta">Install</a>
     </div>
   </div>
 </nav>
 
+<main id="main-content">
 <!-- Hero -->
 <section class="hero">
   <div class="container">
@@ -240,14 +256,45 @@
     <p>Blazing fast, tiny, and secure-by-default. Express-inspired API with serverless support, nested routers, and zero bloat.</p>
     <div class="hero-actions">
       <a href="#install" class="btn btn-primary">Get Started</a>
-      <a href="https://github.com/BackendStack21/restana" target="_blank" class="btn btn-secondary">View on GitHub</a>
+      <a href="https://github.com/BackendStack21/restana" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">View on GitHub</a>
     </div>
     <div class="hero-stats">
       <div class="stat"><span class="num">7</span><div class="label">HTTP methods</div></div>
-      <div class="stat"><span class="num">v6.0</span><div class="label">latest</div></div>
+      <div class="stat"><span class="num">v6.1</span><div class="label">latest</div></div>
       <div class="stat"><span class="num">Node 24+</span><div class="label">runtime</div></div>
       <div class="stat"><span class="num">3</span><div class="label">dependencies</div></div>
       <div class="stat"><span class="num">TS</span><div class="label">types built-in</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Release -->
+<section id="release" class="section">
+  <div class="container">
+    <div class="section-label">Feature Release · v6.1</div>
+    <h2>Safer APIs, clearer operations</h2>
+    <p class="lead">Restana 6.1 strengthens production behavior without trading away routing performance.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="icon" aria-hidden="true">✓</span>
+        <h3>Reliable lifecycle</h3>
+        <p><code>service.start()</code> now rejects cleanly on socket and port conflicts, making startup failures observable and recoverable.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon" aria-hidden="true">🔐</span>
+        <h3>Explicit trust</h3>
+        <p>Error details are opt-in for local debugging, while forwarded TLS headers require an explicitly trusted proxy.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon" aria-hidden="true">⚙</span>
+        <h3>Stronger API contracts</h3>
+        <p>Boolean bodies, array-valued headers, cache disabling, and TypeScript declarations now match documented behavior.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon" aria-hidden="true">↗</span>
+        <h3>Performance guarded</h3>
+        <p>Response and routing benchmarks now run with CI budgets, including a direct router-integration overhead check.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -267,7 +314,7 @@
       <div class="feature-card">
         <span class="icon">🛡</span>
         <h3>Secure by Default</h3>
-        <p>Production error masking, header injection protection, security headers, TRACE disabled, and deep-frozen config — all on by default.</p>
+        <p>Default error masking, header injection protection, security headers, TRACE disabled, and isolated config snapshots — all on by default.</p>
       </div>
       <div class="feature-card">
         <span class="icon">🔗</span>
@@ -298,13 +345,13 @@
   <div class="container">
     <div class="section-label">Security</div>
     <h2>Safe Out of the Box</h2>
-    <p class="lead">restana v6.0 ships with hardened security defaults. No extra packages needed.</p>
+    <p class="lead">restana v6.1 ships with hardened security defaults. No extra packages needed.</p>
     <div class="security-list">
       <div class="security-item">
         <span class="sec-icon">🔒</span>
         <div>
-          <h4>Production Error Masking</h4>
-          <p>Default error handler returns generic <code>Internal Server Error</code>. In <code>NODE_ENV=production</code>, <code>res.send(err)</code> strips stack traces and internal details. Customize with your own <code>errorHandler</code>.</p>
+          <h4>Safe Error Masking</h4>
+          <p>Error details are hidden in every environment by default. Local development can explicitly opt in with <code>debugErrors: true</code>; production always masks details.</p>
         </div>
       </div>
       <div class="security-item">
@@ -318,7 +365,7 @@
         <span class="sec-icon">🛡</span>
         <div>
           <h4>Default Security Headers</h4>
-          <p>Every response gets <code>X-Content-Type-Options: nosniff</code>, <code>X-Frame-Options: DENY</code>, and <code>X-XSS-Protection: 0</code>. <code>Strict-Transport-Security</code> is set automatically on TLS connections. Disable with <code>securityHeaders: false</code>.</p>
+          <p>Every response gets <code>X-Content-Type-Options: nosniff</code>, <code>X-Frame-Options: DENY</code>, and <code>X-XSS-Protection: 0</code>. HSTS is set for direct TLS or explicitly trusted proxies.</p>
         </div>
       </div>
       <div class="security-item">
@@ -332,7 +379,7 @@
         <span class="sec-icon">❄️</span>
         <div>
           <h4>Immutable Configuration</h4>
-          <p><code>getConfigOptions()</code> returns a deep-frozen copy. Nested plain objects are frozen too — middleware can't mutate internal framework options at runtime.</p>
+          <p><code>getConfigOptions()</code> returns an isolated snapshot. Nested plain objects and arrays are cloned and frozen so middleware cannot mutate framework options.</p>
         </div>
       </div>
       <div class="security-item">
@@ -452,7 +499,8 @@ service.<span class="f">get</span>(<span class="s">'/admin'</span>, auth, (req, 
         <h3>2. The <code>res.send()</code> Method</h3>
         <p>One method handles every response type. No <code>res.json()</code>, <code>res.text()</code>, or <code>res.stream()</code> needed.</p>
         <ul>
-          <li><code>null</code> / <code>undefined</code> — empty 204</li>
+          <li><code>null</code> / <code>undefined</code> — empty response</li>
+          <li><code>Boolean</code> — application/json</li>
           <li><code>String</code> — text/plain</li>
           <li><code>Buffer</code> — application/octet-stream</li>
           <li><code>Object</code> — application/json</li>
@@ -495,10 +543,10 @@ service.<span class="f">get</span>(<span class="s">'/admin'</span>, auth, (req, 
     <div class="section-label">Install</div>
     <h2>Get Started</h2>
     <p class="lead">One command and you're running.</p>
-    <div class="install-box" onclick="copyInstall()">
+    <button type="button" class="install-box" onclick="copyInstall()" aria-label="Copy npm install command">
       <code><span class="prompt">$</span> npm install restana</code>
-      <span class="copied" id="copied-msg">Copied!</span>
-    </div>
+      <span class="copied" id="copied-msg" aria-live="polite">Copied!</span>
+    </button>
   </div>
 </section>
 
@@ -517,10 +565,12 @@ service.<span class="f">get</span>(<span class="s">'/admin'</span>, auth, (req, 
         <tr><td>server</td><td>Custom HTTP server instance</td><td>http.createServer()</td></tr>
         <tr><td>prioRequestsProcessing</td><td>Use setImmediate for priority processing</td><td>true</td></tr>
         <tr><td>defaultRoute</td><td>Handler for unmatched routes (404)</td><td>res.send(404)</td></tr>
-        <tr><td>errorHandler</td><td>Global error handler function</td><td>Safe-by-default (v6.0+)</td></tr>
+        <tr><td>errorHandler</td><td>Global error handler function</td><td>Safe by default</td></tr>
         <tr><td>routerCacheSize</td><td>Route match cache size</td><td>2000</td></tr>
         <tr><td>enableTrace</td><td>Enable TRACE HTTP method</td><td>false</td></tr>
         <tr><td>securityHeaders</td><td>Set default security headers on every response</td><td>true</td></tr>
+        <tr><td>trustProxy</td><td>Trust forwarded protocol for HSTS</td><td>false</td></tr>
+        <tr><td>debugErrors</td><td>Expose local error details (never in production)</td><td>false</td></tr>
       </tbody>
     </table>
 
@@ -531,7 +581,7 @@ service.<span class="f">get</span>(<span class="s">'/admin'</span>, auth, (req, 
         <pre><code><span class="k">const</span> service = <span class="f">restana</span>({
   errorHandler(err, req, res) {
     console.<span class="f">error</span>(<span class="s">`Error: ${err.message}`</span>)
-    res.<span class="f">send</span>({ error: err.message }, err.status || <span class="n">500</span>)
+    res.<span class="f">send</span>({ error: <span class="s">'Internal Server Error'</span> }, <span class="n">500</span>)
   }
 })</code></pre>
       </div>
@@ -588,6 +638,23 @@ service.<span class="f">trace</span>(<span class="s">'/debug'</span>, (req, res)
 <span class="c">// (e.g. with Helmet or for non-browser clients)</span></code></pre>
       </div>
 
+      <div class="example-card">
+        <span class="ex-title">trusted-reverse-proxy.js</span>
+        <pre><code><span class="k">const</span> service = <span class="f">restana</span>({
+  trustProxy: <span class="k">true</span>
+})
+<span class="c">// Enable only when your proxy replaces</span>
+<span class="c">// client-supplied forwarded headers.</span></code></pre>
+      </div>
+
+      <div class="example-card">
+        <span class="ex-title">local-error-debugging.js</span>
+        <pre><code><span class="k">const</span> service = <span class="f">restana</span>({
+  debugErrors: process.env.NODE_ENV === <span class="s">'development'</span>
+})
+<span class="c">// Production always masks error details.</span></code></pre>
+      </div>
+
     </div>
   </div>
 </section>
@@ -626,21 +693,22 @@ service.<span class="f">trace</span>(<span class="s">'/debug'</span>, (req, res)
     </div>
   </div>
 </section>
+</main>
 
 <!-- Footer -->
 <footer class="footer">
   <div class="container">
     <div class="social-links">
-      <a href="https://github.com/BackendStack21/restana" target="_blank">GitHub</a>
-      <a href="https://www.npmjs.com/package/restana" target="_blank">npm</a>
-      <a href="https://21no.de/" target="_blank">21no.de</a>
+      <a href="https://github.com/BackendStack21/restana" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://www.npmjs.com/package/restana" target="_blank" rel="noopener noreferrer">npm</a>
+      <a href="https://21no.de/" target="_blank" rel="noopener noreferrer">21no.de</a>
     </div>
     <p>Open source under the MIT License. © 2026 <a href="https://21no.de/">21no.de</a></p>
   </div>
 </footer>
 
 <!-- Scroll to top -->
-<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<button class="scroll-top" id="scrollTop" aria-label="Scroll to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script>
   // Scroll to top visibility
@@ -659,6 +727,8 @@ service.<span class="f">trace</span>(<span class="s">'/debug'</span>, (req, res)
   }
 
   // Fade-in animation on scroll
+  const animatedCards = document.querySelectorAll('.feature-card, .security-item, .capability-item, .example-card, .integration-card')
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -668,16 +738,18 @@ service.<span class="f">trace</span>(<span class="s">'/debug'</span>, (req, res)
     })
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' })
 
-  document.querySelectorAll('.feature-card, .security-item, .capability-item, .example-card, .integration-card').forEach(el => {
-    el.style.opacity = '0'
-    el.style.transform = 'translateY(20px)'
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease'
-    observer.observe(el)
-  })
+  if (!reduceMotion) {
+    animatedCards.forEach(el => {
+      el.style.opacity = '0'
+      el.style.transform = 'translateY(20px)'
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease'
+      observer.observe(el)
+    })
+  }
 
   // Trigger initial animation for visible elements
   setTimeout(() => {
-    document.querySelectorAll('.feature-card, .security-item, .capability-item, .example-card, .integration-card').forEach(el => {
+    animatedCards.forEach(el => {
       const rect = el.getBoundingClientRect()
       if (rect.top < window.innerHeight) {
         el.style.opacity = '1'

@@ -17,7 +17,7 @@ module.exports = (options) => {
             return next()
           })
 
-          return ref(path, args)
+          return ref(path, ...args)
         }
       })
     }

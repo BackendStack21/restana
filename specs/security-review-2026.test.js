@@ -8,9 +8,8 @@ const http = require('http')
 //
 //  Security Review — April 2026
 //
-//  These tests assert the DESIRED secure behavior. They fail against the current
-//  codebase because the corresponding vulnerabilities have not yet been fixed.
-//  Each test maps to a finding from the security audit.
+//  Regression tests for the secure defaults introduced by the 2026 review.
+//  Each test maps to a finding from that audit.
 //
 
 describe('Security Review — April 2026', () => {
@@ -31,7 +30,7 @@ describe('Security Review — April 2026', () => {
       })
 
       it('should start service', async () => {
-        server = await service.start(0)
+        server = await service.start(0, '127.0.0.1')
       })
 
       it('should NOT allow overriding transfer-encoding via headers param', async () => {
@@ -69,7 +68,7 @@ describe('Security Review — April 2026', () => {
       })
 
       it('should start service', async () => {
-        server = await service.start(0)
+        server = await service.start(0, '127.0.0.1')
       })
 
       it('should NOT allow arbitrary set-cookie injection via headers param', async () => {
@@ -107,7 +106,7 @@ describe('Security Review — April 2026', () => {
       })
 
       it('should start service', async () => {
-        server = await service.start(0)
+        server = await service.start(0, '127.0.0.1')
       })
 
       it('should handle CRLF in header keys without crashing and return 200', async () => {
@@ -184,7 +183,7 @@ describe('Security Review — April 2026', () => {
 
     it('should allow registering and serving TRACE routes when enabled', async () => {
       const service = require('../index')({ enableTrace: true })
-      const server = await service.start(0)
+      const server = await service.start(0, '127.0.0.1')
 
       service.trace('/debug', (req, res) => {
         res.send('trace-ok')
@@ -242,7 +241,7 @@ describe('Security Review — April 2026', () => {
     })
 
     it('should start production service', async () => {
-      server = await productionService.start(0)
+      server = await productionService.start(0, '127.0.0.1')
     })
 
     it('should NOT expose internal error messages in production', async () => {
@@ -276,14 +275,14 @@ describe('Security Review — April 2026', () => {
   // ──────────────────────────────────────────────────────
   describe('SEC-M-04: security headers set by default', () => {
     let server
-    const service = require('../index')()
+    const service = require('../index')({ trustProxy: true })
 
     service.get('/hello', (req, res) => {
       res.send('world')
     })
 
     it('should start service', async () => {
-      server = await service.start(0)
+      server = await service.start(0, '127.0.0.1')
     })
 
     it('should set X-Content-Type-Options: nosniff by default', async () => {
@@ -336,7 +335,7 @@ describe('Security Review — April 2026', () => {
     })
 
     it('should start service', async () => {
-      server = await service.start(0)
+      server = await service.start(0, '127.0.0.1')
     })
 
     it('should NOT set X-Content-Type-Options when disabled', async () => {

@@ -8,7 +8,7 @@ const stream = require('stream')
 
 describe('All Responses', () => {
   let server
-  const service = require('../index')()
+  const service = require('../index')({ debugErrors: true })
 
   service.get('/string', (req, res) => {
     res.send('Hello World!')
@@ -75,7 +75,7 @@ describe('All Responses', () => {
     res.send(Promise.reject(error))
   })
 
-  service.get('/invalid-body', (req, res) => {
+  service.get('/boolean-body', (req, res) => {
     res.body = true
     res.setHeader('content-type', 'text/plain; charset=utf-8')
     res.send()
@@ -88,7 +88,7 @@ describe('All Responses', () => {
   })
 
   it('should start service', async () => {
-    server = await service.start(~~process.env.PORT)
+    server = await service.start(0, '127.0.0.1')
   })
 
   it('should GET 200 and string content on /string', async () => {
@@ -187,10 +187,12 @@ describe('All Responses', () => {
       .expect('content-type', 'application/json; charset=utf-8')
   })
 
-  it('should GET 500 and buffer content on /invalid-body', async () => {
+  it('should GET a boolean from res.body with an explicit content type', async () => {
     await request(server)
-      .get('/invalid-body')
-      .expect(500)
+      .get('/boolean-body')
+      .expect(200)
+      .expect('content-type', 'text/plain; charset=utf-8')
+      .expect('true')
   })
 
   it('should GET 501 and json content on /error', async () => {

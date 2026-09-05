@@ -22,11 +22,17 @@ const headers = {
 
 // add tests
 suite
-  .add('promise', function () {
-    return send(promise)
+  .add('promise', {
+    defer: true,
+    fn (deferred) {
+      send(promise).then(() => deferred.resolve())
+    }
   })
-  .add('promise + headers', function () {
-    return send(promise, 200, headers)
+  .add('promise + headers', {
+    defer: true,
+    fn (deferred) {
+      send(promise, 200, headers).then(() => deferred.resolve())
+    }
   })
   .on('complete', function () {
     report(this)

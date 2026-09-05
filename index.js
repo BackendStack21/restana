@@ -15,15 +15,17 @@ const exts = {
 }
 
 module.exports = (options = {}) => {
-  options.errorHandler =
-    options.errorHandler ||
+  const config = { ...options }
+
+  config.errorHandler =
+    config.errorHandler ||
     ((err, req, res) => {
       const statusCode = toHttpStatusCode(err.status || err.code || err.statusCode)
       res.send({ code: statusCode, message: 'Internal Server Error' }, statusCode)
     })
 
-  const server = options.server || require('http').createServer()
-  const prp = undefined === options.prioRequestsProcessing ? true : options.prioRequestsProcessing
+  const server = config.server || require('http').createServer()
+  const prp = config.prioRequestsProcessing ?? true
   if (prp) {
     server.on('request', (req, res) => {
       setImmediate(() => service.handle(req, res))
@@ -36,12 +38,12 @@ module.exports = (options = {}) => {
 
   const handle = (req, res) => {
     // Default security headers (can be overridden by application or disabled via options)
-    if (options.securityHeaders !== false) {
-      applySecurityHeaders(req, res)
+    if (config.securityHeaders !== false) {
+      applySecurityHeaders(config, req, res)
     }
 
     // request object population
-    res.send = exts.response.send(options, req, res)
+    res.send = exts.response.send(config, req, res)
 
     service.getRouter().lookup(req, res)
   }
@@ -50,10 +52,10 @@ module.exports = (options = {}) => {
   let frozenConfig = null
 
   const service_ = {
-    errorHandler: options.errorHandler,
+    errorHandler: config.errorHandler,
 
     newRouter () {
-      return requestRouter(options)
+      return requestRouter(config)
     },
 
     getServer () {
@@ -62,7 +64,7 @@ module.exports = (options = {}) => {
 
     getConfigOptions () {
       if (!frozenConfig) {
-        const copy = { ...options }
+        const copy = { ...config }
         // Deep-clone + deep-freeze nested plain objects so the user's originals
         // are not mutated as a side effect of calling getConfigOptions().
         for (const key of Object.keys(copy)) {
@@ -79,26 +81,46 @@ module.exports = (options = {}) => {
 
     start: (...args) =>
       new Promise((resolve, reject) => {
-        if (!args || !args.length) args = [3000]
-        server.listen(...args, (err) => {
-          if (err) reject(err)
+        if (!args.length) args = [3000]
+
+        const onError = (err) => {
+          server.removeListener('listening', onListening)
+          reject(err)
+        }
+        const onListening = () => {
+          server.removeListener('error', onError)
           resolve(server)
-        })
+        }
+
+        server.once('error', onError)
+        server.once('listening', onListening)
+
+        try {
+          server.listen(...args)
+        } catch (err) {
+          server.removeListener('error', onError)
+          server.removeListener('listening', onListening)
+          reject(err)
+        }
       }),
 
     close: () =>
       new Promise((resolve, reject) => {
-        server.close((err) => {
-          if (err) reject(err)
-          resolve()
-        })
+        try {
+          server.close((err) => {
+            if (err) return reject(err)
+            resolve()
+          })
+        } catch (err) {
+          reject(err)
+        }
       })
   }
 
   Object.assign(service, service_)
 
   // apply router capabilities
-  requestRouter(options, service)
+  requestRouter(config, service)
 
   service.callback = () => service.handle
 

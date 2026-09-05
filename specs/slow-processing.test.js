@@ -13,7 +13,7 @@ describe('Slow requests processing', () => {
   })
 
   it('should start the service with "prioRequestsProcessing: FALSE"', async () => {
-    server = await service.start(~~process.env.PORT)
+    server = await service.start(0, '127.0.0.1')
   })
 
   it('should GET 200 on /hello', async () => {

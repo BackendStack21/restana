@@ -4,7 +4,7 @@
 const expect = require('chai').expect
 const request = require('supertest')
 
-describe('Buffer Responses', () => {
+describe('Nested router', () => {
   let server
   const service = require('../index')()
   const nestedRouter = service.newRouter()
@@ -16,7 +16,7 @@ describe('Buffer Responses', () => {
   service.use('/v1', nestedRouter)
 
   it('should start service', async () => {
-    server = await service.start(~~process.env.PORT)
+    server = await service.start(0, '127.0.0.1')
   })
 
   it('should hit GET /v1/hello on nested router', async () => {
