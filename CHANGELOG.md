@@ -27,7 +27,7 @@ Breaking release. See the [migration guide](MIGRATION.md).
 - Type declarations for the Elastic APM and New Relic integrations.
 - TypeScript route parameter inference: `service.get('/users/:id', (req) => req.params.id)` and the
   `restana.RouteParams<Path>` helper type.
-- `.nvmrc` pinning the supported Node.js major version for contributors.
+- `.nvmrc` pinning Node.js 26 (latest stable) for contributors; Node.js 24 LTS remains the minimum.
 
 ### Performance
 - The sequential router and its dependencies are loaded only when `router: 'sequential'` is selected,
