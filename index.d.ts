@@ -123,9 +123,14 @@ declare namespace restana {
     ): Service<P>
   }
 
+  type RouterType = 'trie' | 'sequential'
+
   interface Options<P extends Protocol> {
     server?: Server<P>
     prioRequestsProcessing?: boolean
+    router?: RouterType
+    caseSensitive?: boolean
+    ignoreTrailingSlash?: boolean
     routerCacheSize?: number
     defaultRoute?: RequestHandler<P>
     errorHandler?: ErrorHandler<P>

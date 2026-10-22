@@ -81,11 +81,28 @@ Optionally, learn through examples:
 - `prioRequestsProcessing`: If `TRUE`, HTTP requests processing/handling is prioritized using `setImmediate`. Default value: `TRUE`
 - `defaultRoute`: Optional route handler when no route match occurs. Default value: `((req, res) => res.send(404))`
 - `errorHandler`: Optional global error handler function. Default value: `(err, req, res) => res.send({ code: statusCode, message: 'Internal Server Error' }, statusCode)`, where `statusCode` is the first valid HTTP status code found in `err.status`, `err.code` or `err.statusCode` (falls back to `500`). The default handler returns a generic error message to prevent leaking sensitive internal details (e.g. database connection strings, file paths, stack traces). The appropriate HTTP status code is still preserved from `err.status`, `err.code`, or `err.statusCode`.
-- `routerCacheSize`: The router matching cache size, indicates how many request matches will be kept in memory. Default value: `2000`
+- `router`: The [0http](https://github.com/BackendStack21/0http) router implementation, `'trie'` or `'sequential'`. Default value: `'trie'`. See [Routers](#routers).
+- `caseSensitive`: Trie router only. When `FALSE`, static path segments match case-insensitively (ASCII letters only). Default value: `TRUE`
+- `ignoreTrailingSlash`: Trie router only. When `TRUE`, `/users/` and `/users` are the same path. Default value: `TRUE`
+- `routerCacheSize`: Sequential router only. The router matching cache size, indicates how many request matches will be kept in memory. Default value: `2000`
 - `enableTrace`: When `TRUE`, the `TRACE` HTTP method handler is available for debugging purposes. Default value: `FALSE`. ⚠️ Not recommended for production deployments.
 - `securityHeaders`: When `TRUE`, default security headers are set on every response. Set to `FALSE` to disable (e.g. when using Helmet or serving non-browser clients). Default value: `TRUE`.
 - `trustProxy`: When `TRUE`, trust the first `X-Forwarded-Proto` value when deciding whether to send HSTS. Only enable this behind a reverse proxy that replaces forwarded headers. Default value: `FALSE`.
 - `debugErrors`: When `TRUE`, `res.send(error)` includes `error.message` and `error.data` outside production. Use only for local debugging. Default value: `FALSE`.
+
+### Routers
+The dependency-free trie router is the default: static routes resolve in constant time and dynamic routes stay fast as the route count grows, without a match cache to size. The previous default, the sequential router, remains available:
+```js
+const service = restana({ router: 'sequential' })
+```
+
+The trie router intentionally differs from the sequential router:
+- Paths are case-sensitive by default (`/Admin` does not match `/admin`); use `caseSensitive: false` to restore case-insensitive matching.
+- A `*` that is not the last segment, or a `?` that is not the last character of a param segment, throws at registration.
+- An absent optional param is not present on `req.params` (instead of `undefined`).
+- A trailing `/*` also matches the bare prefix, with `req.params['*']` equal to `''`.
+- Empty route segments are ignored (`/a//b` is `/a/b`).
+- A request path that does not start with `/` matches nothing.
 
 ### Security defaults (v6.0+)
 Restana now ships with these security hardening measures enabled by default:

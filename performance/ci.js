@@ -2,6 +2,7 @@
 
 const restana = require('../index')
 const responseExtensions = require('../libs/response-extensions')
+const trie = require('0http/lib/router/trie')
 const sequential = require('0http/lib/router/sequential')
 
 function budget (name, maximumMilliseconds, operation) {
@@ -62,19 +63,24 @@ function median (operation) {
   return samples.sort((a, b) => a - b)[2]
 }
 
-const service = restana({ routerCacheSize: routes })
-const frameworkRouter = buildRouter(service.getRouter())
-const dependencyRouter = buildRouter(sequential({ cacheSize: routes }))
+function checkIntegration (name, frameworkRouter, dependencyRouter) {
+  budget(`${name} routing (50k across 500 routes)`, 500, () => {
+    lookupBatch(frameworkRouter)
+  })
 
-budget('cached routing (50k across 500 routes)', 500, () => {
-  lookupBatch(frameworkRouter)
-})
+  const dependencyMedian = median(() => lookupBatch(dependencyRouter))
+  const frameworkMedian = median(() => lookupBatch(frameworkRouter))
+  const allowedOverhead = dependencyMedian * 1.25
 
-const dependencyMedian = median(() => lookupBatch(dependencyRouter))
-const frameworkMedian = median(() => lookupBatch(frameworkRouter))
-const allowedOverhead = dependencyMedian * 1.25
-
-console.log(`router integration: ${frameworkMedian.toFixed(2)}ms vs dependency ${dependencyMedian.toFixed(2)}ms`)
-if (frameworkMedian > allowedOverhead) {
-  throw new Error(`router integration exceeded 25% overhead (${allowedOverhead.toFixed(2)}ms budget)`)
+  console.log(`${name} router integration: ${frameworkMedian.toFixed(2)}ms vs dependency ${dependencyMedian.toFixed(2)}ms`)
+  if (frameworkMedian > allowedOverhead) {
+    throw new Error(`${name} router integration exceeded 25% overhead (${allowedOverhead.toFixed(2)}ms budget)`)
+  }
 }
+
+checkIntegration('trie', buildRouter(restana().getRouter()), buildRouter(trie()))
+checkIntegration(
+  'sequential (cached)',
+  buildRouter(restana({ router: 'sequential', routerCacheSize: routes }).getRouter()),
+  buildRouter(sequential({ cacheSize: routes }))
+)

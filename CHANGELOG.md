@@ -2,7 +2,15 @@
 
 ## Unreleased
 
+### Changed
+- Upgraded `0http` to 5.2 and made its dependency-free trie router the default. Static routes resolve
+  in constant time and dynamic routes no longer depend on a match cache. Matching is case-sensitive by
+  default; set `caseSensitive: false` or `router: 'sequential'` for the previous behavior
+  ([differences](docs/README.md#routers)).
+
 ### Added
+- `router` option to select the `'trie'` (default) or `'sequential'` router.
+- `caseSensitive` and `ignoreTrailingSlash` options for the trie router.
 - Runtime `restana.Protocol` and `restana.Method` objects matching the TypeScript enums.
 - TypeScript support for registering multiple middlewares in one `use()` call.
 - `.nvmrc` pinning the supported Node.js major version for contributors.

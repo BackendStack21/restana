@@ -44,7 +44,7 @@
   ],
   "homepage": "https://github.com/BackendStack21/restana#readme",
   "dependencies": {
-    "0http": "^4.4.0"
+    "0http": "^5.2.0"
   },
   "overrides": {
     "diff": "9.0.0",

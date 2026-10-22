@@ -48,3 +48,9 @@ String(protocol + method)
 // Nested routers require a prefix
 // @ts-expect-error
 service.use(service.newRouter())
+
+// Router selection
+restana({ router: 'trie', caseSensitive: false, ignoreTrailingSlash: false })
+restana({ router: 'sequential', routerCacheSize: 100 })
+// @ts-expect-error
+restana({ router: 'radix' })
