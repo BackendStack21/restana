@@ -47,6 +47,18 @@ describe('Restana 7.0 behavior', () => {
     await service.close()
   })
 
+  it('loads the sequential router only when selected', () => {
+    const { execFileSync } = require('child_process')
+    const loaded = (code) => JSON.parse(execFileSync(process.execPath, ['-e', `
+      const restana = require(${JSON.stringify(require.resolve('../index'))})
+      ${code}
+      console.log(JSON.stringify(Object.keys(require.cache).some(file => file.includes('sequential'))))
+    `]).toString())
+
+    expect(loaded('restana()')).to.equal(false)
+    expect(loaded("restana({ router: 'sequential' })")).to.equal(true)
+  })
+
   it('exposes only the public entry points', () => {
     const exports = require('../package.json').exports
     expect(Object.keys(exports)).to.deep.equal(['.', './libs/elastic-apm', './libs/newrelic-apm', './package.json'])

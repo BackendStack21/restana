@@ -76,3 +76,35 @@ import elasticApm = require('restana/libs/elastic-apm')
 import newrelicApm = require('restana/libs/newrelic-apm')
 elasticApm({ agent: { setTransactionName (name: string) { String(name) } } }).patch(service)
 newrelicApm({ apm: { setTransactionName () {} } }).patch(router)
+
+// Route params are inferred from the path pattern
+type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false
+const assertType = <T extends true>() => {}
+
+assertType<Equal<restana.PathParamNames<'/users/:id/files/:name.json'>, 'id' | 'name'>>()
+assertType<Equal<restana.PathParamNames<'/static/path'>, never>>()
+assertType<Equal<restana.PathParamNames<'/:a?/*'>, 'a' | '*'>>()
+// @ts-expect-error
+assertType<Equal<restana.PathParamNames<'/users/:id'>, 'userId'>>()
+const params: restana.RouteParams<'/orgs/:org/users/:id?/*'> = { org: 'a', id: 'b', '*': 'c' }
+String(params.org + params.id + params['*'])
+// @ts-expect-error missing inferred param
+const missing: restana.RouteParams<'/users/:id'> = {}
+String(missing)
+
+service.get('/users/:userId/posts/:postId', (req, res) => {
+  const userId: string = req.params.userId
+  const postId: string = req.params.postId
+  // params inherited from nested router prefixes stay accessible
+  const tenant: string = req.params.tenant
+  res.send({ userId, postId, tenant })
+})
+service.get(['/a/:x', '/b/:y'], auth, (req, res) => res.send(req.params.x ?? req.params.y))
+const dynamicPath: string = '/runtime'
+service.get(dynamicPath, (req, res) => res.send(req.params.anything))
+
+// Documented handler typed separately from its route
+const getUser: restana.RequestHandler<restana.Protocol.HTTP, restana.RouteParams<'/users/:id'>> = (req, res) => {
+  res.send({ id: req.params.id })
+}
+service.get('/users/:id', getUser)

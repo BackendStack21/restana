@@ -25,7 +25,15 @@ Breaking release. See the [migration guide](MIGRATION.md).
 - Runtime `restana.Protocol` and `restana.Method` objects matching the TypeScript enums.
 - TypeScript support for registering multiple middlewares in one `use()` call.
 - Type declarations for the Elastic APM and New Relic integrations.
+- TypeScript route parameter inference: `service.get('/users/:id', (req) => req.params.id)` and the
+  `restana.RouteParams<Path>` helper type.
 - `.nvmrc` pinning the supported Node.js major version for contributors.
+
+### Performance
+- The sequential router and its dependencies are loaded only when `router: 'sequential'` is selected,
+  cutting `require('restana')` time by about 40% and the initial heap by about 0.5 MB.
+- `res.send()` no longer registers a `finish` listener per response when no callback is passed.
+- Security header options are resolved once per service instead of on every request.
 
 ### Fixed
 - `res.send(undefined, code)` and promises resolving to `undefined` no longer drop the explicit status code.

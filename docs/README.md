@@ -393,6 +393,26 @@ Service events are accessible through the `service.events` object, an instance o
 ### Available events
 - `service.events.BEFORE_ROUTE_REGISTER`: This event is triggered before registering a route. 
 
+## TypeScript
+Type declarations are bundled. Route parameters are inferred from the path pattern:
+```ts
+import restana = require('restana')
+
+const service = restana()
+
+service.get('/users/:userId/posts/:postId', (req, res) => {
+  // req.params.userId and req.params.postId are typed as string
+  res.send({ user: req.params.userId, post: req.params.postId })
+})
+```
+Optional params (`/:id?`), extensions (`/:name.json`) and wildcards (`/*`, available as `req.params['*']`) are supported. Other keys, such as params inherited from a nested router prefix, remain accessible as `string`. Use `restana.RouteParams<'/users/:id'>` to type handlers declared separately:
+```ts
+const getUser: restana.RequestHandler<restana.Protocol.HTTP, restana.RouteParams<'/users/:id'>> = (req, res) => {
+  res.send({ id: req.params.id })
+}
+service.get('/users/:id', getUser)
+```
+
 ## AWS Serverless Integration
 `restana` is compatible with the [serverless-http](https://github.com/dougmoscrop/serverless-http) library, so restana based services can also run as AWS lambdas 🚀
 ```js 

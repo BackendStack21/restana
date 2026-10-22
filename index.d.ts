@@ -41,16 +41,37 @@ declare namespace restana {
     TRACE = 'trace'
   }
 
-  interface RequestExtensions {
-    params: Record<string, string>
+  type ParamName<Segment extends string> =
+    Segment extends `:${infer Name}?` ? StripExtension<Name>
+    : Segment extends `:${infer Name}` ? StripExtension<Name>
+    : Segment extends '*' ? '*'
+    : never
+
+  type StripExtension<Name extends string> = Name extends `${infer Base}.${string}` ? Base : Name
+
+  type PathParamNames<Path extends string> =
+    Path extends `${infer Segment}/${infer Rest}`
+      ? ParamName<Segment> | PathParamNames<Rest>
+      : ParamName<Path>
+
+  /**
+   * Route parameters inferred from a path pattern, e.g. `'/users/:id'` -> `{ id: string }`.
+   * Other keys (such as params inherited from a nested router prefix) remain accessible as strings.
+   */
+  type RouteParams<Path extends string> = string extends Path
+    ? Record<string, string>
+    : { [Name in PathParamNames<Path>]: string } & Record<string, string>
+
+  interface RequestExtensions<Params = Record<string, string>> {
+    params: Params
     query: Record<string, string | string[]>
     originalUrl: string,
     body?: Body
   }
 
-  type Request<P extends Protocol> = P extends Protocol.HTTP2
-    ? Http2ServerRequest & RequestExtensions
-    : IncomingMessage & RequestExtensions
+  type Request<P extends Protocol, Params = Record<string, string>> = P extends Protocol.HTTP2
+    ? Http2ServerRequest & RequestExtensions<Params>
+    : IncomingMessage & RequestExtensions<Params>
 
   interface ResponseExtensions {
     send(
@@ -92,8 +113,8 @@ declare namespace restana {
     ? HttpsServer
     : HttpServer
 
-  type RequestHandler<P extends Protocol> = (
-    req: Request<P>,
+  type RequestHandler<P extends Protocol, Params = Record<string, string>> = (
+    req: Request<P, Params>,
     res: Response<P>,
     next: (error?: unknown) => void
   ) => void | Promise<unknown>
@@ -117,9 +138,9 @@ declare namespace restana {
   ) => void | Promise<unknown>
 
   interface RegisterRoute<P extends Protocol, R = Service<P>> {
-    (
-      path: string | string[],
-      ...middlewares: RequestHandler<P>[]
+    <Path extends string>(
+      path: Path | Path[],
+      ...middlewares: RequestHandler<P, RouteParams<Path>>[]
     ): R
   }
 

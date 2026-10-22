@@ -7,7 +7,7 @@
  */
 
 const requestRouter = require('./libs/request-router')
-const applySecurityHeaders = require('./libs/security-headers')
+const securityHeaders = require('./libs/security-headers')
 const { deepFreezeObject, errorStatusCode } = require('./libs/utils')
 const exts = {
   request: {},
@@ -43,10 +43,12 @@ module.exports = (options = {}) => {
     })
   }
 
+  // Default security headers (can be overridden by application or disabled via options)
+  const applySecurityHeaders = config.securityHeaders !== false ? securityHeaders(config) : null
+
   const handle = (req, res) => {
-    // Default security headers (can be overridden by application or disabled via options)
-    if (config.securityHeaders !== false) {
-      applySecurityHeaders(config, req, res)
+    if (applySecurityHeaders !== null) {
+      applySecurityHeaders(req, res)
     }
 
     // request object population

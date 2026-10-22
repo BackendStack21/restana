@@ -139,6 +139,9 @@ your use case.
 - `Router.id` is always defined.
 - `RegisterRoute<P, R = Service<P>>` takes an optional second type parameter for the return type.
 - New options are typed: `router`, `caseSensitive` and `ignoreTrailingSlash`.
+- Route params are inferred from the path: in `service.get('/users/:id', handler)`, `req.params.id`
+  is typed and autocompleted. Any other key is still typed as `string`, so existing code compiles
+  unchanged. `Request`, `RequestHandler` and `RouteParams` take an optional params type argument.
 - `restana.Protocol` and `restana.Method` now exist at runtime, so `restana.Protocol.HTTP2`
   works in value positions too.
 - `restana/libs/elastic-apm` and `restana/libs/newrelic-apm` now ship type declarations.

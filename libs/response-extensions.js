@@ -172,7 +172,9 @@ module.exports.send = (options, req, res) => {
     }
 
     beforeEnd(res, contentType, code, data)
-    res.end(data, cb)
+    // passing a callback to res.end() registers a 'finish' listener, skip it when unused
+    if (cb === NOOP) res.end(data)
+    else res.end(data, cb)
   }
 
   return send

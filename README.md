@@ -81,6 +81,8 @@ Error details are hidden by default in every environment. For local debugging on
 - Dependency-free trie router by default: constant-time static routes and no match cache to tune.
 - Case-sensitive routing that agrees with reverse proxies and WAFs (`caseSensitive: false` to opt out).
 - Consistent error responses from `res.send(err)` and the default error handler.
+- Faster startup: no third-party modules are loaded by default.
+- TypeScript route params inferred from the path (`'/users/:id'` → `req.params.id`).
 - Stricter `res.send()` status code handling and a typed, explicit public API.
 
 Upgrading from 6.x? Read the [migration guide](MIGRATION.md).
