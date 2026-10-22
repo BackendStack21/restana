@@ -11,6 +11,13 @@ module.exports = (options) => {
         const ref = app[method]
 
         app[method] = (path, ...args) => {
+          if (Array.isArray(path)) {
+            // name each path individually instead of joining them, e.g. 'GET /a,/b'
+            path.forEach(p => app[method](p, ...args))
+
+            return app
+          }
+
           args.unshift((req, res, next) => {
             agent.setTransactionName(`${req.method} ${path}`)
 

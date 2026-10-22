@@ -8,7 +8,7 @@
 
 const requestRouter = require('./libs/request-router')
 const applySecurityHeaders = require('./libs/security-headers')
-const { deepFreezeObject, toHttpStatusCode } = require('./libs/utils')
+const { deepFreezeObject, errorStatusCode } = require('./libs/utils')
 const exts = {
   request: {},
   response: require('./libs/response-extensions')
@@ -20,7 +20,7 @@ module.exports = (options = {}) => {
   config.errorHandler =
     config.errorHandler ||
     ((err, req, res) => {
-      const statusCode = toHttpStatusCode(err.status || err.code || err.statusCode)
+      const statusCode = errorStatusCode(err)
       res.send({ code: statusCode, message: 'Internal Server Error' }, statusCode)
     })
 
@@ -126,3 +126,20 @@ module.exports = (options = {}) => {
 
   return service
 }
+
+// Runtime counterparts of the `restana.Protocol` and `restana.Method` TypeScript enums
+module.exports.Protocol = Object.freeze({
+  HTTP: 'http',
+  HTTPS: 'https',
+  HTTP2: 'http2'
+})
+module.exports.Method = Object.freeze({
+  GET: 'get',
+  DELETE: 'delete',
+  PATCH: 'patch',
+  POST: 'post',
+  PUT: 'put',
+  HEAD: 'head',
+  OPTIONS: 'options',
+  TRACE: 'trace'
+})

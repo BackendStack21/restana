@@ -80,7 +80,7 @@ Optionally, learn through examples:
 - `server`: Allows to optionally override the HTTP server instance to be used.
 - `prioRequestsProcessing`: If `TRUE`, HTTP requests processing/handling is prioritized using `setImmediate`. Default value: `TRUE`
 - `defaultRoute`: Optional route handler when no route match occurs. Default value: `((req, res) => res.send(404))`
-- `errorHandler`: Optional global error handler function. Default value: `(err, req, res) => { const statusCode = typeof (err.status || err.code || err.statusCode) === 'number' ? (err.status || err.code || err.statusCode) : 500; res.send({ code: statusCode, message: 'Internal Server Error' }, statusCode) }`. The default handler returns a generic error message to prevent leaking sensitive internal details (e.g. database connection strings, file paths, stack traces). The appropriate HTTP status code is still preserved from `err.status`, `err.code`, or `err.statusCode`.
+- `errorHandler`: Optional global error handler function. Default value: `(err, req, res) => res.send({ code: statusCode, message: 'Internal Server Error' }, statusCode)`, where `statusCode` is the first valid HTTP status code found in `err.status`, `err.code` or `err.statusCode` (falls back to `500`). The default handler returns a generic error message to prevent leaking sensitive internal details (e.g. database connection strings, file paths, stack traces). The appropriate HTTP status code is still preserved from `err.status`, `err.code`, or `err.statusCode`.
 - `routerCacheSize`: The router matching cache size, indicates how many request matches will be kept in memory. Default value: `2000`
 - `enableTrace`: When `TRUE`, the `TRACE` HTTP method handler is available for debugging purposes. Default value: `FALSE`. ⚠️ Not recommended for production deployments.
 - `securityHeaders`: When `TRUE`, default security headers are set on every response. Set to `FALSE` to disable (e.g. when using Helmet or serving non-browser clients). Default value: `TRUE`.
@@ -217,10 +217,11 @@ res.send(
 )
 ```
 > Optionally, you can also just send a response code:  
-> `res.send(401)`
+> `res.send(401)`  
+> An `undefined` body keeps the explicit status code: `res.send(undefined, 204)`
 
 ## Global error handling
-By default, restana returns a generic `Internal Server Error` message to the client, preventing internal details from being leaked. The HTTP status code is preserved from `err.status`, `err.code`, or `err.statusCode` (defaults to `500`).
+By default, restana returns a generic `Internal Server Error` message to the client, preventing internal details from being leaked. The HTTP status code is preserved from the first valid status code found in `err.status`, `err.code`, or `err.statusCode` (defaults to `500`). Non-numeric values such as Node.js system error codes (`'ENOENT'`) are ignored.
 
 To customize error responses, provide your own `errorHandler`:
 ```js
@@ -279,6 +280,12 @@ service.use('/admin', (req, res, next) => {
   return next()
 });
 ...
+```
+
+Multiple middlewares can be registered in a single call, with or without prefix:
+```js
+service.use(cors, logger)
+service.use('/admin', authenticate, authorize)
 ```
 
 ### Route level middlewares

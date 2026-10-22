@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased
+
+### Added
+- Runtime `restana.Protocol` and `restana.Method` objects matching the TypeScript enums.
+- TypeScript support for registering multiple middlewares in one `use()` call.
+- `.nvmrc` pinning the supported Node.js major version for contributors.
+
+### Fixed
+- `res.send(undefined, code)` and promises resolving to `undefined` no longer drop the explicit status code.
+- Non-numeric error codes (e.g. `'ENOENT'`) no longer mask a valid `err.statusCode`.
+- APM instrumentation names multi-path routes per path instead of joining them (`GET /a,/b`).
+- TypeScript no longer accepts `use(router)` without a prefix, which throws at runtime.
+
 ## 6.1.0
 
 ### Added

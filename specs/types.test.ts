@@ -32,3 +32,19 @@ const configured = restana({
 })
 
 configured.start({ port: 3000, host: '127.0.0.1' })
+
+// Multiple middlewares can be registered at once
+const auth: restana.RequestHandler<restana.Protocol.HTTP> = (req, res, next) => next()
+const log: restana.RequestHandler<restana.Protocol.HTTP> = (req, res, next) => next()
+service.use(auth, log)
+service.use('/api', auth, log)
+service.use('/nested', service.newRouter())
+
+// Enums are available at runtime
+const protocol: string = restana.Protocol.HTTP2
+const method: string = restana.Method.GET
+String(protocol + method)
+
+// Nested routers require a prefix
+// @ts-expect-error
+service.use(service.newRouter())

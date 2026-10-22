@@ -71,8 +71,9 @@ declare namespace restana {
     head: RegisterRoute<P>
     options: RegisterRoute<P>
     all: RegisterRoute<P>
-    use(middleware: RequestHandler<P> | Router<P>): Router<P>
-    use(prefix: string, middleware: RequestHandler<P> | Router<P>): Router<P>
+    use(...middlewares: RequestHandler<P>[]): Router<P>
+    use(prefix: string, ...middlewares: RequestHandler<P>[]): Router<P>
+    use(prefix: string, router: Router<P>): Router<P>
     lookup(req: Request<P>, res: Response<P>): unknown
     find(method: string, path: string): unknown
   }
@@ -151,9 +152,9 @@ declare namespace restana {
     errorHandler: ErrorHandler<P>,
     getServer(): Server<P>,
     getConfigOptions(): Options<P>
-    use(middleware: RequestHandler<P>): restana.Service<P>
-    use(prefix: string, middleware: RequestHandler<P>): restana.Service<P>
-    use(prefix: string, middleware: Router<P>): restana.Service<P>
+    use(...middlewares: RequestHandler<P>[]): restana.Service<P>
+    use(prefix: string, ...middlewares: RequestHandler<P>[]): restana.Service<P>
+    use(prefix: string, router: Router<P>): restana.Service<P>
     handle(req: Request<P>, res: Response<P>): void
     callback(): RequestListener<P>
     start(port?: number, host?: string): Promise<Server<P>>
