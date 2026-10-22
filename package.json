@@ -1,9 +1,24 @@
 {
   "name": "restana",
-  "version": "6.1.0",
+  "version": "7.0.0",
   "description": "Super fast and minimalist web framework for building REST micro-services.",
   "main": "index.js",
   "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    },
+    "./libs/elastic-apm": {
+      "types": "./libs/elastic-apm.d.ts",
+      "default": "./libs/elastic-apm.js"
+    },
+    "./libs/newrelic-apm": {
+      "types": "./libs/newrelic-apm.d.ts",
+      "default": "./libs/newrelic-apm.js"
+    },
+    "./package.json": "./package.json"
+  },
   "scripts": {
     "lint": "standard",
     "format": "standard --fix",
@@ -36,6 +51,7 @@
     "LICENSE",
     "README.md",
     "CHANGELOG.md",
+    "MIGRATION.md",
     "CONTRIBUTING.md",
     "docs/README.md",
     "index.js",

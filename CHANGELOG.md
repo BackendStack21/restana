@@ -1,25 +1,36 @@
 # Changelog
 
-## Unreleased
+## 7.0.0
 
-### Changed
-- Upgraded `0http` to 5.2 and made its dependency-free trie router the default. Static routes resolve
-  in constant time and dynamic routes no longer depend on a match cache. Matching is case-sensitive by
-  default; set `caseSensitive: false` or `router: 'sequential'` for the previous behavior
-  ([differences](docs/README.md#routers)).
+Breaking release. See the [migration guide](MIGRATION.md).
+
+### Breaking
+- Upgraded `0http` to 5.2 and made its dependency-free trie router the default. Matching is
+  case-sensitive and stricter about route patterns. Set `caseSensitive: false` or
+  `router: 'sequential'` for the previous behavior. `routerCacheSize` only applies to the sequential router.
+- The default `errorHandler` responds the same way as `res.send(err)`. The status text matches the
+  status code (`404 Not Found` instead of `404 Internal Server Error`), and `debugErrors` now applies
+  to `next(err)` and thrown errors. Non-`Error` values are wrapped safely.
+- `res.send(number)` treats only integers from 100 to 999 as status codes. Other numbers are sent
+  as JSON bodies instead of being dropped.
+- `package.json` `exports` limits imports to `restana`, `restana/libs/elastic-apm`,
+  `restana/libs/newrelic-apm` and `restana/package.json`.
+- TypeScript: route registration and `use()` return the object they were called on.
+  `getConfigOptions()` returns `Readonly<Options>`, `errorHandler` is `readonly`, and
+  `use(router)` without a prefix is no longer accepted.
 
 ### Added
 - `router` option to select the `'trie'` (default) or `'sequential'` router.
 - `caseSensitive` and `ignoreTrailingSlash` options for the trie router.
 - Runtime `restana.Protocol` and `restana.Method` objects matching the TypeScript enums.
 - TypeScript support for registering multiple middlewares in one `use()` call.
+- Type declarations for the Elastic APM and New Relic integrations.
 - `.nvmrc` pinning the supported Node.js major version for contributors.
 
 ### Fixed
 - `res.send(undefined, code)` and promises resolving to `undefined` no longer drop the explicit status code.
 - Non-numeric error codes (e.g. `'ENOENT'`) no longer mask a valid `err.statusCode`.
 - APM instrumentation names multi-path routes per path instead of joining them (`GET /a,/b`).
-- TypeScript no longer accepts `use(router)` without a prefix, which throws at runtime.
 
 ## 6.1.0
 

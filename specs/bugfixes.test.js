@@ -47,7 +47,7 @@ describe('Bug fixes', () => {
 
     const server = await service.start(0, '127.0.0.1')
     await request(server).get('/send').expect(404, { code: 404, message: 'Not Found' })
-    await request(server).get('/next').expect(404, { code: 404, message: 'Internal Server Error' })
+    await request(server).get('/next').expect(404, { code: 404, message: 'Not Found' })
     await request(server).get('/string-status').expect(500)
     await service.close()
   })

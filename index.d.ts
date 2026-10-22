@@ -62,24 +62,24 @@ declare namespace restana {
   }
 
   interface Router<P extends Protocol> {
-    readonly id?: string
-    get: RegisterRoute<P>
-    delete: RegisterRoute<P>
-    patch: RegisterRoute<P>
-    post: RegisterRoute<P>
-    put: RegisterRoute<P>
-    head: RegisterRoute<P>
-    options: RegisterRoute<P>
-    all: RegisterRoute<P>
-    use(...middlewares: RequestHandler<P>[]): Router<P>
-    use(prefix: string, ...middlewares: RequestHandler<P>[]): Router<P>
-    use(prefix: string, router: Router<P>): Router<P>
+    readonly id: string
+    get: RegisterRoute<P, this>
+    delete: RegisterRoute<P, this>
+    patch: RegisterRoute<P, this>
+    post: RegisterRoute<P, this>
+    put: RegisterRoute<P, this>
+    head: RegisterRoute<P, this>
+    options: RegisterRoute<P, this>
+    all: RegisterRoute<P, this>
+    use(...middlewares: RequestHandler<P>[]): this
+    use(prefix: string, ...middlewares: RequestHandler<P>[]): this
+    use(prefix: string, router: Router<P>): this
     lookup(req: Request<P>, res: Response<P>): unknown
     find(method: string, path: string): unknown
   }
 
   interface TraceRouter<P extends Protocol> extends Router<P> {
-    trace: RegisterRoute<P>
+    trace: RegisterRoute<P, this>
   }
 
   type Response<P extends Protocol> = P extends Protocol.HTTP2
@@ -116,11 +116,11 @@ declare namespace restana {
     res: Response<P>,
   ) => void | Promise<unknown>
 
-  interface RegisterRoute<P extends Protocol> {
+  interface RegisterRoute<P extends Protocol, R = Service<P>> {
     (
       path: string | string[],
       ...middlewares: RequestHandler<P>[]
-    ): Service<P>
+    ): R
   }
 
   type RouterType = 'trie' | 'sequential'
@@ -149,17 +149,13 @@ declare namespace restana {
   }
 
   interface Service<P extends Protocol> extends Router<P> {
-    readonly id: string
     readonly events: ServiceEvents
     routes(): string[],
     getRouter(): Router<P>,
     newRouter(): Router<P>
-    errorHandler: ErrorHandler<P>,
+    readonly errorHandler: ErrorHandler<P>,
     getServer(): Server<P>,
-    getConfigOptions(): Options<P>
-    use(...middlewares: RequestHandler<P>[]): restana.Service<P>
-    use(prefix: string, ...middlewares: RequestHandler<P>[]): restana.Service<P>
-    use(prefix: string, router: Router<P>): restana.Service<P>
+    getConfigOptions(): Readonly<Options<P>>
     handle(req: Request<P>, res: Response<P>): void
     callback(): RequestListener<P>
     start(port?: number, host?: string): Promise<Server<P>>
@@ -169,7 +165,7 @@ declare namespace restana {
   }
 
   interface TraceService<P extends Protocol> extends Service<P> {
-    trace: RegisterRoute<P>
+    trace: RegisterRoute<P, this>
     getRouter(): TraceRouter<P>
     newRouter(): TraceRouter<P>
   }

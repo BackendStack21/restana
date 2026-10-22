@@ -54,3 +54,25 @@ restana({ router: 'trie', caseSensitive: false, ignoreTrailingSlash: false })
 restana({ router: 'sequential', routerCacheSize: 100 })
 // @ts-expect-error
 restana({ router: 'radix' })
+
+// Router registration chains on the router itself
+const router: restana.Router<restana.Protocol.HTTP> = service.newRouter()
+  .get('/a', (req, res) => res.send('a'))
+  .use(auth)
+  .post('/b', (req, res) => res.send('b'))
+service.use('/r', router)
+const chained: restana.Service<restana.Protocol.HTTP> = service.get('/c', auth).use(log)
+String(chained.id)
+
+// Configuration snapshots are read-only
+const snapshot = service.getConfigOptions()
+// @ts-expect-error
+snapshot.trustProxy = true
+// @ts-expect-error
+service.errorHandler = () => {}
+
+// APM integrations are typed public entry points
+import elasticApm = require('restana/libs/elastic-apm')
+import newrelicApm = require('restana/libs/newrelic-apm')
+elasticApm({ agent: { setTransactionName (name: string) { String(name) } } }).patch(service)
+newrelicApm({ apm: { setTransactionName () {} } }).patch(router)

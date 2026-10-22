@@ -17,11 +17,18 @@ const exts = {
 module.exports = (options = {}) => {
   const config = { ...options }
 
+  // The default error handler shares the res.send(err) response format:
+  // details are masked unless `debugErrors` is enabled outside production.
   config.errorHandler =
     config.errorHandler ||
     ((err, req, res) => {
-      const statusCode = errorStatusCode(err)
-      res.send({ code: statusCode, message: 'Internal Server Error' }, statusCode)
+      if (!(err instanceof Error)) {
+        err = Object.assign(new Error('Non-error value thrown'), {
+          status: errorStatusCode(err),
+          data: err
+        })
+      }
+      res.send(err)
     })
 
   const server = config.server || require('http').createServer()

@@ -103,7 +103,7 @@ module.exports.send = (options, req, res) => {
       if (data === undefined) {
         // keep an explicitly provided status code, e.g. res.send(undefined, 204)
         data = res.body
-      } else if (typeof data === 'number') {
+      } else if (typeof data === 'number' && toHttpStatusCode(data, 0) !== 0) {
         code = data
         data = res.body
       }
@@ -111,7 +111,7 @@ module.exports.send = (options, req, res) => {
       if (data !== undefined && data !== null) {
         if (typeof data === 'string') {
           if (!contentType) contentType = TYPE_PLAIN
-        } else if (typeof data === 'boolean') {
+        } else if (typeof data === 'boolean' || typeof data === 'number') {
           if (!contentType) contentType = TYPE_JSON
           data = stringify(data)
         } else if (typeof data === 'object') {
