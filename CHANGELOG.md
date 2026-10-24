@@ -32,6 +32,8 @@ Breaking release. See the [migration guide](MIGRATION.md).
 ### Testing
 - 100% statement, branch, function and line coverage, enforced at a 99% minimum in `npm test`.
 - The test suite also passes on Bun.
+- Upgraded mocha to 12 and morgan to 1.12, and dropped the `diff` and `serialize-javascript` overrides,
+  resolving all `npm audit` findings in development dependencies.
 
 ### Performance
 - The sequential router and its dependencies are loaded only when `router: 'sequential'` is selected,
