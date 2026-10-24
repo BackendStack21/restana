@@ -41,16 +41,37 @@ declare namespace restana {
     TRACE = 'trace'
   }
 
-  interface RequestExtensions {
-    params: Record<string, string>
+  type ParamName<Segment extends string> =
+    Segment extends `:${infer Name}?` ? StripExtension<Name>
+    : Segment extends `:${infer Name}` ? StripExtension<Name>
+    : Segment extends '*' ? '*'
+    : never
+
+  type StripExtension<Name extends string> = Name extends `${infer Base}.${string}` ? Base : Name
+
+  type PathParamNames<Path extends string> =
+    Path extends `${infer Segment}/${infer Rest}`
+      ? ParamName<Segment> | PathParamNames<Rest>
+      : ParamName<Path>
+
+  /**
+   * Route parameters inferred from a path pattern, e.g. `'/users/:id'` -> `{ id: string }`.
+   * Other keys (such as params inherited from a nested router prefix) remain accessible as strings.
+   */
+  type RouteParams<Path extends string> = string extends Path
+    ? Record<string, string>
+    : { [Name in PathParamNames<Path>]: string } & Record<string, string>
+
+  interface RequestExtensions<Params = Record<string, string>> {
+    params: Params
     query: Record<string, string | string[]>
     originalUrl: string,
     body?: Body
   }
 
-  type Request<P extends Protocol> = P extends Protocol.HTTP2
-    ? Http2ServerRequest & RequestExtensions
-    : IncomingMessage & RequestExtensions
+  type Request<P extends Protocol, Params = Record<string, string>> = P extends Protocol.HTTP2
+    ? Http2ServerRequest & RequestExtensions<Params>
+    : IncomingMessage & RequestExtensions<Params>
 
   interface ResponseExtensions {
     send(
@@ -62,23 +83,24 @@ declare namespace restana {
   }
 
   interface Router<P extends Protocol> {
-    readonly id?: string
-    get: RegisterRoute<P>
-    delete: RegisterRoute<P>
-    patch: RegisterRoute<P>
-    post: RegisterRoute<P>
-    put: RegisterRoute<P>
-    head: RegisterRoute<P>
-    options: RegisterRoute<P>
-    all: RegisterRoute<P>
-    use(middleware: RequestHandler<P> | Router<P>): Router<P>
-    use(prefix: string, middleware: RequestHandler<P> | Router<P>): Router<P>
+    readonly id: string
+    get: RegisterRoute<P, this>
+    delete: RegisterRoute<P, this>
+    patch: RegisterRoute<P, this>
+    post: RegisterRoute<P, this>
+    put: RegisterRoute<P, this>
+    head: RegisterRoute<P, this>
+    options: RegisterRoute<P, this>
+    all: RegisterRoute<P, this>
+    use(...middlewares: RequestHandler<P>[]): this
+    use(prefix: string, ...middlewares: RequestHandler<P>[]): this
+    use(prefix: string, router: Router<P>): this
     lookup(req: Request<P>, res: Response<P>): unknown
     find(method: string, path: string): unknown
   }
 
   interface TraceRouter<P extends Protocol> extends Router<P> {
-    trace: RegisterRoute<P>
+    trace: RegisterRoute<P, this>
   }
 
   type Response<P extends Protocol> = P extends Protocol.HTTP2
@@ -91,8 +113,8 @@ declare namespace restana {
     ? HttpsServer
     : HttpServer
 
-  type RequestHandler<P extends Protocol> = (
-    req: Request<P>,
+  type RequestHandler<P extends Protocol, Params = Record<string, string>> = (
+    req: Request<P, Params>,
     res: Response<P>,
     next: (error?: unknown) => void
   ) => void | Promise<unknown>
@@ -115,16 +137,21 @@ declare namespace restana {
     res: Response<P>,
   ) => void | Promise<unknown>
 
-  interface RegisterRoute<P extends Protocol> {
-    (
-      path: string | string[],
-      ...middlewares: RequestHandler<P>[]
-    ): Service<P>
+  interface RegisterRoute<P extends Protocol, R = Service<P>> {
+    <Path extends string>(
+      path: Path | Path[],
+      ...middlewares: RequestHandler<P, RouteParams<Path>>[]
+    ): R
   }
+
+  type RouterType = 'trie' | 'sequential'
 
   interface Options<P extends Protocol> {
     server?: Server<P>
     prioRequestsProcessing?: boolean
+    router?: RouterType
+    caseSensitive?: boolean
+    ignoreTrailingSlash?: boolean
     routerCacheSize?: number
     defaultRoute?: RequestHandler<P>
     errorHandler?: ErrorHandler<P>
@@ -143,17 +170,13 @@ declare namespace restana {
   }
 
   interface Service<P extends Protocol> extends Router<P> {
-    readonly id: string
     readonly events: ServiceEvents
     routes(): string[],
     getRouter(): Router<P>,
     newRouter(): Router<P>
-    errorHandler: ErrorHandler<P>,
+    readonly errorHandler: ErrorHandler<P>,
     getServer(): Server<P>,
-    getConfigOptions(): Options<P>
-    use(middleware: RequestHandler<P>): restana.Service<P>
-    use(prefix: string, middleware: RequestHandler<P>): restana.Service<P>
-    use(prefix: string, middleware: Router<P>): restana.Service<P>
+    getConfigOptions(): Readonly<Options<P>>
     handle(req: Request<P>, res: Response<P>): void
     callback(): RequestListener<P>
     start(port?: number, host?: string): Promise<Server<P>>
@@ -163,7 +186,7 @@ declare namespace restana {
   }
 
   interface TraceService<P extends Protocol> extends Service<P> {
-    trace: RegisterRoute<P>
+    trace: RegisterRoute<P, this>
     getRouter(): TraceRouter<P>
     newRouter(): TraceRouter<P>
   }

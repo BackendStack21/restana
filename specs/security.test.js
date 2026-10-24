@@ -79,7 +79,7 @@ describe('Security Fixes', () => {
         .expect(404)
         .then((response) => {
           expect(response.body.code).to.equal(404)
-          expect(response.body.message).to.equal('Internal Server Error')
+          expect(response.body.message).to.equal('Not Found')
         })
     })
 

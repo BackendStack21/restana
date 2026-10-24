@@ -7,8 +7,8 @@
  */
 
 const requestRouter = require('./libs/request-router')
-const applySecurityHeaders = require('./libs/security-headers')
-const { deepFreezeObject, toHttpStatusCode } = require('./libs/utils')
+const securityHeaders = require('./libs/security-headers')
+const { deepFreezeObject, errorStatusCode } = require('./libs/utils')
 const exts = {
   request: {},
   response: require('./libs/response-extensions')
@@ -17,11 +17,18 @@ const exts = {
 module.exports = (options = {}) => {
   const config = { ...options }
 
+  // The default error handler shares the res.send(err) response format:
+  // details are masked unless `debugErrors` is enabled outside production.
   config.errorHandler =
     config.errorHandler ||
     ((err, req, res) => {
-      const statusCode = toHttpStatusCode(err.status || err.code || err.statusCode)
-      res.send({ code: statusCode, message: 'Internal Server Error' }, statusCode)
+      if (!(err instanceof Error)) {
+        err = Object.assign(new Error('Non-error value thrown'), {
+          status: errorStatusCode(err),
+          data: err
+        })
+      }
+      res.send(err)
     })
 
   const server = config.server || require('http').createServer()
@@ -36,10 +43,12 @@ module.exports = (options = {}) => {
     })
   }
 
+  // Default security headers (can be overridden by application or disabled via options)
+  const applySecurityHeaders = config.securityHeaders !== false ? securityHeaders(config) : null
+
   const handle = (req, res) => {
-    // Default security headers (can be overridden by application or disabled via options)
-    if (config.securityHeaders !== false) {
-      applySecurityHeaders(config, req, res)
+    if (applySecurityHeaders !== null) {
+      applySecurityHeaders(req, res)
     }
 
     // request object population
@@ -126,3 +135,20 @@ module.exports = (options = {}) => {
 
   return service
 }
+
+// Runtime counterparts of the `restana.Protocol` and `restana.Method` TypeScript enums
+module.exports.Protocol = Object.freeze({
+  HTTP: 'http',
+  HTTPS: 'https',
+  HTTP2: 'http2'
+})
+module.exports.Method = Object.freeze({
+  GET: 'get',
+  DELETE: 'delete',
+  PATCH: 'patch',
+  POST: 'post',
+  PUT: 'put',
+  HEAD: 'head',
+  OPTIONS: 'options',
+  TRACE: 'trace'
+})

@@ -13,6 +13,24 @@ module.exports.toHttpStatusCode = (code, fallback = 500) => {
   return Number.isInteger(code) && code >= 100 && code <= 999 ? code : fallback
 }
 
+/**
+ * Resolves the HTTP status code of an error, using the first valid value of
+ * `err.status`, `err.code` or `err.statusCode`. Non-numeric values such as
+ * Node.js system error codes (e.g. 'ENOENT') are skipped instead of masking a
+ * valid status code defined on another property.
+ *
+ * @param {*} err
+ * @returns {number}
+ */
+module.exports.errorStatusCode = (err) => {
+  if (err) {
+    for (const code of [err.status, err.code, err.statusCode]) {
+      if (Number.isInteger(code) && code >= 100 && code <= 999) return code
+    }
+  }
+  return 500
+}
+
 module.exports.forEachObject = (obj, cb) => {
   const keys = Object.keys(obj)
   const length = keys.length

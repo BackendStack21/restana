@@ -1,13 +1,28 @@
 {
   "name": "restana",
-  "version": "6.1.0",
+  "version": "7.0.0",
   "description": "Super fast and minimalist web framework for building REST micro-services.",
   "main": "index.js",
   "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    },
+    "./libs/elastic-apm": {
+      "types": "./libs/elastic-apm.d.ts",
+      "default": "./libs/elastic-apm.js"
+    },
+    "./libs/newrelic-apm": {
+      "types": "./libs/newrelic-apm.d.ts",
+      "default": "./libs/newrelic-apm.js"
+    },
+    "./package.json": "./package.json"
+  },
   "scripts": {
     "lint": "standard",
     "format": "standard --fix",
-    "test": "cross-env NODE_ENV=testing nyc --check-coverage --lines 95 mocha specs/*.test.js",
+    "test": "cross-env NODE_ENV=testing nyc --check-coverage --lines 99 --branches 99 --functions 99 --statements 99 mocha specs/*.test.js",
     "test:types": "tsc",
     "check": "npm run lint && npm run test:types && npm test",
     "bench": "node performance/suites/res-send.js && node performance/suites/res-send-promise.js && node performance/route-scale.js",
@@ -36,6 +51,7 @@
     "LICENSE",
     "README.md",
     "CHANGELOG.md",
+    "MIGRATION.md",
     "CONTRIBUTING.md",
     "docs/README.md",
     "index.js",
@@ -44,7 +60,7 @@
   ],
   "homepage": "https://github.com/BackendStack21/restana#readme",
   "dependencies": {
-    "0http": "^4.4.0"
+    "0http": "^5.2.0"
   },
   "overrides": {
     "diff": "9.0.0",

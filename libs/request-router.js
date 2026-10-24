@@ -1,9 +1,9 @@
 'use strict'
 
 /**
- * @see: https://github.com/jkyberneees/0http#0http---sequential-default-router
+ * @see: https://github.com/BackendStack21/0http#trie-router-dependency-free-fastest
  */
-const sequential = require('0http/lib/router/sequential')
+const trie = require('0http/lib/router/trie')
 const getMethods = require('./methods')
 const EventEmitter = require('events')
 const BEFORE_ROUTE_REGISTER_EVENT = 'beforeRouteRegister'
@@ -15,16 +15,38 @@ function registerRoute ({ routes, service, router, method, args }) {
   router[method].apply(router, args)
 }
 
+function createRouter (options, defaultRoute) {
+  const type = options.router ?? 'trie'
+
+  if (type === 'trie') {
+    return trie({
+      errorHandler: options.errorHandler,
+      defaultRoute,
+      caseSensitive: options.caseSensitive ?? true,
+      ignoreTrailingSlash: options.ignoreTrailingSlash ?? true
+    })
+  }
+  if (type === 'sequential') {
+    // loaded on demand: its dependencies account for most of the framework's startup time
+    const sequential = require('0http/lib/router/sequential')
+    return sequential({
+      errorHandler: options.errorHandler,
+      cacheSize: options.routerCacheSize ?? 2000,
+      defaultRoute
+    })
+  }
+
+  throw new TypeError(`Unsupported router type: ${type}. Expected 'trie' or 'sequential'`)
+}
+
 module.exports = (options, service = {}) => {
   const routes = new Set()
 
-  const router = sequential({
-    errorHandler: options.errorHandler,
-    cacheSize: options.routerCacheSize ?? 2000,
-    defaultRoute: options.defaultRoute || ((req, res) => {
-      res.send(404)
-    })
+  const defaultRoute = options.defaultRoute || ((req, res) => {
+    res.send(404)
   })
+
+  const router = createRouter(options, defaultRoute)
 
   // attach router id
   service.id = router.id

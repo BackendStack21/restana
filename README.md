@@ -59,7 +59,7 @@ http.createServer(service).listen(3000, '0.0.0.0')
 
 # Security defaults
 Restana ships with secure defaults out of the box:
-- **Error handling**: The default error handler returns a generic `Internal Server Error` message, preventing internal details (stack traces, database errors, file paths) from leaking to clients. Provide a custom `errorHandler` to control what gets exposed.
+- **Error handling**: The default error handler only returns the status code and its standard status text (e.g. `Not Found`), preventing internal details (stack traces, database errors, file paths) from leaking to clients. Provide a custom `errorHandler` to control what gets exposed.
 - **Stream safety**: Stream errors are handled gracefully, preventing connection leaks.
 - **Immutable config**: `getConfigOptions()` returns a frozen copy, preventing middleware from mutating internal framework options.
 - **Response headers**: Browser hardening headers are enabled by default, and connection-specific or cookie headers cannot be injected through `res.send()`.
@@ -77,16 +77,19 @@ const service = restana({ trustProxy: true })
 
 Error details are hidden by default in every environment. For local debugging only, opt in with `debugErrors: true`; production mode always masks details.
 
-## 6.1 highlights
-- Reliable `start()` rejection on port and socket errors.
-- Isolated, deeply frozen configuration snapshots.
-- Boolean response bodies and array-valued headers.
-- Correct `routerCacheSize: 0` behavior.
-- Updated TypeScript API, reproducible installs, and route-scaling benchmarks.
-- Expanded security and performance regression coverage.
+## 7.0 highlights
+- Dependency-free trie router by default: constant-time static routes and no match cache to tune.
+- Case-sensitive routing that agrees with reverse proxies and WAFs (`caseSensitive: false` to opt out).
+- Consistent error responses from `res.send(err)` and the default error handler.
+- Faster startup: no third-party modules are loaded by default.
+- TypeScript route params inferred from the path (`'/users/:id'` → `req.params.id`).
+- Stricter `res.send()` status code handling and a typed, explicit public API.
+
+Upgrading from 6.x? Read the [migration guide](MIGRATION.md).
 
 # More
 - Website and documentation: https://restana.21no.de
 - [Full API guide](docs/README.md)
 - [Changelog](CHANGELOG.md)
+- [Migration guide (6.x → 7.0)](MIGRATION.md)
 - [Contributing](CONTRIBUTING.md)

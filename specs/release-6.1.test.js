@@ -134,7 +134,7 @@ describe('Restana 6.1 improvements', () => {
   })
 
   it('honors routerCacheSize zero for dynamic registration', async () => {
-    const service = restana({ routerCacheSize: 0 })
+    const service = restana({ router: 'sequential', routerCacheSize: 0 })
     const server = await service.start(0, '127.0.0.1')
 
     await request(server).get('/late').expect(404)

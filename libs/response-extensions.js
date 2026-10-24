@@ -1,6 +1,6 @@
 'use strict'
 
-const { forEachObject, toHttpStatusCode } = require('./utils')
+const { forEachObject, toHttpStatusCode, errorStatusCode } = require('./utils')
 
 const CONTENT_TYPE_HEADER = 'content-type'
 const TYPE_JSON = 'application/json; charset=utf-8'
@@ -45,7 +45,7 @@ const beforeEnd = (res, contentType, statusCode, data) => {
 const isProduction = () => process.env.NODE_ENV === 'production'
 
 const parseErr = (options, error) => {
-  const statusCode = toHttpStatusCode(error.status || error.code || error.statusCode)
+  const statusCode = errorStatusCode(error)
 
   if (!options.debugErrors || isProduction()) {
     return {
@@ -74,7 +74,7 @@ const parseErr = (options, error) => {
 const MAX_PROMISE_DEPTH = 3
 
 module.exports.send = (options, req, res) => {
-  const send = (data = res.statusCode, code = res.statusCode, headers = null, cb = NOOP, _promiseDepth = 0) => {
+  const send = (data, code = res.statusCode, headers = null, cb = NOOP, _promiseDepth = 0) => {
     let contentType
 
     if (data instanceof Error) {
@@ -100,7 +100,10 @@ module.exports.send = (options, req, res) => {
       // NOTE: only retrieve content-type after setting custom headers
       contentType = res.getHeader(CONTENT_TYPE_HEADER)
 
-      if (typeof data === 'number') {
+      if (data === undefined) {
+        // keep an explicitly provided status code, e.g. res.send(undefined, 204)
+        data = res.body
+      } else if (typeof data === 'number' && toHttpStatusCode(data, 0) !== 0) {
         code = data
         data = res.body
       }
@@ -108,7 +111,7 @@ module.exports.send = (options, req, res) => {
       if (data !== undefined && data !== null) {
         if (typeof data === 'string') {
           if (!contentType) contentType = TYPE_PLAIN
-        } else if (typeof data === 'boolean') {
+        } else if (typeof data === 'boolean' || typeof data === 'number') {
           if (!contentType) contentType = TYPE_JSON
           data = stringify(data)
         } else if (typeof data === 'object') {
@@ -164,12 +167,18 @@ module.exports.send = (options, req, res) => {
             if (!contentType) contentType = TYPE_JSON
             data = stringify(data)
           }
+        } else {
+          // functions, symbols and bigints cannot be sent; res.end() would even treat
+          // a function as its callback and silently send an empty response
+          return send(new TypeError(`Unsupported res.send() payload type: ${typeof data}`), code, headers, cb, _promiseDepth)
         }
       }
     }
 
     beforeEnd(res, contentType, code, data)
-    res.end(data, cb)
+    // passing a callback to res.end() registers a 'finish' listener, skip it when unused
+    if (cb === NOOP) res.end(data)
+    else res.end(data, cb)
   }
 
   return send

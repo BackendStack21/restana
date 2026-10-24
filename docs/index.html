@@ -234,7 +234,7 @@
       <span>restana</span>
     </a>
     <div class="nav-links">
-      <a href="#release">v6.1</a>
+      <a href="#release">v7.0</a>
       <a href="#features">Features</a>
       <a href="#security">Security</a>
       <a href="#examples">Examples</a>
@@ -260,9 +260,9 @@
     </div>
     <div class="hero-stats">
       <div class="stat"><span class="num">7</span><div class="label">HTTP methods</div></div>
-      <div class="stat"><span class="num">v6.1</span><div class="label">latest</div></div>
+      <div class="stat"><span class="num">v7.0</span><div class="label">latest</div></div>
       <div class="stat"><span class="num">Node 24+</span><div class="label">runtime</div></div>
-      <div class="stat"><span class="num">3</span><div class="label">dependencies</div></div>
+      <div class="stat"><span class="num">1</span><div class="label">dependency</div></div>
       <div class="stat"><span class="num">TS</span><div class="label">types built-in</div></div>
     </div>
   </div>
@@ -271,29 +271,44 @@
 <!-- Release -->
 <section id="release" class="section">
   <div class="container">
-    <div class="section-label">Feature Release · v6.1</div>
-    <h2>Safer APIs, clearer operations</h2>
-    <p class="lead">Restana 6.1 strengthens production behavior without trading away routing performance.</p>
+    <div class="section-label">Major Release · v7.0</div>
+    <h2>Faster routing, consistent errors</h2>
+    <p class="lead">Restana 7.0 switches to a dependency-free trie router and tightens the public API. Upgrading from 6.x? Read the <a href="https://github.com/BackendStack21/restana/blob/master/MIGRATION.md">migration guide</a>.</p>
     <div class="features-grid">
       <div class="feature-card">
         <span class="icon" aria-hidden="true">✓</span>
-        <h3>Reliable lifecycle</h3>
-        <p><code>service.start()</code> now rejects cleanly on socket and port conflicts, making startup failures observable and recoverable.</p>
+        <h3>Trie router</h3>
+        <p>Static routes resolve in constant time and dynamic routes stay fast as the route count grows, without a match cache to tune.</p>
       </div>
       <div class="feature-card">
         <span class="icon" aria-hidden="true">🔐</span>
-        <h3>Explicit trust</h3>
-        <p>Error details are opt-in for local debugging, while forwarded TLS headers require an explicitly trusted proxy.</p>
+        <h3>Case-sensitive matching</h3>
+        <p>Paths match the way reverse proxies and WAFs classify them. Opt out with <code>caseSensitive: false</code>, or keep the sequential router.</p>
       </div>
       <div class="feature-card">
         <span class="icon" aria-hidden="true">⚙</span>
-        <h3>Stronger API contracts</h3>
-        <p>Boolean bodies, array-valued headers, cache disabling, and TypeScript declarations now match documented behavior.</p>
+        <h3>Consistent errors</h3>
+        <p>The default error handler and <code>res.send(err)</code> share one masked response format with standard status texts.</p>
       </div>
       <div class="feature-card">
         <span class="icon" aria-hidden="true">↗</span>
-        <h3>Performance guarded</h3>
-        <p>Response and routing benchmarks now run with CI budgets, including a direct router-integration overhead check.</p>
+        <h3>Explicit public API</h3>
+        <p>An <code>exports</code> map, typed APM integrations, and router-returning chaining in the TypeScript declarations.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon" aria-hidden="true">🔤</span>
+        <h3>Typed route params</h3>
+        <p><code>req.params</code> is inferred from the route path: <code>'/users/:id'</code> gives you <code>req.params.id</code>, with no annotations needed.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon" aria-hidden="true">⚡</span>
+        <h3>Faster startup</h3>
+        <p>The sequential router loads only when selected, so <code>require('restana')</code> is about 40% faster and pulls in only 0http's trie by default.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon" aria-hidden="true">✔</span>
+        <h3>Correct responses</h3>
+        <p>Explicit status codes survive empty and promise bodies, string error codes no longer mask <code>err.statusCode</code>, and coverage is held at 100%.</p>
       </div>
     </div>
   </div>
@@ -309,7 +324,7 @@
       <div class="feature-card">
         <span class="icon">⚡</span>
         <h3>Blazing Fast</h3>
-        <p>Lightweight routing with minimal overhead. The sequential router uses internal caching for repeated lookups — tuned for raw throughput.</p>
+        <p>Lightweight routing with minimal overhead. The default trie router resolves static routes in constant time and needs no match cache — tuned for raw throughput.</p>
       </div>
       <div class="feature-card">
         <span class="icon">🛡</span>
@@ -334,7 +349,7 @@
       <div class="feature-card">
         <span class="icon">📦</span>
         <h3>Minimal Footprint</h3>
-        <p>Three runtime dependencies. Zero bloat. The <code>res.send()</code> method handles null, strings, buffers, objects, streams, and promises — all in one call.</p>
+        <p>One direct dependency, and the default trie router loads nothing beyond it. Zero bloat. The <code>res.send()</code> method handles null, strings, buffers, objects, streams, and promises — all in one call.</p>
       </div>
     </div>
   </div>
@@ -345,7 +360,7 @@
   <div class="container">
     <div class="section-label">Security</div>
     <h2>Safe Out of the Box</h2>
-    <p class="lead">restana v6.1 ships with hardened security defaults. No extra packages needed.</p>
+    <p class="lead">restana v7.0 ships with hardened security defaults. No extra packages needed.</p>
     <div class="security-list">
       <div class="security-item">
         <span class="sec-icon">🔒</span>
@@ -491,7 +506,7 @@ service.<span class="f">get</span>(<span class="s">'/admin'</span>, auth, (req, 
         <ul>
           <li>GET, DELETE, PUT, PATCH, POST, HEAD, OPTIONS — plus <code>service.all()</code> for universal handlers</li>
           <li>TRACE is disabled by default (re-enable with <code>enableTrace: true</code>)</li>
-          <li>Route matching uses an internal LRU cache — <code>routerCacheSize</code> controls cache depth (default: 2000)</li>
+          <li>Route matching uses the 0http trie router by default — <code>router: 'sequential'</code> selects the previous router and its <code>routerCacheSize</code> LRU cache</li>
         </ul>
       </div>
 
@@ -566,7 +581,10 @@ service.<span class="f">get</span>(<span class="s">'/admin'</span>, auth, (req, 
         <tr><td>prioRequestsProcessing</td><td>Use setImmediate for priority processing</td><td>true</td></tr>
         <tr><td>defaultRoute</td><td>Handler for unmatched routes (404)</td><td>res.send(404)</td></tr>
         <tr><td>errorHandler</td><td>Global error handler function</td><td>Safe by default</td></tr>
-        <tr><td>routerCacheSize</td><td>Route match cache size</td><td>2000</td></tr>
+        <tr><td>router</td><td>Router implementation: 'trie' or 'sequential'</td><td>'trie'</td></tr>
+        <tr><td>caseSensitive</td><td>Case-sensitive path matching (trie router)</td><td>true</td></tr>
+        <tr><td>ignoreTrailingSlash</td><td>Treat /users/ and /users as the same path (trie router)</td><td>true</td></tr>
+        <tr><td>routerCacheSize</td><td>Route match cache size (sequential router)</td><td>2000</td></tr>
         <tr><td>enableTrace</td><td>Enable TRACE HTTP method</td><td>false</td></tr>
         <tr><td>securityHeaders</td><td>Set default security headers on every response</td><td>true</td></tr>
         <tr><td>trustProxy</td><td>Trust forwarded protocol for HSTS</td><td>false</td></tr>
@@ -610,12 +628,12 @@ service.<span class="f">start</span>(<span class="n">443</span>)</code></pre>
       </div>
 
       <div class="example-card">
-        <span class="ex-title">disable-cache.js</span>
+        <span class="ex-title">router-selection.js</span>
         <pre><code><span class="k">const</span> service = <span class="f">restana</span>({
-  routerCacheSize: <span class="n">0</span>  <span class="c">// disable LRU cache</span>
+  caseSensitive: <span class="k">false</span>  <span class="c">// trie router, '/Users' matches '/users'</span>
 })
-<span class="c">// Or: unlimited cache (useful for many static routes)</span>
-<span class="c">// routerCacheSize: -1</span></code></pre>
+<span class="c">// Or: the 6.x sequential router with its LRU cache</span>
+<span class="c">// restana({ router: 'sequential', routerCacheSize: 2000 })</span></code></pre>
       </div>
 
       <div class="example-card">

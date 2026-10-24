@@ -80,12 +80,29 @@ Optionally, learn through examples:
 - `server`: Allows to optionally override the HTTP server instance to be used.
 - `prioRequestsProcessing`: If `TRUE`, HTTP requests processing/handling is prioritized using `setImmediate`. Default value: `TRUE`
 - `defaultRoute`: Optional route handler when no route match occurs. Default value: `((req, res) => res.send(404))`
-- `errorHandler`: Optional global error handler function. Default value: `(err, req, res) => { const statusCode = typeof (err.status || err.code || err.statusCode) === 'number' ? (err.status || err.code || err.statusCode) : 500; res.send({ code: statusCode, message: 'Internal Server Error' }, statusCode) }`. The default handler returns a generic error message to prevent leaking sensitive internal details (e.g. database connection strings, file paths, stack traces). The appropriate HTTP status code is still preserved from `err.status`, `err.code`, or `err.statusCode`.
-- `routerCacheSize`: The router matching cache size, indicates how many request matches will be kept in memory. Default value: `2000`
+- `errorHandler`: Optional global error handler function. Default value: `(err, req, res) => res.send(err)`. Values that are not `Error` instances are wrapped first. The response body is `{ code, message }`, where `code` is the first valid HTTP status code found in `err.status`, `err.code` or `err.statusCode` (falls back to `500`), and `message` is the matching status text (e.g. `Not Found`). Error messages and `err.data` are only exposed with `debugErrors: true` outside production, which prevents leaking internal details such as database connection strings, file paths or stack traces.
+- `router`: The [0http](https://github.com/BackendStack21/0http) router implementation, `'trie'` or `'sequential'`. Default value: `'trie'`. See [Routers](#routers).
+- `caseSensitive`: Trie router only. When `FALSE`, static path segments match case-insensitively (ASCII letters only). Default value: `TRUE`
+- `ignoreTrailingSlash`: Trie router only. When `TRUE`, `/users/` and `/users` are the same path. Default value: `TRUE`
+- `routerCacheSize`: Sequential router only. The router matching cache size, indicates how many request matches will be kept in memory. Default value: `2000`
 - `enableTrace`: When `TRUE`, the `TRACE` HTTP method handler is available for debugging purposes. Default value: `FALSE`. ⚠️ Not recommended for production deployments.
 - `securityHeaders`: When `TRUE`, default security headers are set on every response. Set to `FALSE` to disable (e.g. when using Helmet or serving non-browser clients). Default value: `TRUE`.
 - `trustProxy`: When `TRUE`, trust the first `X-Forwarded-Proto` value when deciding whether to send HSTS. Only enable this behind a reverse proxy that replaces forwarded headers. Default value: `FALSE`.
-- `debugErrors`: When `TRUE`, `res.send(error)` includes `error.message` and `error.data` outside production. Use only for local debugging. Default value: `FALSE`.
+- `debugErrors`: When `TRUE`, `res.send(error)` and the default `errorHandler` include `error.message` and `error.data` outside production. Use only for local debugging. Default value: `FALSE`.
+
+### Routers
+The dependency-free trie router is the default: static routes resolve in constant time and dynamic routes stay fast as the route count grows, without a match cache to size. The previous default, the sequential router, remains available:
+```js
+const service = restana({ router: 'sequential' })
+```
+
+The trie router intentionally differs from the sequential router:
+- Paths are case-sensitive by default (`/Admin` does not match `/admin`); use `caseSensitive: false` to restore case-insensitive matching.
+- A `*` that is not the last segment, or a `?` that is not the last character of a param segment, throws at registration.
+- An absent optional param is not present on `req.params` (instead of `undefined`).
+- A trailing `/*` also matches the bare prefix, with `req.params['*']` equal to `''`.
+- Empty route segments are ignored (`/a//b` is `/a/b`).
+- A request path that does not start with `/` matches nothing.
 
 ### Security defaults (v6.0+)
 Restana now ships with these security hardening measures enabled by default:
@@ -217,10 +234,11 @@ res.send(
 )
 ```
 > Optionally, you can also just send a response code:  
-> `res.send(401)`
+> `res.send(401)`  
+> An `undefined` body keeps the explicit status code: `res.send(undefined, 204)`
 
 ## Global error handling
-By default, restana returns a generic `Internal Server Error` message to the client, preventing internal details from being leaked. The HTTP status code is preserved from `err.status`, `err.code`, or `err.statusCode` (defaults to `500`).
+By default, restana responds with the standard status text (e.g. `{ "code": 404, "message": "Not Found" }`), preventing internal details from being leaked. The HTTP status code is preserved from the first valid status code found in `err.status`, `err.code`, or `err.statusCode` (defaults to `500`). Non-numeric values such as Node.js system error codes (`'ENOENT'`) are ignored.
 
 To customize error responses, provide your own `errorHandler`:
 ```js
@@ -279,6 +297,12 @@ service.use('/admin', (req, res, next) => {
   return next()
 });
 ...
+```
+
+Multiple middlewares can be registered in a single call, with or without prefix:
+```js
+service.use(cors, logger)
+service.use('/admin', authenticate, authorize)
 ```
 
 ### Route level middlewares
@@ -368,6 +392,26 @@ Service events are accessible through the `service.events` object, an instance o
 
 ### Available events
 - `service.events.BEFORE_ROUTE_REGISTER`: This event is triggered before registering a route. 
+
+## TypeScript
+Type declarations are bundled. Route parameters are inferred from the path pattern:
+```ts
+import restana = require('restana')
+
+const service = restana()
+
+service.get('/users/:userId/posts/:postId', (req, res) => {
+  // req.params.userId and req.params.postId are typed as string
+  res.send({ user: req.params.userId, post: req.params.postId })
+})
+```
+Optional params (`/:id?`), extensions (`/:name.json`) and wildcards (`/*`, available as `req.params['*']`) are supported. Other keys, such as params inherited from a nested router prefix, remain accessible as `string`. Use `restana.RouteParams<'/users/:id'>` to type handlers declared separately:
+```ts
+const getUser: restana.RequestHandler<restana.Protocol.HTTP, restana.RouteParams<'/users/:id'>> = (req, res) => {
+  res.send({ id: req.params.id })
+}
+service.get('/users/:id', getUser)
+```
 
 ## AWS Serverless Integration
 `restana` is compatible with the [serverless-http](https://github.com/dougmoscrop/serverless-http) library, so restana based services can also run as AWS lambdas 🚀
@@ -489,6 +533,17 @@ service.get('/hello', (req, res) => {
 https://goo.gl/forms/qlBwrf5raqfQwteH3
 
 # Breaking changes
+## 7.0
+> Restana 7.0 makes the trie router the default, gives errors consistent responses, and tightens the public API. Read the full [migration guide](../MIGRATION.md).
+
+Changed:
+- The 0http trie router is the default. Paths are case-sensitive and route patterns are validated when registered. Use `caseSensitive: false` or `router: 'sequential'` for the previous behavior.
+- `routerCacheSize` only applies to the sequential router.
+- The default `errorHandler` responds the same way as `res.send(err)`: `404 Not Found` instead of `404 Internal Server Error`, and `debugErrors` applies to it.
+- `res.send(number)` treats only integers from 100 to 999 as status codes. Other numbers are sent as JSON.
+- Only `restana`, `restana/libs/elastic-apm`, `restana/libs/newrelic-apm` and `restana/package.json` can be imported.
+- TypeScript: route registration and `use()` return the object they were called on. `getConfigOptions()` is `Readonly`.
+
 ## 6.1
 > Restana 6.1 improves lifecycle reliability, secure defaults, performance tooling, and TypeScript support.
 
