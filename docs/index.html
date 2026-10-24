@@ -262,7 +262,7 @@
       <div class="stat"><span class="num">7</span><div class="label">HTTP methods</div></div>
       <div class="stat"><span class="num">v7.0</span><div class="label">latest</div></div>
       <div class="stat"><span class="num">Node 24+</span><div class="label">runtime</div></div>
-      <div class="stat"><span class="num">3</span><div class="label">dependencies</div></div>
+      <div class="stat"><span class="num">1</span><div class="label">dependency</div></div>
       <div class="stat"><span class="num">TS</span><div class="label">types built-in</div></div>
     </div>
   </div>
@@ -295,6 +295,21 @@
         <h3>Explicit public API</h3>
         <p>An <code>exports</code> map, typed APM integrations, and router-returning chaining in the TypeScript declarations.</p>
       </div>
+      <div class="feature-card">
+        <span class="icon" aria-hidden="true">🔤</span>
+        <h3>Typed route params</h3>
+        <p><code>req.params</code> is inferred from the route path: <code>'/users/:id'</code> gives you <code>req.params.id</code>, with no annotations needed.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon" aria-hidden="true">⚡</span>
+        <h3>Faster startup</h3>
+        <p>The sequential router loads only when selected, so <code>require('restana')</code> is about 40% faster and pulls in only 0http's trie by default.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon" aria-hidden="true">✔</span>
+        <h3>Correct responses</h3>
+        <p>Explicit status codes survive empty and promise bodies, string error codes no longer mask <code>err.statusCode</code>, and coverage is held at 100%.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -309,7 +324,7 @@
       <div class="feature-card">
         <span class="icon">⚡</span>
         <h3>Blazing Fast</h3>
-        <p>Lightweight routing with minimal overhead. The sequential router uses internal caching for repeated lookups — tuned for raw throughput.</p>
+        <p>Lightweight routing with minimal overhead. The default trie router resolves static routes in constant time and needs no match cache — tuned for raw throughput.</p>
       </div>
       <div class="feature-card">
         <span class="icon">🛡</span>
@@ -334,7 +349,7 @@
       <div class="feature-card">
         <span class="icon">📦</span>
         <h3>Minimal Footprint</h3>
-        <p>Three runtime dependencies. Zero bloat. The <code>res.send()</code> method handles null, strings, buffers, objects, streams, and promises — all in one call.</p>
+        <p>One direct dependency, and the default trie router loads nothing beyond it. Zero bloat. The <code>res.send()</code> method handles null, strings, buffers, objects, streams, and promises — all in one call.</p>
       </div>
     </div>
   </div>
