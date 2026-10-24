@@ -62,10 +62,6 @@
   "dependencies": {
     "0http": "^5.2.0"
   },
-  "overrides": {
-    "diff": "9.0.0",
-    "serialize-javascript": "7.0.5"
-  },
   "devDependencies": {
     "@types/node": "^26.4.1",
     "benchmark": "^2.1.4",
@@ -76,8 +72,8 @@
     "express-jwt": "^8.5.1",
     "http-cache-middleware": "^1.4.1",
     "microtime": "^3.1.1",
-    "mocha": "^11.7.5",
-    "morgan": "^1.10.1",
+    "mocha": "^12.0.3",
+    "morgan": "^1.12.1",
     "nyc": "^18.0.0",
     "openapi-validator-middleware": "^3.2.6",
     "pem": "^1.14.8",
