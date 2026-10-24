@@ -153,3 +153,5 @@ your use case.
   `statusCode`.
 - APM integrations name routes registered with several paths, `service.get(['/a', '/b'], …)`,
   one path at a time (`GET /a`, `GET /b`) instead of joining them (`GET /a,/b`).
+- `res.send()` with a function, symbol or bigint now responds with a `500` error. A function used
+  to be called as the `res.end()` callback, sending an empty `200` response.

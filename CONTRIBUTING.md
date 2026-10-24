@@ -7,6 +7,9 @@ npm ci
 npm run check
 ```
 
+`npm test` enforces at least 99% statement, branch, function and line coverage. New code
+paths need tests, including failure paths.
+
 Tests must listen on an ephemeral loopback port:
 
 ```js

@@ -22,7 +22,7 @@
   "scripts": {
     "lint": "standard",
     "format": "standard --fix",
-    "test": "cross-env NODE_ENV=testing nyc --check-coverage --lines 95 mocha specs/*.test.js",
+    "test": "cross-env NODE_ENV=testing nyc --check-coverage --lines 99 --branches 99 --functions 99 --statements 99 mocha specs/*.test.js",
     "test:types": "tsc",
     "check": "npm run lint && npm run test:types && npm test",
     "bench": "node performance/suites/res-send.js && node performance/suites/res-send-promise.js && node performance/route-scale.js",

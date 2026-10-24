@@ -29,6 +29,10 @@ Breaking release. See the [migration guide](MIGRATION.md).
   `restana.RouteParams<Path>` helper type.
 - `.nvmrc` pinning Node.js 26 (latest stable) for contributors; Node.js 24 LTS remains the minimum.
 
+### Testing
+- 100% statement, branch, function and line coverage, enforced at a 99% minimum in `npm test`.
+- The test suite also passes on Bun.
+
 ### Performance
 - The sequential router and its dependencies are loaded only when `router: 'sequential'` is selected,
   cutting `require('restana')` time by about 40% and the initial heap by about 0.5 MB.
@@ -39,6 +43,8 @@ Breaking release. See the [migration guide](MIGRATION.md).
 - `res.send(undefined, code)` and promises resolving to `undefined` no longer drop the explicit status code.
 - Non-numeric error codes (e.g. `'ENOENT'`) no longer mask a valid `err.statusCode`.
 - APM instrumentation names multi-path routes per path instead of joining them (`GET /a,/b`).
+- `res.send()` rejects function, symbol and bigint payloads with a `500` error. Functions used to be
+  treated as the `res.end()` callback, silently sending an empty `200` response.
 
 ## 6.1.0
 

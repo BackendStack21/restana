@@ -167,6 +167,10 @@ module.exports.send = (options, req, res) => {
             if (!contentType) contentType = TYPE_JSON
             data = stringify(data)
           }
+        } else {
+          // functions, symbols and bigints cannot be sent; res.end() would even treat
+          // a function as its callback and silently send an empty response
+          return send(new TypeError(`Unsupported res.send() payload type: ${typeof data}`), code, headers, cb, _promiseDepth)
         }
       }
     }
